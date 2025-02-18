@@ -1,0 +1,349 @@
+# Plan de Projet - Application de Gestion d'École de Commerce
+
+## Informations Générales
+
+- **Nom du Projet**: Gestion École de Commerce
+- **Date de Début**: [À DÉFINIR]
+- **Date de Fin Prévue**: [À DÉFINIR]
+- **Chef de Projet**: [À DÉFINIR]
+
+## Structure des Tâches
+
+### Phase 1: Mise en Place de l'Environnement
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 1.1 | Créer dossier projet | - | 0.5h | HAUTE | 🔲 |
+| 1.2 | Initialiser Git | 1.1 | 0.5h | HAUTE | 🔲 |
+| 1.3 | Créer .gitignore | 1.2 | 0.5h | HAUTE | 🔲 |
+| 1.4 | Créer [README.md](http://readme.md/) | 1.2 | 1h | MOYENNE | 🔲 |
+| 1.5 | Structure dossiers | 1.1 | 1h | HAUTE | 🔲 |
+| 1.6 | Installation Node.js | - | 1h | HAUTE | 🔲 |
+| 1.7 | Créer compte MongoDB Atlas | - | 0.5h | HAUTE | 🔲 |
+| 1.8 | Créer cluster MongoDB | 1.7 | 0.5h | HAUTE | 🔲 |
+| 1.9 | Config accès réseau MongoDB | 1.8 | 0.5h | HAUTE | 🔲 |
+| 1.10 | Créer admin MongoDB | 1.8 | 0.5h | HAUTE | 🔲 |
+
+### Phase 2: Configuration Backend
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 2.1 | Init Node.js backend | 1.5, 1.6 | 0.5h | HAUTE | 🔲 |
+| 2.2 | Install dépendances base | 2.1 | 0.5h | HAUTE | 🔲 |
+| 2.3 | Config .env | 2.1 | 0.5h | HAUTE | 🔲 |
+| 2.4 | Setup connexion MongoDB | 2.2, 2.3 | 1h | HAUTE | 🔲 |
+| 2.5 | Structure MVC | 2.1 | 1h | HAUTE | 🔲 |
+| 2.6 | Modèles Mongoose | 2.4, 2.5 | 2h | HAUTE | 🔲 |
+| 2.7 | Middleware auth | 2.2 | 2h | HAUTE | 🔲 |
+| 2.8 | Gestion erreurs globale | 2.5 | 1h | MOYENNE | 🔲 |
+| 2.9 | Config CORS | 2.2 | 0.5h | HAUTE | 🔲 |
+| 2.10 | Tests unitaires base | 2.6 | 3h | MOYENNE | 🔲 |
+
+### Phase 3: Développement Backend API
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 3.1 | Routes auth | 2.5, 2.7 | 2h | HAUTE | 🔲 |
+| 3.2 | Contrôleur auth | 3.1 | 3h | HAUTE | 🔲 |
+| 3.3 | Routes CRUD étudiants | 2.5, 2.6 | 2h | HAUTE | 🔲 |
+| 3.4 | Contrôleurs étudiants | 3.3 | 3h | HAUTE | 🔲 |
+| 3.5 | Routes CRUD intervenants | 2.5, 2.6 | 2h | HAUTE | 🔲 |
+| 3.6 | Contrôleurs intervenants | 3.5 | 3h | HAUTE | 🔲 |
+| 3.7 | Routes paiement | 2.5, 2.6 | 2h | HAUTE | 🔲 |
+| 3.8 | Contrôleurs paiement | 3.7 | 3h | HAUTE | 🔲 |
+| 3.9 | Validation données | 3.1-3.8 | 3h | HAUTE | 🔲 |
+| 3.10 | Middleware rôles | 2.7 | 2h | HAUTE | 🔲 |
+
+### Phase 4: Configuration Frontend
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 4.1 | Créer app React | 1.5, 1.6 | 0.5h | HAUTE | 🔲 |
+| 4.2 | Install dépendances frontend | 4.1 | 0.5h | HAUTE | 🔲 |
+| 4.3 | Structure dossiers frontend | 4.1 | 1h | HAUTE | 🔲 |
+| 4.4 | Setup router React | 4.2 | 1h | HAUTE | 🔲 |
+| 4.5 | Contexte auth | 4.2 | 2h | HAUTE | 🔲 |
+| 4.6 | Config Axios | 4.2 | 1h | HAUTE | 🔲 |
+| 4.7 | Composants base | 4.2 | 3h | HAUTE | 🔲 |
+| 4.8 | Système thème | 4.2 | 2h | MOYENNE | 🔲 |
+| 4.9 | Pages principales | 4.4 | 2h | HAUTE | 🔲 |
+| 4.10 | Routes protégées | 4.4, 4.5 | 2h | HAUTE | 🔲 |
+
+### Phase 5: Développement Frontend Base
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 5.1 | Form connexion | 4.7 | 2h | HAUTE | 🔲 |
+| 5.2 | Logique connexion | 5.1, 4.5, 4.6 | 2h | HAUTE | 🔲 |
+| 5.3 | Form inscription | 4.7 | 2h | HAUTE | 🔲 |
+| 5.4 | Logique inscription | 5.3, 4.5, 4.6 | 2h | HAUTE | 🔲 |
+| 5.5 | Dashboard admin | 4.7, 4.9 | 4h | HAUTE | 🔲 |
+| 5.6 | Dashboard étudiant | 4.7, 4.9 | 3h | HAUTE | 🔲 |
+| 5.7 | Form ajout étudiant | 4.7 | 2h | HAUTE | 🔲 |
+| 5.8 | Form ajout intervenant | 4.7 | 2h | HAUTE | 🔲 |
+| 5.9 | Navigation | 4.4, 4.7 | 2h | HAUTE | 🔲 |
+| 5.10 | Logique déconnexion | 4.5, 4.6 | 1h | HAUTE | 🔲 |
+
+## Légende des Statuts
+
+- 🔲 Non commencé
+- 🔄 En cours
+- ✅ Terminé
+- ⚠️ Bloqué
+- ❌ Annulé
+
+## Durée Totale Estimée
+
+- **Phase 1**: 6 heures
+- **Phase 2**: 12 heures
+- **Phase 3**: 25 heures
+- **Phase 4**: 15 heures
+- **Phase 5**: 22 heures
+**Total**: 80 heures
+
+## Notes Importantes
+
+- Les durées sont des estimations et peuvent varier selon l'expérience
+- Les dépendances doivent être terminées avant de commencer une tâche
+- La priorité peut être ajustée selon les besoins du projet
+- Un sprint review est recommandé après chaque phase
+- Documenter les décisions techniques importantes
+- Faire des commits réguliers
+- Tester chaque fonctionnalité avant de passer à la suivante
+
+## Risques Identifiés
+
+1. Complexité de l'authentification
+2. Performance avec grande quantité de données
+3. Intégration des paiements
+4. Sécurité des données sensibles
+5. Expérience utilisateur complexe
+
+## Points de Contrôle
+
+- Fin de la Phase 1: Infrastructure technique prête
+- Fin de la Phase 2: Backend configuré et testable
+- Fin de la Phase 3: API fonctionnelle et documentée
+- Fin de la Phase 4: Frontend structuré
+- Fin de la Phase 5: MVP utilisable
+
+## Prochaines Étapes (Post-MVP)
+
+1. Tests utilisateurs
+2. Optimisation des performances
+3. Fonctionnalités additionnelles
+4. Documentation utilisateur
+5. Formation des administrateurs
+
+## Structure des Tâches
+
+### Phase 1: Mise en Place de l'Environnement
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 1.1 | Créer dossier projet | - | 0.5h | HAUTE | 🔲 |
+| 1.2 | Initialiser Git | 1.1 | 0.5h | HAUTE | 🔲 |
+| 1.3 | Créer .gitignore | 1.2 | 0.5h | HAUTE | 🔲 |
+| 1.4 | Créer [README.md](http://readme.md/) | 1.2 | 1h | MOYENNE | 🔲 |
+| 1.5 | Structure dossiers | 1.1 | 1h | HAUTE | 🔲 |
+| 1.6 | Installation Node.js | - | 1h | HAUTE | 🔲 |
+| 1.7 | Créer compte MongoDB Atlas | - | 0.5h | HAUTE | 🔲 |
+| 1.8 | Créer cluster MongoDB | 1.7 | 0.5h | HAUTE | 🔲 |
+| 1.9 | Config accès réseau MongoDB | 1.8 | 0.5h | HAUTE | 🔲 |
+| 1.10 | Créer admin MongoDB | 1.8 | 0.5h | HAUTE | 🔲 |
+
+### Phase 2: Configuration Backend
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 2.1 | Init Node.js backend | 1.5, 1.6 | 0.5h | HAUTE | 🔲 |
+| 2.2 | Install dépendances base | 2.1 | 0.5h | HAUTE | 🔲 |
+| 2.3 | Config .env | 2.1 | 0.5h | HAUTE | 🔲 |
+| 2.4 | Setup connexion MongoDB | 2.2, 2.3 | 1h | HAUTE | 🔲 |
+| 2.5 | Structure MVC | 2.1 | 1h | HAUTE | 🔲 |
+| 2.6 | Modèles Mongoose | 2.4, 2.5 | 2h | HAUTE | 🔲 |
+| 2.7 | Middleware auth | 2.2 | 2h | HAUTE | 🔲 |
+| 2.8 | Gestion erreurs globale | 2.5 | 1h | MOYENNE | 🔲 |
+| 2.9 | Config CORS | 2.2 | 0.5h | HAUTE | 🔲 |
+| 2.10 | Tests unitaires base | 2.6 | 3h | MOYENNE | 🔲 |
+
+### Phase 3: Développement Backend API
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 3.1 | Routes auth | 2.5, 2.7 | 2h | HAUTE | 🔲 |
+| 3.2 | Contrôleur auth | 3.1 | 3h | HAUTE | 🔲 |
+| 3.3 | Routes CRUD étudiants | 2.5, 2.6 | 2h | HAUTE | 🔲 |
+| 3.4 | Contrôleurs étudiants | 3.3 | 3h | HAUTE | 🔲 |
+| 3.5 | Routes CRUD intervenants | 2.5, 2.6 | 2h | HAUTE | 🔲 |
+| 3.6 | Contrôleurs intervenants | 3.5 | 3h | HAUTE | 🔲 |
+| 3.7 | Routes paiement | 2.5, 2.6 | 2h | HAUTE | 🔲 |
+| 3.8 | Contrôleurs paiement | 3.7 | 3h | HAUTE | 🔲 |
+| 3.9 | Validation données | 3.1-3.8 | 3h | HAUTE | 🔲 |
+| 3.10 | Middleware rôles | 2.7 | 2h | HAUTE | 🔲 |
+
+### Phase 4: Configuration Frontend
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 4.1 | Créer app React | 1.5, 1.6 | 0.5h | HAUTE | 🔲 |
+| 4.2 | Install dépendances frontend | 4.1 | 0.5h | HAUTE | 🔲 |
+| 4.3 | Structure dossiers frontend | 4.1 | 1h | HAUTE | 🔲 |
+| 4.4 | Setup router React | 4.2 | 1h | HAUTE | 🔲 |
+| 4.5 | Contexte auth | 4.2 | 2h | HAUTE | 🔲 |
+| 4.6 | Config Axios | 4.2 | 1h | HAUTE | 🔲 |
+| 4.7 | Composants base | 4.2 | 3h | HAUTE | 🔲 |
+| 4.8 | Système thème | 4.2 | 2h | MOYENNE | 🔲 |
+| 4.9 | Pages principales | 4.4 | 2h | HAUTE | 🔲 |
+| 4.10 | Routes protégées | 4.4, 4.5 | 2h | HAUTE | 🔲 |
+
+### Phase 5: Développement Frontend Base
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 5.1 | Form connexion | 4.7 | 2h | HAUTE | 🔲 |
+| 5.2 | Logique connexion | 5.1, 4.5, 4.6 | 2h | HAUTE | 🔲 |
+| 5.3 | Form inscription | 4.7 | 2h | HAUTE | 🔲 |
+| 5.4 | Logique inscription | 5.3, 4.5, 4.6 | 2h | HAUTE | 🔲 |
+| 5.5 | Dashboard admin | 4.7, 4.9 | 4h | HAUTE | 🔲 |
+| 5.6 | Dashboard étudiant | 4.7, 4.9 | 3h | HAUTE | 🔲 |
+| 5.7 | Form ajout étudiant | 4.7 | 2h | HAUTE | 🔲 |
+| 5.8 | Form ajout intervenant | 4.7 | 2h | HAUTE | 🔲 |
+| 5.9 | Navigation | 4.4, 4.7 | 2h | HAUTE | 🔲 |
+| 5.10 | Logique déconnexion | 4.5, 4.6 | 1h | HAUTE | 🔲 |
+
+## Légende des Statuts
+
+- 🔲 Non commencé
+- 🔄 En cours
+- ✅ Terminé
+- ⚠️ Bloqué
+- ❌ Annulé
+
+## Durée Totale Estimée
+
+- **Phase 1**: 6 heures
+- **Phase 2**: 12 heures
+- **Phase 3**: 25 heures
+- **Phase 4**: 15 heures
+- **Phase 5**: 22 heures
+**Total**: 80 heures
+
+## Notes Importantes
+
+- Les durées sont des estimations et peuvent varier selon l'expérience
+- Les dépendances doivent être terminées avant de commencer une tâche
+- La priorité peut être ajustée selon les besoins du projet
+- Un sprint review est recommandé après chaque phase
+- Documenter les décisions techniques importantes
+- Faire des commits réguliers
+- Tester chaque fonctionnalité avant de passer à la suivante
+
+## Risques Identifiés
+
+1. Complexité de l'authentification
+2. Performance avec grande quantité de données
+3. Intégration des paiements
+4. Sécurité des données sensibles
+5. Expérience utilisateur complexe
+
+## Points de Contrôle
+
+- Fin de la Phase 1: Infrastructure technique prête
+- Fin de la Phase 2: Backend configuré et testable
+- Fin de la Phase 3: API fonctionnelle et documentée
+- Fin de la Phase 4: Frontend structuré
+- Fin de la Phase 5: MVP utilisable
+
+### Phase 6: Gestion des Étudiants
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 6.1 | Liste étudiants paginée | 5.5 | 3h | HAUTE | 🔲 |
+| 6.2 | Filtres et recherche étudiants | 6.1 | 4h | HAUTE | 🔲 |
+| 6.3 | Fiche détaillée étudiant | 6.1 | 4h | HAUTE | 🔲 |
+| 6.4 | Upload documents étudiants | 6.3 | 3h | MOYENNE | 🔲 |
+| 6.5 | Historique modifications étudiant | 6.3 | 3h | BASSE | 🔲 |
+| 6.6 | Gestion statut inscription | 6.3 | 2h | HAUTE | 🔲 |
+| 6.7 | Système de notes/évaluations | 6.3 | 4h | HAUTE | 🔲 |
+| 6.8 | Export données étudiants | 6.1 | 3h | MOYENNE | 🔲 |
+| 6.9 | Notifications étudiants | 6.3 | 4h | MOYENNE | 🔲 |
+| 6.10 | Validation données étudiants | 6.1-6.9 | 3h | HAUTE | 🔲 |
+
+### Phase 7: Gestion des Intervenants
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 7.1 | Liste intervenants paginée | 5.5 | 3h | HAUTE | 🔲 |
+| 7.2 | Calendrier disponibilités | 7.1 | 5h | HAUTE | 🔲 |
+| 7.3 | Gestion des cours | 7.1 | 4h | HAUTE | 🔲 |
+| 7.4 | Suivi des heures | 7.3 | 3h | HAUTE | 🔲 |
+| 7.5 | Calcul rémunérations | 7.4 | 4h | HAUTE | 🔲 |
+| 7.6 | Profil intervenant détaillé | 7.1 | 3h | HAUTE | 🔲 |
+| 7.7 | Documents administratifs | 7.6 | 3h | MOYENNE | 🔲 |
+| 7.8 | Évaluations des cours | 7.3 | 4h | MOYENNE | 🔲 |
+| 7.9 | Reporting activités | 7.3, 7.4 | 4h | MOYENNE | 🔲 |
+| 7.10 | Notifications intervenants | 7.1-7.9 | 3h | MOYENNE | 🔲 |
+
+### Phase 8: Module Comptabilité
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 8.1 | Dashboard financier | 6.1, 7.1 | 5h | HAUTE | 🔲 |
+| 8.2 | Gestion des paiements | 8.1 | 4h | HAUTE | 🔲 |
+| 8.3 | Échéanciers de paiement | 8.2 | 4h | HAUTE | 🔲 |
+| 8.4 | Génération factures | 8.2 | 3h | HAUTE | 🔲 |
+| 8.5 | Relances automatiques | 8.3 | 4h | HAUTE | 🔲 |
+| 8.6 | Rapports financiers | 8.1-8.4 | 5h | HAUTE | 🔲 |
+| 8.7 | Export comptable | 8.6 | 3h | MOYENNE | 🔲 |
+| 8.8 | Gestion TVA | 8.4 | 3h | MOYENNE | 🔲 |
+| 8.9 | Historique transactions | 8.2 | 3h | HAUTE | 🔲 |
+| 8.10 | Validation paiements | 8.2 | 2h | HAUTE | 🔲 |
+
+### Phase 9: Reporting et Analytics
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 9.1 | Dashboard analytics | 6.1-8.10 | 5h | MOYENNE | 🔲 |
+| 9.2 | Statistiques étudiants | 9.1 | 4h | MOYENNE | 🔲 |
+| 9.3 | Statistiques intervenants | 9.1 | 4h | MOYENNE | 🔲 |
+| 9.4 | Rapports personnalisés | 9.1 | 5h | MOYENNE | 🔲 |
+| 9.5 | Export données global | 9.1-9.4 | 3h | MOYENNE | 🔲 |
+| 9.6 | Graphiques performance | 9.1 | 4h | MOYENNE | 🔲 |
+| 9.7 | KPIs automatisés | 9.1 | 4h | MOYENNE | 🔲 |
+| 9.8 | Alertes personnalisées | 9.7 | 3h | BASSE | 🔲 |
+| 9.9 | Prévisions financières | 9.1, 8.6 | 5h | BASSE | 🔲 |
+| 9.10 | API reporting | 9.1-9.9 | 4h | BASSE | 🔲 |
+
+### Phase 10: Finalisation et Optimisation
+
+| ID | Tâche | Dépendances | Durée Estimée | Priorité | Statut |
+| --- | --- | --- | --- | --- | --- |
+| 10.1 | Tests d'intégration | 6.1-9.10 | 8h | HAUTE | 🔲 |
+| 10.2 | Tests de performance | 10.1 | 5h | HAUTE | 🔲 |
+| 10.3 | Optimisation cache | 10.2 | 4h | HAUTE | 🔲 |
+| 10.4 | Sécurité et audit | 10.1 | 6h | HAUTE | 🔲 |
+| 10.5 | Documentation API | 10.1 | 4h | HAUTE | 🔲 |
+| 10.6 | Guide utilisateur | 10.1 | 5h | HAUTE | 🔲 |
+| 10.7 | Vidéos tutoriels | 10.6 | 8h | MOYENNE | 🔲 |
+| 10.8 | Formation admin | 10.6 | 4h | HAUTE | 🔲 |
+| 10.9 | Plan maintenance | 10.1-10.8 | 3h | HAUTE | 🔲 |
+| 10.10 | Déploiement prod | 10.1-10.9 | 4h | HAUTE | 🔲 |
+
+## Durée Totale Estimée (Phases 6-10)
+
+- **Phase 6**: 33 heures
+- **Phase 7**: 36 heures
+- **Phase 8**: 36 heures
+- **Phase 9**: 41 heures
+- **Phase 10**: 51 heures
+**Total Phases 6-10**: 197 heures
+**Total Global (Phases 1-10)**: 277 heures
+
+## Prochaines Étapes (Post-Production)
+
+1. Support utilisateurs
+2. Maintenance continue
+3. Évolutions fonctionnelles
+4. Optimisation continue
+5. Formation des nouveaux utilisateurs

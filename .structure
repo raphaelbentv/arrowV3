@@ -1,0 +1,30 @@
+.
+├── frontend
+│   ├── index.html
+│   ├── node_modules
+│   │   └── ...
+│   ├── package.json
+│   ├── public
+│   │   └── vite.svg
+│   ├── src
+│   │   ├── App.tsx
+│   │   ├── assets
+│   │   ├── components
+│   │   ├── features
+│   │   ├── main.tsx
+│   │   ├── pages
+│   │   ├── services
+│   │   ├── styles
+│   │   └── utils
+│   ├── tsconfig.json
+│   └── vite.config.ts
+└── backend
+    ├── node_modules
+    │   └── ...
+    ├── package.json
+    ├── src
+    │   ├── auth
+    │   ├── common
+    │   ├── etudiants
+    │   └── intervenants
+    └── uploads
