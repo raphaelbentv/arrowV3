@@ -1,0 +1,166 @@
+arrow/
+├── frontend/
+│   ├── public/
+│   │   ├── favicon.ico
+│   │   ├── robots.txt
+│   │   └── assets/
+│   │       └── images/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   ├── Button/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── Button.test.tsx
+│   │   │   │   ├── Input/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── Input.test.tsx
+│   │   │   │   ├── Card/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── Card.test.tsx
+│   │   │   │   ├── Table/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── Table.test.tsx
+│   │   │   │   └── Modal/
+│   │   │   │       ├── index.tsx
+│   │   │   │       └── Modal.test.tsx
+│   │   │   └── layout/
+│   │   │       ├── Sidebar/
+│   │   │       │   ├── index.tsx
+│   │   │       │   └── Sidebar.test.tsx
+│   │   │       ├── Header/
+│   │   │       │   ├── index.tsx
+│   │   │       │   └── Header.test.tsx
+│   │   │       └── Footer/
+│   │   │           ├── index.tsx
+│   │   │           └── Footer.test.tsx
+│   │   ├── pages/
+│   │   │   ├── public/
+│   │   │   │   ├── Home/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── Home.test.tsx
+│   │   │   │   └── Login/
+│   │   │   │       ├── index.tsx
+│   │   │   │       └── Login.test.tsx
+│   │   │   └── admin/
+│   │   │       ├── Dashboard/
+│   │   │       │   ├── index.tsx
+│   │   │       │   └── Dashboard.test.tsx
+│   │   │       ├── Intervenants/
+│   │   │       │   ├── List/
+│   │   │       │   │   ├── index.tsx
+│   │   │       │   │   └── List.test.tsx
+│   │   │       │   └── Edit/
+│   │   │       │       ├── index.tsx
+│   │   │       │       └── Edit.test.tsx
+│   │   │       ├── Etudiants/
+│   │   │       │   ├── List/
+│   │   │       │   │   ├── index.tsx
+│   │   │       │   │   └── List.test.tsx
+│   │   │       │   └── Edit/
+│   │   │       │       ├── index.tsx
+│   │   │       │       └── Edit.test.tsx
+│   │   │       └── Settings/
+│   │   │           ├── index.tsx
+│   │   │           └── Settings.test.tsx
+│   │   ├── features/
+│   │   │   ├── auth/
+│   │   │   │   ├── authSlice.ts
+│   │   │   │   └── authSlice.test.ts
+│   │   │   ├── intervenants/
+│   │   │   │   ├── intervenantsSlice.ts
+│   │   │   │   └── intervenantsSlice.test.ts
+│   │   │   └── etudiants/
+│   │   │       ├── etudiantsSlice.ts
+│   │   │       └── etudiantsSlice.test.ts
+│   │   ├── services/
+│   │   │   ├── api.ts
+│   │   │   ├── auth.service.ts
+│   │   │   ├── intervenants.service.ts
+│   │   │   └── etudiants.service.ts
+│   │   ├── hooks/
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useIntervenants.ts
+│   │   │   └── useEtudiants.ts
+│   │   ├── utils/
+│   │   │   ├── constants.ts
+│   │   │   ├── helpers.ts
+│   │   │   └── validation.ts
+│   │   ├── types/
+│   │   │   ├── auth.types.ts
+│   │   │   ├── intervenant.types.ts
+│   │   │   └── etudiant.types.ts
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── index.html
+│   └── README.md
+│
+└── backend/
+    ├── src/
+    │   ├── auth/
+    │   │   ├── controllers/
+    │   │   │   ├── auth.controller.ts
+    │   │   │   └── auth.controller.spec.ts
+    │   │   ├── services/
+    │   │   │   ├── auth.service.ts
+    │   │   │   └── auth.service.spec.ts
+    │   │   ├── strategies/
+    │   │   │   └── jwt.strategy.ts
+    │   │   ├── guards/
+    │   │   │   └── jwt-auth.guard.ts
+    │   │   ├── dto/
+    │   │   │   └── login.dto.ts
+    │   │   └── auth.module.ts
+    │   ├── intervenants/
+    │   │   ├── controllers/
+    │   │   │   ├── intervenants.controller.ts
+    │   │   │   └── intervenants.controller.spec.ts
+    │   │   ├── services/
+    │   │   │   ├── intervenants.service.ts
+    │   │   │   └── intervenants.service.spec.ts
+    │   │   ├── schemas/
+    │   │   │   └── intervenant.schema.ts
+    │   │   ├── dto/
+    │   │   │   ├── create-intervenant.dto.ts
+    │   │   │   └── update-intervenant.dto.ts
+    │   │   └── intervenants.module.ts
+    │   ├── etudiants/
+    │   │   ├── controllers/
+    │   │   │   ├── etudiants.controller.ts
+    │   │   │   └── etudiants.controller.spec.ts
+    │   │   ├── services/
+    │   │   │   ├── etudiants.service.ts
+    │   │   │   └── etudiants.service.spec.ts
+    │   │   ├── schemas/
+    │   │   │   └── etudiant.schema.ts
+    │   │   ├── dto/
+    │   │   │   ├── create-etudiant.dto.ts
+    │   │   │   └── update-etudiant.dto.ts
+    │   │   └── etudiants.module.ts
+    │   ├── common/
+    │   │   ├── decorators/
+    │   │   ├── filters/
+    │   │   ├── interceptors/
+    │   │   └── utils/
+    │   ├── config/
+    │   │   └── configuration.ts
+    │   ├── app.module.ts
+    │   └── main.ts
+    ├── test/
+    │   ├── app.e2e-spec.ts
+    │   └── jest-e2e.json
+    ├── uploads/
+    │   ├── documents/
+    │   └── photos/
+    ├── package.json
+    ├── tsconfig.json
+    ├── tsconfig.build.json
+    ├── nest-cli.json
+    ├── .env
+    ├── .env.example
+    └── README.md

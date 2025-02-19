@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { theme } from './theme';
-import Home from './pages/home';
+import Home from './pages/public';
 import MainLayout from './components/layout/MainLayout';
 
 function App() {
