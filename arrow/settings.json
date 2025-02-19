@@ -1,0 +1,29 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "prettier.singleQuote": true,
+  "prettier.semi": false,
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.trailingComma": "es5",
+  "prettier.arrowParens": "always",
+  "github.copilot.enable": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.advanced.prompt": {
+    "includeComments": true,
+    "includeCodeExamples": true,
+    "preferredLanguages": ["typescript", "javascript", "react"],
+    "style": "Prettier"
+  },
+  "language": "typescript",
+  "disable": false,
+  "rules": {
+    "style": "Prettier",
+    "commenting": "always",
+    "avoid": ["console.log", "any"],
+    "prefer": ["async/await", "strict typing"],
+    "maxLineLength": 80
+  }
+}

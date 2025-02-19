@@ -1,0 +1,6 @@
+# Ignore tout le projet
+**
+
+# Autoriser seulement certains fichiers si besoin
+!package.json
+!README.md

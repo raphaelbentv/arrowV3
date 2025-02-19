@@ -1,0 +1,12 @@
+{
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": null,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": false
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": null
+    },
+    "prettier.enable": false,
+    "eslint.enable": false
+  }

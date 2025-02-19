@@ -1,0 +1,28 @@
+demarrer le serveur :
+npm run dev
+
+
+
+
+arreter le serveur :
+npm run stop
+
+port du backend :
+3000
+
+port du frontend :
+3001
+
+
+me placer dans le dossier backend :
+cd arrow/backend
+
+me placer dans le dossier frontend :
+cd arrow/frontend
+
+
+
+ouvrir un tree de la partie backend :
+tree -L 3
+
+
