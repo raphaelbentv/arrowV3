@@ -4,3 +4,22 @@ Cluster MongoDB
 Cluster0
 id : raphaelbentv
 mdp : UraRJervWInvUFJW
+
+
+
+version de mongodb installée : community
+
+mongod --version    
+
+# Mettre à jour Homebrew
+brew update
+
+# Installer MongoDB Community Edition
+brew tap mongodb/brew
+brew install mongodb-community
+
+# Démarrer le service
+brew services start mongodb-community
+
+# Vérifier le statut
+brew services list
