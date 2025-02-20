@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; // Changement ici
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { theme } from './theme';
 import Home from './pages/public';
 import MainLayout from './components/layout/MainLayout';
@@ -10,10 +10,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <MainLayout>
-          <Switch> {/* Changement ici, on utilise Switch au lieu de Routes */}
-            <Route exact path="/" component={Home} />
-            <Route path="/intervenants" component={Intervenants} />
-          </Switch>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/intervenants" element={<Intervenants />} />
+          </Routes>
         </MainLayout>
       </Router>
     </ThemeProvider>
