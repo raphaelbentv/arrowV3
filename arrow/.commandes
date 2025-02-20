@@ -25,4 +25,5 @@ cd arrow/frontend
 ouvrir un tree de la partie backend :
 tree -L 3
 
-
+versions des dependances :
+npm list --depth=0

@@ -5,7 +5,7 @@ Cluster0
 id : raphaelbentv
 mdp : UraRJervWInvUFJW
 
-
+MONGO_URI=mongodb+srv://raphaelbentv:UraRJervWInvUFJW@cluster0.d7cns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 version de mongodb installée : community
 

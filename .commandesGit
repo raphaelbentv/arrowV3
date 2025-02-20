@@ -1,7 +1,7 @@
 
 
 git add .
-git commit -m "Description des modifications"
+git commit -m "update"
 git push origin main
 
 pour sauvegarder les modifications sur le serveur  
@@ -11,4 +11,8 @@ git push origin main    // Pour sauvegarder les modifications sur le serveur
 
 // Pour récupérer les modifications des autres
 git pull origin main
-``` 
+``
+
+
+commandes pour afficher les version des dependances react et autres
+npm list --depth=0
