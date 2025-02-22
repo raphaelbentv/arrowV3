@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 
-const ResponsiveContainer: React.FC = ({ children }) => {
+const ResponsiveContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Box
       sx={{

@@ -1,5 +1,6 @@
 
 export interface Intervenant {
+  experience: string;
   _id: string;
   nom: string;
   prenom: string;

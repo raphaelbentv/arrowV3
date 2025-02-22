@@ -1,6 +1,9 @@
-import React from 'react';
-import { Card, CardContent, Typography, Avatar, Box, Link as MuiLink } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Box, Grid, Container, Card, CardContent, Typography, CardActions, Button, CardActionArea } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Intervenant } from '../types/intervenant';
+import { intervenantsService } from '../services/intervenants';
+import SearchBar from './common/SearchBar';
 
 interface IntervenantCardProps {
   id: string;
@@ -21,34 +24,36 @@ const IntervenantCard: React.FC<IntervenantCardProps> = ({
   statut,
   email,
   telephone,
-  domainesExpertise = [],
+  domainesExpertise = []
 }) => {
+  const navigate = useNavigate();
+
   return (
-    <MuiLink component={RouterLink} to={`/intervenants/${id}`} underline="none">
-      <Card sx={{ padding: 2, marginBottom: 2, cursor: 'pointer' }}>
-        <Box sx={{ marginBottom: 2 }}>
-          <Avatar sx={{ marginRight: 2, bgcolor: 'primary.main' }}>{nom[0]}</Avatar>
-          <Box>
-            <Typography variant="h6">{`${nom} ${prenom}`}</Typography>
-            <Typography color="text.secondary">{`Poste: ${poste}`}</Typography>
-            <Typography color="text.secondary">{`Statut: ${statut}`}</Typography>
-          </Box>
-        </Box>
+    <Card sx={{ height: '100%' }}>
+      <CardActionArea onClick={() => navigate(`/intervenants/${id}`)}>
         <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            Email: <MuiLink href={`mailto:${email}`}>{email}</MuiLink>
+          <Typography variant="h6">
+            {nom} {prenom}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Téléphone: <MuiLink href={`tel:${telephone}`}>{telephone}</MuiLink>
+          <Typography color="text.secondary">
+            {poste}
           </Typography>
-          {domainesExpertise.length > 0 && (
-            <Typography variant="body2" color="text.secondary">
-              Domaines d'expertise: {domainesExpertise.join(', ')}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              Email: {email}
             </Typography>
-          )}
+            <Typography variant="body2">
+              Téléphone: {telephone}
+            </Typography>
+            {domainesExpertise.length > 0 && (
+              <Typography variant="body2">
+                Domaines: {domainesExpertise.join(', ')}
+              </Typography>
+            )}
+          </Box>
         </CardContent>
-      </Card>
-    </MuiLink>
+      </CardActionArea>
+    </Card>
   );
 };
 

@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Intervenant } from "../types/intervenant";
 import { intervenantsService } from "../services/intervenants";
-import { Box, Typography, Paper, Grid } from "@mui/material";
+import { Box, Typography, Paper, Grid, TextField } from "@mui/material";
 import IntervenantCard from './intervenantCard';
 
 const Intervenants = () => {
   const [intervenants, setIntervenants] = useState<Intervenant[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -21,6 +22,18 @@ const Intervenants = () => {
     fetchData();
   }, []);
 
+  const filteredIntervenants = intervenants.filter(intervenant => {
+    if (!searchTerm.trim()) return true;
+    const searchLower = searchTerm.toLowerCase().trim();
+    return (
+      intervenant.nom?.toLowerCase().includes(searchLower) ||
+      intervenant.prenom?.toLowerCase().includes(searchLower) ||
+      (intervenant.domainesExpertise || []).some(domaine => 
+        domaine.toLowerCase().includes(searchLower)
+      )
+    );
+  });
+
   if (error) return <div>Erreur: {error}</div>;
 
   return (
@@ -28,18 +41,25 @@ const Intervenants = () => {
       <Typography variant="h4" gutterBottom>
         Liste des Intervenants
       </Typography>
+      <TextField
+        fullWidth
+        label="Rechercher un intervenant"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 3 }}
+      />
       <Paper sx={{ padding: 2 }}>
         <Grid container spacing={3}>
-          {intervenants.map((intervenant) => (
+          {filteredIntervenants.map((intervenant) => (
             <Grid item xs={12} sm={6} md={4} key={intervenant._id}>
               <IntervenantCard
                 id={intervenant._id}
-                nom={intervenant.nom}
-                prenom={intervenant.prenom}
-                poste={intervenant.poste}
-                statut={String(intervenant.statut || '')}
-                email={String(intervenant.email || '')}
-                telephone={String(intervenant.telephone || '')}
+                nom={intervenant.nom || ''}
+                prenom={intervenant.prenom || ''}
+                poste={intervenant.poste || ''}
+                statut={intervenant.statut || ''}
+                email={intervenant.email || ''}
+                telephone={intervenant.telephone || ''}
                 domainesExpertise={intervenant.domainesExpertise || []}
               />
             </Grid>

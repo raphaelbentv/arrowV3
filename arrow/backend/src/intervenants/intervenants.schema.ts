@@ -7,121 +7,122 @@ export type IntervenantDocument = Intervenant & Document;
 export class Intervenant {
   // 🏷️ Informations Générales
   @Prop({ required: true })
-  nom: string;
+  nom: string; // Texte
 
   @Prop({ required: true })
-  prenom: string;
+  prenom: string; // Texte
 
   @Prop()
-  photo: string;
+  photo: string; // URL de l'image
 
   @Prop({ required: true, unique: true })
-  email: string;
+  email: string; // Texte (email unique)
 
   @Prop({ required: true })
-  telephone: string;
+  telephone: string; // Texte (format téléphone)
 
   @Prop()
-  adresse: string;
+  adresse: string; // Texte
 
   @Prop()
-  dateNaissance: Date;
+  dateNaissance: Date; // Date
 
   // 🏢 Informations Professionnelles
   @Prop({ required: true })
-  poste: string;
+  poste: string; // Texte
 
   @Prop({ required: true })
-  statut: string; // salarié, indépendant, auto-entrepreneur
+  statut: string; // Texte (ex: salarié, indépendant, auto-entrepreneur)
 
   @Prop()
-  experience: string;
+  experience: string; // Texte
 
   @Prop({ type: [String] })
-  domainesExpertise: string[];
+  domainesExpertise: string[]; // Liste de textes
 
   @Prop()
-  diplomes: string;
+  diplomes: string; // Texte ou chemin vers un fichier PDF
 
   @Prop()
-  cv: string;
+  cv: string; // Chemin vers un fichier PDF
 
   // 📜 Données Contractuelles
   @Prop({ required: true })
-  typeContrat: string; // CDD, CDI, freelance, prestation
+  typeContrat: string; // Texte (ex: CDD, CDI, freelance, prestation)
 
   @Prop()
-  dateDebutMission: Date;
+  dateDebutMission: Date; // Date
 
   @Prop()
-  dateFinMission: Date;
+  dateFinMission: Date; // Date
 
   @Prop()
-  tarification: string; // horaire ou forfaitaire
+  tarification: string; // Texte (horaire ou forfaitaire)
 
   @Prop()
-  heuresPrevues: number;
+  heuresPrevues: number; // Nombre
 
   @Prop()
-  rib: string;
+  rib: string; // Chemin vers un fichier PDF
 
   @Prop()
-  clauses: string;
+  clauses: string; // Texte ou fichier PDF
 
   // 🎓 Informations Pédagogiques
   @Prop({ type: [String] })
-  modulesEnseignes: string[];
+  modulesEnseignes: string[]; // Liste de textes
 
   @Prop()
-  heuresParModule: number;
+  heuresParModule: number; // Nombre
 
   @Prop()
-  niveauEtudiants: string;
+  niveauEtudiants: string; // Texte
 
   @Prop()
-  supportsPedagogiques: string;
+  supportsPedagogiques: string; // Chemin vers un fichier PDF ou ZIP
 
   @Prop()
-  methodesPedagogiques: string;
+  methodesPedagogiques: string; // Texte
 
   // 📑 Documents Administratifs
   @Prop()
-  pieceIdentite: string;
+  pieceIdentite: string; // Chemin vers un scan (PDF ou image)
 
   @Prop()
-  numeroSiret: string;
+  numeroSiret: string; // Texte
 
   @Prop()
-  assuranceRC: string;
+  assuranceRC: string; // Chemin vers un fichier PDF
 
   @Prop()
-  extraitKbis: string;
+  extraitKbis: string; // Chemin vers un fichier PDF
 
   @Prop()
-  justificatifsDiplomes: string;
+  justificatifsDiplomes: string; // Chemin vers un fichier PDF
 
   @Prop()
-  conventionContrat: string;
+  conventionContrat: string; // Chemin vers un fichier PDF
 
   @Prop()
-  attestationURSSAF: string;
+  attestationURSSAF: string; // Chemin vers un fichier PDF
 
   // 📊 Suivi et Évaluation
   @Prop({ type: [String] })
-  appreciationsEtudiants: string[];
+  appreciationsEtudiants: string[]; // Liste de textes
 
   @Prop({ type: [String] })
-  feedbackResponsables: string[];
+  feedbackResponsables: string[]; // Liste de textes
 
   @Prop()
-  pointsAmelioration: string;
+  pointsAmelioration: string; // Texte
 
   @Prop()
-  disponibilites: string;
+  disponibilites: string; // Texte
 
   @Prop()
-  engagement: string;
-    _id: any;
+  engagement: string; // Texte
+
+  _id: any;
 }
 
 export const IntervenantSchema = SchemaFactory.createForClass(Intervenant);

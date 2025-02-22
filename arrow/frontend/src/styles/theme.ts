@@ -15,15 +15,20 @@ const colors = {
     contrastText: '#FFFFFF',
   },
   background: {
-    default: '#121212',
+    default: '#0a0a0a',     // Fond général encore plus sombre
     paper: '#1E1E1E',
     light: '#2D2D2D',
-    dark: '#0A0A0A',
+    dark: '#050505',        // Noir presque pur
+    menu: '#0d0d0d',        // Barre de menu très sombre
+    toolbar: '#111111',     // Toolbar très sombre
+    outlined: 'rgba(255, 255, 255, 0.12)',  // Outlined container: 12% White
+    filled: 'rgba(255, 255, 255, 0.12)',    // Filled container: 12% White
   },
   text: {
     primary: '#FFD700',
     secondary: '#FFFFFF',
     disabled: '#808080',
+    label: 'rgba(255, 255, 255, 0.38)',     // Label/Icon: 38% White
   },
   error: {
     main: '#FF4444',
@@ -130,16 +135,16 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: colors.background.paper,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          background: colors.background.toolbar,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          background: colors.background.paper,
-          borderRight: `1px solid ${colors.background.light}`,
+          background: colors.background.menu,
+          borderRight: '1px solid rgba(255,255,255,0.05)',
         },
       },
     },
@@ -163,6 +168,102 @@ const theme = createTheme({
             fontWeight: 600,
             background: colors.background.light,
           },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: colors.background.outlined,
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(255, 255, 255, 0.20)',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: colors.primary.main,
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: colors.text.label,
+          '&.Mui-focused': {
+            color: colors.primary.main,
+          },
+        },
+      },
+    },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: colors.background.filled,
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          },
+          '&.Mui-focused': {
+            backgroundColor: 'rgba(255, 255, 255, 0.18)',
+          },
+        },
+      },
+    },
+    MuiIcon: {
+      styleOverrides: {
+        root: {
+          color: colors.text.label,
+        },
+      },
+    },
+    MuiBox: {
+      styleOverrides: {
+        root: {
+          marginBottom: '2rem', // Marge par défaut entre les Box
+          '&:last-child': {
+            marginBottom: 0,
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#2c2c2c',
+          padding: '24px',
+          marginBottom: '32px', // Marge entre les Papers
+          '&:last-child': {
+            marginBottom: 0,
+          },
+        },
+      },
+    },
+    MuiGrid: {
+      styleOverrides: {
+        root: {
+          '& .MuiGrid-item': {
+            marginBottom: '24px', // Marge entre les éléments de la grille
+          },
+        },
+        container: {
+          marginBottom: '48px', // Marge plus importante entre les conteneurs de grille
+          '&:last-child': {
+            marginBottom: 0,
+          },
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        h5: {
+          marginTop: '48px', // Espace avant les titres de section
+          marginBottom: '24px', // Espace après les titres de section
+          '&:first-of-type': {
+            marginTop: '16px',
+          },
+        },
+        h6: {
+          marginBottom: '16px', // Espace après les sous-titres
         },
       },
     },
@@ -210,6 +311,8 @@ const theme = createTheme({
     '0px 92px 184px rgba(0,0,0,0.1)',
     // ... autres shadows
   ],
+
+  spacing: (factor: number) => `${0.8 * factor}rem`, // Définition de l'unité d'espacement de base
 });
 
 export default theme;

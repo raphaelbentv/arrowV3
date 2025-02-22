@@ -4,6 +4,8 @@ import Home from './pages/public';
 import MainLayout from './components/layout/MainLayout';
 import Intervenants from "./components/intervenants";
 import IntervenantDetail from "./pages/IntervenantDetail";
+import AddIntervenant from "./pages/AddIntervenant";
+import Login from "./pages/public/login/login";
 import { useEffect, useState } from 'react';
 import { Intervenant } from './types/intervenant';
 import { intervenantsService } from './services/intervenants';
@@ -31,6 +33,7 @@ function App() {
         <MainLayout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/intervenants" element={<Intervenants />} />
             <Route 
               path="/intervenants/:id" 
@@ -38,6 +41,7 @@ function App() {
                 <IntervenantDetail />
               } 
             />
+            <Route path="/add-intervenant" element={<AddIntervenant />} />
           </Routes>
         </MainLayout>
       </Router>
