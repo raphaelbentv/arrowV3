@@ -29,10 +29,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  // Définition du port avec une variable d’environnement
-  const port = (process.env.PORT as unknown as number) || 4000;
-  await app.listen(port);
-  console.log(`🚀 Server running on http://localhost:${port}`);
+  // Définition du port avec une variable d'environnement
+  const port = process.env.PORT || 4000;
+  await app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

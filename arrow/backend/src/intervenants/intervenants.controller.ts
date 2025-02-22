@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpException, HttpStatus } from '@nestjs/common';
 import { IntervenantsService } from './intervenants.service';
 import { CreateIntervenantDto } from './dto/create-intervenant.dto';
 import { UpdateIntervenantDto } from './dto/update-intervenant.dto';
@@ -17,14 +17,23 @@ export class IntervenantsController {
   @ApiResponse({ status: 201, description: 'Intervenant créé avec succès.', type: Intervenant })
   @ApiResponse({ status: 400, description: 'Requête invalide.' })
   async create(@Body() createIntervenantDto: CreateIntervenantDto): Promise<Intervenant> {
-    return this.intervenantsService.create(createIntervenantDto);
+    console.log('Données reçues pour création:', createIntervenantDto);
+    try {
+      return await this.intervenantsService.create(createIntervenantDto);
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get()
   @ApiOperation({ summary: 'Récupérer tous les intervenants' })
   @ApiResponse({ status: 200, description: 'Liste des intervenants récupérée avec succès.', type: [Intervenant] })
   async findAll(): Promise<Intervenant[]> {
-    return this.intervenantsService.findAll();
+    try {
+      return await this.intervenantsService.findAll();
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get(':id')
@@ -33,7 +42,11 @@ export class IntervenantsController {
   @ApiResponse({ status: 200, description: 'Intervenant récupéré avec succès.', type: Intervenant })
   @ApiResponse({ status: 404, description: 'Intervenant non trouvé.' })
   async findOne(@Param('id') id: string): Promise<Intervenant> {
-    return this.intervenantsService.findOne(id);
+    try {
+      return await this.intervenantsService.findOne(id);
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Patch(':id')

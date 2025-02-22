@@ -27,8 +27,14 @@ export class IntervenantsService {
   async create(
     createIntervenantDto: CreateIntervenantDto,
   ): Promise<Intervenant> {
-    const newIntervenant = new this.intervenantModel(createIntervenantDto);
-    return newIntervenant.save();
+    try {
+      console.log('Création de l\'intervenant avec les données:', createIntervenantDto);
+      const createdIntervenant = new this.intervenantModel(createIntervenantDto);
+      return await createdIntervenant.save();
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'intervenant:', error);
+      throw error;
+    }
   }
 
   async update(
