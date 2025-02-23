@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Intervenant } from "../types/intervenant";
 import { intervenantsService } from "../services/intervenants";
 import { Box, Typography, Paper, Grid, TextField } from "@mui/material";
@@ -53,11 +53,7 @@ const Intervenants = () => {
           {filteredIntervenants.map((intervenant) => (
             <Grid item xs={12} sm={6} md={4} key={intervenant._id}>
               <IntervenantCard
-                id={intervenant._id}
-                nom={intervenant.nom || ''}
-                prenom={intervenant.prenom || ''}
-                poste={intervenant.poste || ''}
-                statut={intervenant.statut || ''}
+                intervenant={intervenant}
                 email={intervenant.email || ''}
                 telephone={intervenant.telephone || ''}
                 domainesExpertise={intervenant.domainesExpertise || []}

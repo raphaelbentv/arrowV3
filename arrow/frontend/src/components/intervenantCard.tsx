@@ -1,56 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Grid, Container, Card, CardContent, Typography, CardActions, Button, CardActionArea } from '@mui/material';
+import React from 'react';
+import { Card, CardContent, Typography, Avatar, Box, CardActionArea } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Intervenant } from '../types/intervenant';
-import { intervenantsService } from '../services/intervenants';
-import SearchBar from './common/SearchBar';
 
 interface IntervenantCardProps {
-  id: string;
-  nom: string;
-  prenom: string;
-  poste: string;
-  statut: string;
-  email: string;
-  telephone: string;
-  domainesExpertise?: string[];
+  intervenant: Intervenant;
 }
 
-const IntervenantCard: React.FC<IntervenantCardProps> = ({
-  id,
-  nom,
-  prenom,
-  poste,
-  statut,
-  email,
-  telephone,
-  domainesExpertise = []
-}) => {
+const IntervenantCard: React.FC<IntervenantCardProps> = ({ intervenant }) => {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ height: '100%' }}>
-      <CardActionArea onClick={() => navigate(`/intervenants/${id}`)}>
-        <CardContent>
-          <Typography variant="h6">
-            {nom} {prenom}
-          </Typography>
-          <Typography color="text.secondary">
-            {poste}
-          </Typography>
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2">
-              Email: {email}
+    <Card sx={{ minWidth: 250, maxWidth: 300 }}>
+      <CardActionArea
+        sx={{
+          minHeight: '280px',
+          minWidth: '250px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          p: 2,
+          '& .MuiCardContent-root': {
+            flexGrow: 1,
+            minHeight: '150px',
+          },
+          '& .MuiBox-root': {
+            minHeight: '80px',
+          }
+        }}
+        onClick={() => navigate(`/intervenants/${intervenant._id}`)}
+      >
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 2,
+          mb: 2
+        }}>
+          <Avatar
+            sx={{
+              width: 56,
+              height: 56,
+              bgcolor: 'primary.main'
+            }}
+          >
+            {intervenant.prenom[0]}
+          </Avatar>
+          <Box>
+            <Typography variant="h6" component="h6">
+              {intervenant.prenom} {intervenant.nom}
             </Typography>
-            <Typography variant="body2">
-              Téléphone: {telephone}
+            <Typography variant="body2" color="text.secondary">
+              {intervenant.poste}
             </Typography>
-            {domainesExpertise.length > 0 && (
-              <Typography variant="body2">
-                Domaines: {domainesExpertise.join(', ')}
-              </Typography>
-            )}
+            <Typography variant="body2" color="text.secondary">
+              {intervenant.statut}
+            </Typography>
           </Box>
+        </Box>
+
+        <CardContent sx={{ pt: 0 }}>
+          <Typography variant="body2" color="text.secondary">
+            Email: {intervenant.email}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Téléphone: {intervenant.telephone}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Domaines: {intervenant.domainesExpertise?.join(', ')}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>

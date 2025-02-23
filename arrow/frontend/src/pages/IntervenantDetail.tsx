@@ -28,6 +28,16 @@ interface TabPanelProps {
   index: number;
 }
 
+const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <Box sx={{ mb: 3 }}>
+    <Typography variant="h6" gutterBottom>
+      {title}
+    </Typography>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      {children}
+    </Box>
+  </Box>
+);
 
 const IntervenantDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -108,42 +118,16 @@ const IntervenantDetail = () => {
     </Typography>
   );
 
-  const InfoSection = ({ icon, title, content }: { icon: React.ReactNode, title: string, content: React.ReactNode }) => (
-    <Box sx={{ 
-      display: 'flex', 
-      alignItems: 'flex-start',
-      mb: 2,
-      flexWrap: 'wrap'
-    }}>
-      <Box sx={{ 
-        mr: 2, 
-        color: theme.palette.primary.main,
-        display: 'flex',
-        alignItems: 'center',
-        minWidth: '24px'
-      }}>
-        {icon}
-      </Box>
-      <Box sx={{ flex: 1, minWidth: '200px' }}>
-        <Typography 
-          variant="subtitle2" 
-          color="text.secondary"
-          sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
-        >
-          {title}
-        </Typography>
-        <Typography 
-          variant="body1"
-          sx={{ 
-            fontSize: { xs: '0.9rem', sm: '1rem' },
-            wordBreak: 'break-word'
-          }}
-        >
-          {content || 'Non spécifié'}
-        </Typography>
-      </Box>
+  const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <Box sx={{ mb: 3 }}>
+    <Typography variant="h6" gutterBottom>
+      {title}
+    </Typography>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      {children}
     </Box>
-  );
+  </Box>
+);
 
   return (
     <Box sx={{ 
@@ -240,9 +224,15 @@ const IntervenantDetail = () => {
                   <Typography variant="h6" sx={{ mb: 3, color: theme.palette.primary.main }}>
                     Informations de Contact
                   </Typography>
-                  <InfoSection icon={<Email />} title="Email" content={intervenant.email} />
-                  <InfoSection icon={<Phone />} title="Téléphone" content={intervenant.telephone} />
-                  <InfoSection icon={<LocationOn />} title="Adresse" content={intervenant.adresse} />
+                  <InfoSection title="Email">
+                    {intervenant.email}
+                  </InfoSection>
+                  <InfoSection title="Téléphone">
+                    {intervenant.telephone}
+                  </InfoSection>
+                  <InfoSection title="Adresse">
+                    {intervenant.adresse}
+                  </InfoSection>
                 </Paper>
               </Grid>
               {/* Informations Professionnelles */}
@@ -257,24 +247,14 @@ const IntervenantDetail = () => {
                   <Typography variant="h6" sx={{ mb: 3, color: theme.palette.primary.main }}>
                     Informations Professionnelles
                   </Typography>
-                  <InfoSection icon={<Work />} title="Expérience" content={intervenant.experience} />
-                  <InfoSection icon={<School />} title="Domaines d'Expertise" 
-                    content={
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-                        {intervenant.domainesExpertise?.map((domaine, index) => (
-                          <Chip 
-                            key={index}
-                            label={domaine}
-                            size="small"
-                            sx={{ 
-                              bgcolor: 'rgba(255,215,0,0.1)',
-                              color: theme.palette.primary.main
-                            }}
-                          />
-                        ))}
-                      </Box>
-                    }
-                  />
+                  <InfoSection title="Expérience">
+                    {intervenant.experience}
+                  </InfoSection>
+                  <InfoSection title="Domaines d'expertise">
+                    {intervenant.domainesExpertise?.map((domaine, index) => (
+                      <Chip key={index} label={domaine} />
+                    ))}
+                  </InfoSection>
                 </Paper>
               </Grid>
             </Grid>
@@ -306,7 +286,9 @@ const IntervenantDetail = () => {
                   <Typography variant="h6" sx={{ mb: 3, color: theme.palette.primary.main }}>
                     Informations Générales
                   </Typography>
-                  <InfoSection icon={<DateRange />} title="Date de Naissance" content={formatDate(intervenant.dateNaissance)} />
+                  <InfoSection title="Date de Naissance">
+                    {formatDate(intervenant.dateNaissance)}
+                  </InfoSection>
                 </Paper>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -320,8 +302,12 @@ const IntervenantDetail = () => {
                   <Typography variant="h6" sx={{ mb: 3, color: theme.palette.primary.main }}>
                     Données Contractuelles
                   </Typography>
-                  <InfoSection icon={<DateRange />} title="Période de Mission" content={`Du ${formatDate(intervenant.dateDebutMission)} au ${formatDate(intervenant.dateFinMission)}`} />
-                  <InfoSection icon={<DateRange />} title="Heures Prévues" content={intervenant.heuresPrevues} />
+                  <InfoSection title="Période de Mission">
+                    {`Du ${formatDate(intervenant.dateDebutMission)} au ${formatDate(intervenant.dateFinMission)}`}
+                  </InfoSection>
+                  <InfoSection title="Heures Prévues">
+                    {intervenant.heuresPrevues}
+                  </InfoSection>
                 </Paper>
               </Grid>
             </Grid>
@@ -353,22 +339,14 @@ const IntervenantDetail = () => {
                   <Typography variant="h6" sx={{ mb: 3, color: theme.palette.primary.main }}>
                     Informations Pédagogiques
                   </Typography>
-                  <InfoSection icon={<School />} title="Modules Enseignés" content={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-                      {intervenant.modulesEnseignes?.map((module, index) => (
-                        <Chip 
-                          key={index}
-                          label={module}
-                          size="small"
-                          sx={{ 
-                            bgcolor: 'rgba(255,215,0,0.1)',
-                            color: theme.palette.primary.main
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  } />
-                  <InfoSection icon={<School />} title="Niveau des Étudiants" content={intervenant.niveauEtudiants} />
+                  <InfoSection title="Modules enseignés">
+                    {intervenant.modulesEnseignes?.map((module, index) => (
+                      <Chip key={index} label={module} />
+                    ))}
+                  </InfoSection>
+                  <InfoSection title="Niveau des Étudiants">
+                    {intervenant.niveauEtudiants}
+                  </InfoSection>
                 </Paper>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -382,22 +360,14 @@ const IntervenantDetail = () => {
                   <Typography variant="h6" sx={{ mb: 3, color: theme.palette.primary.main }}>
                     Suivi et Évaluation
                   </Typography>
-                  <InfoSection icon={<Assignment />} title="Appréciations des Étudiants" content={
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-                      {intervenant.appreciationsEtudiants?.map((appreciation, index) => (
-                        <Chip 
-                          key={index}
-                          label={appreciation}
-                          size="small"
-                          sx={{ 
-                            bgcolor: 'rgba(255,215,0,0.1)',
-                            color: theme.palette.primary.main
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  } />
-                  <InfoSection icon={<Assignment />} title="Points d'Amélioration" content={intervenant.pointsAmelioration} />
+                  <InfoSection title="Appréciations des Étudiants">
+                    {intervenant.appreciationsEtudiants?.map((appreciation, index) => (
+                      <Chip key={index} label={appreciation} />
+                    ))}
+                  </InfoSection>
+                  <InfoSection title="Points d'Amélioration">
+                    {intervenant.pointsAmelioration}
+                  </InfoSection>
                 </Paper>
               </Grid>
             </Grid>
@@ -436,13 +406,9 @@ const IntervenantDetail = () => {
                     { label: 'Extrait Kbis', value: intervenant.extraitKbis },
                     { label: 'Justificatifs Diplômes', value: intervenant.justificatifsDiplomes },
                   ].map((doc, index) => (
-                    <InfoSection key={index} icon={<Assignment />} title={doc.label} content={
-                      <Chip
-                        label={doc.value ? 'Document fourni' : 'Non fourni'}
-                        color={doc.value ? 'success' : 'default'}
-                        size="small"
-                      />
-                    } />
+                    <InfoSection key={index} title={doc.label}>
+                      {doc.value ? 'Document fourni' : 'Non fourni'}
+                    </InfoSection>
                   ))}
                 </Paper>
               </Grid>

@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Intervenant, IntervenantDocument } from "./intervenants.schema";
-import { CreateIntervenantDto } from "./dto/create-intervenant.dto";
-import { UpdateIntervenantDto } from "./dto/update-intervenant.dto";
+import { CreateIntervenantDto } from "./dtos/create-intervenant.dto";
+import { UpdateIntervenantDto } from "./dtos/update-intervenant.dto";
 
 @Injectable()
 export class IntervenantsService {

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpException, HttpStatus } from '@nestjs/common';
 import { IntervenantsService } from './intervenants.service';
-import { CreateIntervenantDto } from './dto/create-intervenant.dto';
-import { UpdateIntervenantDto } from './dto/update-intervenant.dto';
+import { CreateIntervenantDto } from './dtos/create-intervenant.dto';
+import { UpdateIntervenantDto } from './dtos/update-intervenant.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Intervenant } from './intervenants.schema';
 

@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongooseModule } from '@nestjs/mongoose';
-import { IntervenantsService } from './intervenants.service';
-import { Intervenant, IntervenantSchema } from './intervenants.schema';
+import { IntervenantsService } from '../intervenants/intervenants.service';
+import { Intervenant, IntervenantSchema } from '../intervenants/intervenants.schema';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { IsString, IsNotEmpty } from 'class-validator';

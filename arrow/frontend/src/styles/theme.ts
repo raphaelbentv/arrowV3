@@ -51,10 +51,10 @@ const theme = createTheme({
   },
   
   typography: {
-    fontFamily: "'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: '"League Spartan", sans-serif',
     h1: {
       fontSize: '3.5rem',
-      fontWeight: 700,
+      fontWeight: 900,
       lineHeight: 1.2,
       letterSpacing: '-0.02em',
       color: colors.text.primary,
@@ -63,7 +63,7 @@ const theme = createTheme({
     },
     h2: {
       fontSize: '2.75rem',
-      fontWeight: 600,
+      fontWeight: 900,
       lineHeight: 1.3,
       color: colors.text.primary,
       '@media (max-width:960px)': { fontSize: '2rem' },
@@ -71,20 +71,67 @@ const theme = createTheme({
     },
     h3: {
       fontSize: '2.25rem',
-      fontWeight: 600,
+      fontWeight: 900,
       lineHeight: 1.4,
       color: colors.text.primary,
       '@media (max-width:960px)': { fontSize: '1.75rem' },
       '@media (max-width:600px)': { fontSize: '1.5rem' },
     },
+    h4: {
+      fontSize: '2rem',
+      fontWeight: 900,
+      lineHeight: 1.5,
+      color: colors.text.primary,
+      '@media (max-width:960px)': { fontSize: '1.5rem' },
+      '@media (max-width:600px)': { fontSize: '1.25rem' },
+    },
+    h5: {
+      fontSize: '1.75rem',
+      fontWeight: 900,
+      lineHeight: 1.6,
+      color: colors.text.primary,
+      '@media (max-width:960px)': { fontSize: '1.25rem' },
+      '@media (max-width:600px)': { fontSize: '1rem' },
+    },
+    h6: {
+      fontSize: '1.5rem',
+      fontWeight: 900,
+      lineHeight: 1.7,
+      color: colors.text.primary,
+      '@media (max-width:960px)': { fontSize: '1rem' },
+      '@media (max-width:600px)': { fontSize: '0.9rem' },
+    },
     body1: {
       fontSize: '1rem',
       lineHeight: 1.6,
       '@media (max-width:600px)': { fontSize: '0.95rem' },
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 100,
+    },
+    body2: {
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 200,
+    },
+    subtitle1: {
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 100,
+    },
+    subtitle2: {
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 200,
     },
     button: {
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 400,
       textTransform: 'none',
-      fontWeight: 600,
+    },
+    caption: {
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 200,
+    },
+    overline: {
+      fontFamily: '"League Spartan", sans-serif',
+      fontWeight: 200,
     },
   },
 
@@ -99,6 +146,8 @@ const theme = createTheme({
             transform: 'translateY(-2px)',
             boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
           },
+          fontFamily: '"League Spartan", sans-serif',
+          fontWeight: 400,
         },
         contained: {
           background: `linear-gradient(45deg, ${colors.primary.main}, ${colors.primary.light})`,
@@ -216,7 +265,7 @@ const theme = createTheme({
         },
       },
     },
-    MuiBox: {
+    Box: {
       styleOverrides: {
         root: {
           marginBottom: '2rem', // Marge par défaut entre les Box
@@ -264,6 +313,28 @@ const theme = createTheme({
         },
         h6: {
           marginBottom: '16px', // Espace après les sous-titres
+        },
+      },
+      defaultProps: {
+        variantMapping: {
+          h1: 'h1',
+          h2: 'h2',
+          h3: 'h3',
+          h4: 'h4',
+          h5: 'h5',
+          h6: 'h6',
+          subtitle1: 'p',
+          subtitle2: 'p',
+          body1: 'p',
+          body2: 'p',
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          fontFamily: '"League Spartan", sans-serif',
+          fontWeight: 300,
         },
       },
     },
