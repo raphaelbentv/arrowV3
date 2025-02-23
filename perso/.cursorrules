@@ -1,69 +1,51 @@
-# Fichier .cursorrules
-
-## 📌 Présentation du projet
-Il s'agit d'une application **React (Vite) avec TypeScript et Tailwind CSS** pour le frontend, et **NestJS avec MongoDB** pour le backend.
-
-## 📁 Organisation des dossiers
-| Dossier                  | Contenu                                      |
-|--------------------------|---------------------------------------------|
-| `frontend/src/components/`  | Composants réutilisables React              |
-| `frontend/src/pages/`        | Pages et routes de l’application           |
-| `frontend/src/features/`     | Logique métier (auth, intervenants, etc.)  |
-| `frontend/src/services/`     | Services API centralisés                   |
-| `frontend/src/styles/`       | Fichiers CSS et Tailwind                   |
-| `frontend/src/utils/`        | Fonctions utilitaires globales             |
-| `backend/src/auth/`          | Gestion de l’authentification              |
-| `backend/src/intervenants/`  | Gestion des intervenants                   |
-| `backend/src/etudiants/`     | Gestion des étudiants                      |
-| `backend/src/common/`        | Code partagé                               |
-| `backend/uploads/`           | Stockage des fichiers                      |
-
-## 🛠️ Pile technologique
-### **Frontend**
-- **React (Vite)**
-- **TypeScript**
-- **Material UI**
-- **React Router**
-- **Redux Toolkit (si nécessaire)**
-
-### **Backend**
-- **NestJS**
-- **MongoDB (Mongoose)**
-- **JWT & Passport.js pour l’authentification**
-- **Multer & Sharp pour la gestion des fichiers**
-- **Socket.io pour les notifications en temps réel**
-
-## 📏 Normes de développement
-### **Style de code**
-- Utiliser le **camelCase** pour les variables et les fonctions.
-- Indentation avec **2 espaces (ESLint & Prettier gèrent le formatage)**.
-- **Les noms de fichiers React doivent être en PascalCase** (ex : `LoginForm.tsx`).
-
-### **Règles spécifiques**
-- **Toutes les requêtes API** doivent être gérées via `frontend/src/services/`.
-- **Les slices Redux** doivent être centralisés dans `frontend/src/features/`.
-- **Les fichiers backend** suivent une structure en **modules NestJS** (`services, controllers, schemas`).
-
-## 🚀 Workflow et règles de publication
-### **Git & GitHub**
-- **Convention de commit** (ex: `feat(auth): ajout de la connexion Google`).
-- **Format des branches** :
-  - `feature/nom-fonctionnalité`
-  - `fix/nom-correction`
-  - `hotfix/nom-urgence`
-
-### **Déploiement**
-- **Frontend** : Vercel ou Netlify
-- **Backend** : Railway, Render ou une VM Dockerisée
-
-## 📌 Exemples de code
-### **Route Next.js pour une page**
-```tsx
-// Fichier : frontend/src/pages/Home.tsx
-import React from 'react';
-
-const Home = () => {
-  return <div>Bienvenue sur la page d’accueil !</div>;
-};
-
-export default Home;
+{
+  "language": "typescript",
+  "frameworks": ["React", "NestJS"],
+  "packageManagers": ["npm", "yarn", "pnpm"],
+  "styling": ["MUI", "Tailwind CSS"],
+  "stateManagement": ["Zustand"],
+  "database": "MongoDB",
+  "auth": "JWT",
+  "alias": {
+    "@components/*": ["src/components/*"],
+    "@pages/*": ["src/pages/*"],
+    "@services/*": ["src/services/*"],
+    "@types/*": ["src/types/*"],
+    "@styles/*": ["src/styles/*"],
+    "@utils/*": ["src/utils/*"]
+  },
+  "env": {
+    "VITE_API_URL": "http://localhost:5000/api",
+    "MONGO_URI": "mongodb://localhost:27017/mydatabase",
+    "JWT_SECRET": "super-secret-key"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint --fix 'src/**/*.{js,ts,tsx}'",
+    "format": "prettier --write 'src/**/*.{js,ts,tsx,json,md}'",
+    "test": "jest --watch"
+  },
+  "testFrameworks": ["Jest", "React Testing Library"],
+  "routing": {
+    "frontend": "React Router",
+    "backend": "NestJS Controllers"
+  },
+  "structure": {
+    "frontend": [
+      "src/components/",
+      "src/pages/",
+      "src/services/",
+      "src/types/",
+      "src/styles/"
+    ],
+    "backend": [
+      "src/modules/",
+      "src/controllers/",
+      "src/services/",
+      "src/schemas/",
+      "src/dto/",
+      "src/middleware/"
+    ]
+  }
+}
