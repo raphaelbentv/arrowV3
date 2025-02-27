@@ -10,22 +10,20 @@ import {
   Checkbox,
   FormControlLabel,
   Link,
-  CircularProgress,
   IconButton,
   InputAdornment,
   Fade,
   Divider
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
+import { useAuth } from "../../../context/authContext";
+import axios from "axios";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -34,16 +32,24 @@ const Login = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Récupérer l'URL de redirection après connexion
+  const from = location.state?.from?.pathname || "/dashboard";
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
     
-    // Réinitialiser les erreurs lors de la saisie
-    if (name === 'email') setEmailError('');
-    if (name === 'password') setPasswordError('');
+    // Mettre à jour le champ approprié en fonction du nom
+    if (name === 'email') {
+      setEmail(value);
+      setEmailError('');
+    } else if (name === 'password') {
+      setPassword(value);
+      setPasswordError('');
+    }
   };
 
   const validateForm = () => {
@@ -51,13 +57,13 @@ const Login = () => {
 
     // Validation email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(email)) {
       setEmailError('Adresse email invalide');
       isValid = false;
     }
 
     // Validation mot de passe
-    if (formData.password.length < 6) {
+    if (password.length < 6) {
       setPasswordError('Le mot de passe doit contenir au moins 6 caractères');
       isValid = false;
     }
@@ -67,25 +73,21 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
     
     if (!validateForm()) return;
 
-    setLoading(true);
-    setError('');
-
     try {
-      // Simulation d'une requête API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      if (rememberMe) {
-        localStorage.setItem('rememberedEmail', formData.email);
-      } else {
-        localStorage.removeItem('rememberedEmail');
-      }
-
-      navigate('/admin/dashboard');
-    } catch (error) {
-      setError('Échec de la connexion. Veuillez réessayer.');
+      const response = await axios.post("http://localhost:4000/auth/login", {
+        email,
+        password
+      });
+      const { token } = response.data;
+      await login(token, from);
+      navigate(from, { replace: true, state: {} });
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur de connexion");
     } finally {
       setLoading(false);
     }
@@ -150,7 +152,7 @@ const Login = () => {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                value={formData.email}
+                value={email}
                 onChange={handleChange}
                 error={!!emailError}
                 helperText={emailError}
@@ -172,7 +174,7 @@ const Login = () => {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 autoComplete="current-password"
-                value={formData.password}
+                value={password}
                 onChange={handleChange}
                 error={!!passwordError}
                 helperText={passwordError}

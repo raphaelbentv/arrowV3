@@ -14,8 +14,12 @@ console.log('MONGO_URI chargée :', process.env.MONGO_URI);
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Activer CORS pour éviter les erreurs avec le frontend
-  app.enableCors();
+  // Configuration CORS
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
   // Configuration Swagger
   const config = new DocumentBuilder()

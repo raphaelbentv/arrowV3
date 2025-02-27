@@ -1,6 +1,5 @@
-
 export interface Intervenant {
-  experience: string;
+  experience: number;
   _id: string;
   nom: string;
   prenom: string;
@@ -38,4 +37,5 @@ export interface Intervenant {
   pointsAmelioration?: string;
   disponibilites?: string;
   engagement?: string;
+  competences: string[];
 } 
