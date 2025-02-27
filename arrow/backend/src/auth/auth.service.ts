@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
  
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -31,32 +33,12 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    try {
-      // Trouver l'utilisateur par email
-      const user = await this.usersService.findByEmail(email);
-      
-      // Si l'utilisateur n'existe pas
-      if (!user) {
-        console.log(`Utilisateur avec email ${email} non trouvé`);
-        return null;
-      }
-      
-      // Vérifier le mot de passe
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      
-      // Si le mot de passe est invalide
-      if (!isPasswordValid) {
-        console.log(`Mot de passe invalide pour l'utilisateur ${email}`);
-        return null;
-      }
-      
-      // Ne pas inclure le mot de passe dans la réponse
-      const { password: _, ...result } = user.toObject();
+    const user = await this.usersService.findOne(email);
+    if (user && await bcrypt.compare(password, user.password)) {
+      const { password, ...result } = user;
       return result;
-    } catch (error) {
-      console.error('Erreur lors de la validation de l\'utilisateur:', error);
-      return null;
     }
+    return null;
   }
 
   async login(user: any): Promise<{ user: UserResponse; token: string }> {
