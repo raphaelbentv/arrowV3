@@ -34,9 +34,9 @@ const Login: React.FC = () => {
       if (response.data.user.isAdmin) {
         navigate('/admin'); // Page d'accueil admin
       } else if (response.data.user.role === 'intervenant') {
-        navigate('/intervenant/dashboard'); // Espace intervenant
+        navigate('/intervenant'); // Espace intervenant
       } else if (response.data.user.role === 'etudiant') {
-        navigate('/etudiant/dashboard'); // Espace étudiant
+        navigate('/etudiant'); // Espace étudiant
       } else {
         setError('Type d\'utilisateur non reconnu');
         localStorage.removeItem('token');

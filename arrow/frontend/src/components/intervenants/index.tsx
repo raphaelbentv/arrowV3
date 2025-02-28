@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Grid, Container, Paper } from '@mui/material';
 import { Intervenant } from '../../types/intervenant';
 import { intervenantsService } from '../../services/intervenants';
 import SearchBar from '../common/SearchBar';
+import IntervenantCard from '../intervenantCard';
 
 const Intervenants = () => {
   const [intervenants, setIntervenants] = useState<Intervenant[]>([]);
@@ -34,8 +35,8 @@ const Intervenants = () => {
 
     const queryLower = query.toLowerCase();
     const filtered = intervenants.filter(intervenant =>
-      intervenant.nom.toLowerCase().includes(queryLower) ||
-      intervenant.prenom.toLowerCase().includes(queryLower)
+      intervenant.nom?.toLowerCase().includes(queryLower) ||
+      intervenant.prenom?.toLowerCase().includes(queryLower)
     );
     setFilteredIntervenants(filtered);
   };

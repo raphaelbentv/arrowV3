@@ -54,9 +54,6 @@ const Intervenants = () => {
             <Grid item xs={12} sm={6} md={4} key={intervenant._id}>
               <IntervenantCard
                 intervenant={intervenant}
-                email={intervenant.email || ''}
-                telephone={intervenant.telephone || ''}
-                domainesExpertise={intervenant.domainesExpertise || []}
               />
             </Grid>
           ))}

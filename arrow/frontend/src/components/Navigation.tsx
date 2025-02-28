@@ -24,7 +24,7 @@ const Navigation: React.FC = () => {
           {user?.role === 'admin' && (
             <>
               <Button color="inherit" onClick={() => navigate('/admin')}>
-                Dashboard Admin
+                Tableau de bord
               </Button>
               <Button color="inherit" onClick={() => navigate('/admin/users')}>
                 Gestion Utilisateurs

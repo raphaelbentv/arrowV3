@@ -12,10 +12,22 @@ import {
   Typography,
   IconButton,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Divider,
+  Collapse
 } from '@mui/material';
-import { Home, Person, School, Settings, Menu as MenuIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { 
+  Dashboard as DashboardIcon,
+  Person as PeopleIcon,
+  Settings as SettingsIcon,
+  AdminPanelSettings as AdminPanelSettingsIcon,
+  Menu as MenuIcon,
+  Logout,
+  ExpandLess,
+  ExpandMore
+} from '@mui/icons-material';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../../context/authContext';
 
 const DRAWER_WIDTH = 240;
 
@@ -24,46 +36,119 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const theme = useTheme();
+  const { logout } = useAuth();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const menuItems = [
-    { text: 'Dashboard', icon: <Home />, path: '/' },
-    { text: 'Intervenants', icon: <Person />, path: '/intervenants' },
-    { text: 'Étudiants', icon: <School />, path: '/etudiants' },
-    { text: 'Paramètres', icon: <Settings />, path: '/settings' },
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    logout();
+    navigate('/');
+  };
+
+  const mainMenuItems = [
+    {
+      text: 'Dashboard',
+      icon: <DashboardIcon />,
+      path: '/admin/dashboard'
+    },
+    {
+      text: 'Intervenants',
+      icon: <PeopleIcon />,
+      path: '/admin/intervenant-list'
+    }
   ];
 
+  const settingsMenuItems = [
+    {
+      text: 'Administrateurs',
+      icon: <AdminPanelSettingsIcon />,
+      path: '/admin/administrator-list'
+    }
+    // Vous pourrez ajouter d'autres éléments de paramètres ici
+  ];
+
+  const handleSettingsClick = () => {
+    setSettingsOpen(!settingsOpen);
+  };
+
+  const isPathActive = (path: string) => location.pathname === path;
+
   const drawer = (
-    <Box sx={{ overflow: 'auto', color: 'white' }}>
+    <Box sx={{ overflow: 'auto', color: 'white', display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Toolbar /> {/* Espace pour le header */}
       <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
+        {mainMenuItems.map((item) => (
+          <ListItemButton
+            key={item.text}
+            onClick={() => {
+              navigate(item.path);
+              if (isMobile) handleDrawerToggle();
+            }}
+            selected={isPathActive(item.path)}
+          >
+            <ListItemIcon sx={{ color: 'white' }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItemButton>
+        ))}
+      </List>
+      <Divider sx={{ my: 1 }} />
+      <List>
+        <ListItemButton onClick={handleSettingsClick}>
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Paramètres" />
+          {settingsOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+      </List>
+      <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {settingsMenuItems.map((item) => (
             <ListItemButton
+              key={item.text}
+              sx={{ pl: 4 }}
               onClick={() => {
                 navigate(item.path);
                 if (isMobile) handleDrawerToggle();
               }}
-              sx={{
-                '&:hover': {
-                  bgcolor: 'rgba(255, 215, 0, 0.1)',
-                },
-              }}
+              selected={isPathActive(item.path)}
             >
-              <ListItemIcon sx={{ color: 'white' }}>
-                {item.icon}
-              </ListItemIcon>
+              <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
-          </ListItem>
-        ))}
+          ))}
+        </List>
+      </Collapse>
+      <Box sx={{ flexGrow: 1 }} /> {/* Espace flexible */}
+      <Divider sx={{ bgcolor: 'rgba(255, 255, 255, 0.12)' }} />
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              '&:hover': {
+                bgcolor: 'rgba(255, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: 'error.main' }}>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Déconnexion" sx={{ color: 'error.main' }} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );

@@ -1,12 +1,12 @@
 export interface Intervenant {
   experience: number;
   _id: string;
-  nom: string;
-  prenom: string;
-  email: string;
-  telephone: string;
-  poste: string;
-  statut: string;
+  nom?: string;
+  prenom?: string;
+  email?: string;
+  telephone?: string;
+  poste?: string;
+  statut?: string;
   adresse?: string;
   dateNaissance?: Date;
   photo?: string;
@@ -38,4 +38,6 @@ export interface Intervenant {
   disponibilites?: string;
   engagement?: string;
   competences: string[];
+  dateCreation?: string;
+  dateModification?: string;
 } 

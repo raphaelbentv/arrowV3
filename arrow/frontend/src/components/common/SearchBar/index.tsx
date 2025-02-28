@@ -60,8 +60,8 @@ const SearchBar = ({
     // Recherche dans les intervenants
     const results = data
       .filter(intervenant => 
-        intervenant.nom.toLowerCase().includes(queryLower) ||
-        intervenant.prenom.toLowerCase().includes(queryLower) ||
+        intervenant?.nom?.toLowerCase().includes(queryLower) ||
+        intervenant?.prenom?.toLowerCase().includes(queryLower) ||
         intervenant.email?.toLowerCase().includes(queryLower) ||
         (intervenant.modulesEnseignes && 
          intervenant.modulesEnseignes.some(module => 
