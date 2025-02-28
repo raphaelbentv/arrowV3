@@ -1,9 +1,20 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, HttpStatus } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Controller, Post, Body, UseGuards, Delete, Get, HttpStatus, Param, Put, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AdminGuard } from './guards/admin.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { ApiBearerAuth } from '@nestjs/swagger/dist/decorators/api-bearer.decorator';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { AdminGuard } from './guards/admin.guard';
+import { MongoClient } from 'mongodb';
+import * as bcrypt from 'bcrypt';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -11,6 +22,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 export class AdminController {
   constructor(
     private readonly adminService: AdminService,
+    private readonly usersService: UsersService
   ) {}
 
   // Routes protégées nécessitant une authentification et des droits d'admin
@@ -64,33 +76,62 @@ export class AdminController {
   }
 
   // Route publique pour initialiser un admin (à désactiver en production)
-  @Post('init-admin')
+  @Post('initial')
   @ApiOperation({ summary: 'Initialiser un administrateur par défaut (à désactiver en production)' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Administrateur créé avec succès' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Un administrateur existe déjà' })
-  async initAdmin(): Promise<any> {
-    // Vérifier si un admin existe déjà
-    const existingAdmin = await this.adminService.findByEmail('admin@example.com');
-    
-    if (existingAdmin) {
-      return { 
-        status: HttpStatus.OK,
-        message: 'Un administrateur existe déjà' 
+  async createInitialAdmin(@Body() adminData: any) {
+    console.log('Données reçues:', adminData);
+
+    const uri = 'mongodb+srv://raphaelbentv:UraRJervWInvUFJW@cluster0.d7cns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    const client = new MongoClient(uri);
+
+    try {
+      await client.connect();
+      console.log('Connecté à la base de données');
+
+      const database = client.db('arrow');
+      const adminsCollection = database.collection('admins');
+
+      console.log('Collection sélectionnée:', adminsCollection.collectionName);
+
+      const existingAdmin = await adminsCollection.findOne({ email: adminData.email });
+      console.log('Admin existant:', existingAdmin);
+
+      if (existingAdmin) {
+        throw new Error('Un administrateur existe déjà avec cet email');
+      }
+
+      const hashedPassword = await bcrypt.hash(adminData.password, 10);
+      
+      const admin = {
+        email: adminData.email,
+        password: hashedPassword,
+        nom: adminData.nom,
+        prenom: adminData.prenom,
+        isAdmin: true,
+        permissions: ['all'],
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
+
+      console.log('Admin à créer:', { ...admin, password: '***' });
+
+      const result = await adminsCollection.insertOne(admin);
+      console.log('Résultat de l\'insertion:', result);
+
+      const { password, ...adminWithoutPassword } = admin;
+      return adminWithoutPassword;
+
+    } catch (error) {
+      console.error('Erreur détaillée:', error);
+      throw new InternalServerErrorException({
+        message: 'Erreur lors de la création de l\'administrateur',
+        details: error.message
+      });
+    } finally {
+      await client.close();
+      console.log('Connexion à la base de données fermée');
     }
-    
-    // Créer un nouvel administrateur
-    const admin = await this.adminService.createAdmin({
-      email: 'admin@example.com',
-      password: 'admin123', // Sera hashé par le service
-      nom: 'Admin',
-      prenom: 'User',
-    });
-    
-    return { 
-      status: HttpStatus.CREATED,
-      message: 'Administrateur créé avec succès',
-      adminId: admin._id
-    };
   }
 }

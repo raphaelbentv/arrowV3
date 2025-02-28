@@ -37,14 +37,17 @@ const CreateAdmin: React.FC = () => {
     setError('');
     setLoading(true);
 
+    console.log('Données envoyées:', formData);
+
     try {
-      await api.post('/admin', formData);
+      const response = await api.post('/admin/initial', formData);
+      console.log('Réponse du serveur:', response.data);
       setSuccess(true);
       setTimeout(() => {
         navigate('/admin/users');
       }, 2000);
     } catch (err: any) {
-      console.error('Erreur lors de la création de l\'administrateur:', err);
+      console.error('Erreur détaillée:', err.response?.data);
       if (err.response?.status === 409) {
         setError('Un administrateur avec cet email existe déjà');
       } else {

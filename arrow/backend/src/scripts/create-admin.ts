@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 
 async function createAdmin() {
-  const uri = 'mongodb+srv://raphaelbentv:UraRJervWInvUFJW@cluster0.d7cns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/arrow';
+  const uri = 'mongodb+srv://raphaelbentv:UraRJervWInvUFJW@cluster0.d7cns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
   const client = new MongoClient(uri);
 
   try {
