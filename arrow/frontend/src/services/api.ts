@@ -20,10 +20,20 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Vérifier si l'erreur est 401 (non autorisé)
     if (error.response && error.response.status === 401) {
-      // Rediriger vers la page de connexion si le token est invalide
-      localStorage.removeItem("token");
-      window.location.href = "/login";
+      // Ne pas rediriger si on est déjà sur une page de connexion
+      const currentPath = window.location.pathname;
+      const isLoginPage = currentPath.includes('/login') || currentPath.includes('/admin/login');
+      
+      if (!isLoginPage) {
+        console.log('Redirection vers la page de connexion suite à une erreur 401');
+        // Rediriger vers la page de connexion si le token est invalide
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      } else {
+        console.log('Erreur 401 sur la page de connexion - pas de redirection');
+      }
     }
     return Promise.reject(error);
   }

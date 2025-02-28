@@ -11,44 +11,109 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  CircularProgress,
+  Alert
 } from '@mui/material';
-import { useAuth } from '../context/authContext';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const AdminPanel: React.FC = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalIntervenants: 0,
     totalCourses: 0
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Simuler le chargement des statistiques
+  // Charger les données de l'utilisateur depuis le localStorage
   useEffect(() => {
-    // Remplacer par un appel API réel
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (err) {
+        console.error('Erreur lors du parsing des données utilisateur:', err);
+      }
+    } else {
+      // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+      navigate('/admin/login');
+    }
+  }, [navigate]);
+
+  // Charger les statistiques depuis l'API
+  useEffect(() => {
     const fetchStats = async () => {
-      // Simulation de données
-      setStats({
-        totalUsers: 25,
-        totalIntervenants: 8,
-        totalCourses: 12
-      });
+      try {
+        setLoading(true);
+        // Vous pouvez créer un endpoint spécifique pour les statistiques
+        const usersResponse = await api.get('/admin/users/count');
+        const intervenantsResponse = await api.get('/admin/intervenants/count');
+        
+        setStats({
+          totalUsers: usersResponse.data.count || 0,
+          totalIntervenants: intervenantsResponse.data.count || 0,
+          totalCourses: 0 // À implémenter si vous avez des cours
+        });
+      } catch (err: any) {
+        console.error('Erreur lors du chargement des statistiques:', err);
+        setError('Impossible de charger les statistiques');
+        
+        // Si l'erreur est due à un problème d'authentification, rediriger vers la page de connexion
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          navigate('/admin/login');
+        }
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchStats();
-  }, []);
+    if (user && user.isAdmin) {
+      fetchStats();
+    }
+  }, [user, navigate]);
+
+  // Fonction pour se déconnecter
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/admin/login');
+  };
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Panneau d'administration
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Panneau d'administration
+          </Typography>
+          <Button variant="outlined" color="secondary" onClick={handleLogout}>
+            Déconnexion
+          </Button>
+        </Box>
+        
+        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
         
         {user && (
           <Paper sx={{ p: 2, mb: 3 }}>
             <Typography variant="h6">
-              Bienvenue, {user.firstName} {user.lastName}
+              Bienvenue, {user.prenom} {user.nom}
             </Typography>
             <Typography variant="body2" color="textSecondary">
               Vous êtes connecté en tant qu'administrateur
@@ -71,7 +136,7 @@ const AdminPanel: React.FC = () => {
                   variant="outlined" 
                   size="small" 
                   sx={{ mt: 2 }}
-                  onClick={() => console.log('Gérer les utilisateurs')}
+                  onClick={() => navigate('/admin/users')}
                 >
                   Gérer les utilisateurs
                 </Button>
@@ -92,7 +157,7 @@ const AdminPanel: React.FC = () => {
                   variant="outlined" 
                   size="small" 
                   sx={{ mt: 2 }}
-                  onClick={() => console.log('Gérer les intervenants')}
+                  onClick={() => navigate('/admin/intervenants')}
                 >
                   Gérer les intervenants
                 </Button>
@@ -113,7 +178,7 @@ const AdminPanel: React.FC = () => {
                   variant="outlined" 
                   size="small" 
                   sx={{ mt: 2 }}
-                  onClick={() => console.log('Gérer les cours')}
+                  onClick={() => navigate('/admin/courses')}
                 >
                   Gérer les cours
                 </Button>
@@ -128,23 +193,38 @@ const AdminPanel: React.FC = () => {
                 Actions rapides
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-                <Button variant="contained" color="primary">
+                <Button 
+                  variant="contained" 
+                  color="primary"
+                  onClick={() => navigate('/admin/users/new')}
+                >
                   Ajouter un utilisateur
                 </Button>
-                <Button variant="contained" color="secondary">
+                <Button 
+                  variant="contained" 
+                  color="secondary"
+                  onClick={() => navigate('/admin/intervenants/new')}
+                >
                   Ajouter un intervenant
                 </Button>
-                <Button variant="contained">
+                <Button 
+                  variant="contained"
+                  onClick={() => navigate('/admin/courses/new')}
+                >
                   Créer un cours
                 </Button>
-                <Button variant="outlined" color="error">
+                <Button 
+                  variant="outlined" 
+                  color="error"
+                  onClick={() => console.log('Maintenance système')}
+                >
                   Maintenance système
                 </Button>
               </Box>
             </Paper>
           </Grid>
           
-          {/* Activités récentes */}
+          {/* Activités récentes - À implémenter avec des données réelles */}
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
