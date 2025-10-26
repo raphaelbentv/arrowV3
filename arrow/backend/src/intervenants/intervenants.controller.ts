@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpExcept
 import { IntervenantsService } from './intervenants.service';
 import { CreateIntervenantDto } from './dtos/create-intervenant.dto';
 import { UpdateIntervenantDto } from './dtos/update-intervenant.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
@@ -16,7 +16,7 @@ export class IntervenantsController {
   constructor(private readonly intervenantsService: IntervenantsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: 'Créer un nouvel intervenant' })
   @ApiBody({ type: CreateIntervenantDto })
@@ -32,7 +32,7 @@ export class IntervenantsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(DevAuthGuard)
   @ApiOperation({ summary: 'Récupérer tous les intervenants' })
   @ApiResponse({ status: 200, description: 'Liste des intervenants récupérée avec succès.', type: [Intervenant] })
   async findAll(): Promise<Intervenant[]> {
@@ -44,7 +44,7 @@ export class IntervenantsController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(DevAuthGuard)
   @ApiOperation({ summary: 'Récupérer un intervenant par ID' })
   @ApiParam({ name: 'id', required: true, description: 'ID de l\'intervenant' })
   @ApiResponse({ status: 200, description: 'Intervenant récupéré avec succès.', type: Intervenant })
@@ -58,7 +58,7 @@ export class IntervenantsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('admin', 'intervenant')
   @ApiOperation({ summary: 'Mettre à jour un intervenant par ID' })
   @ApiParam({ name: 'id', required: true, description: 'ID de l\'intervenant' })
@@ -71,7 +71,7 @@ export class IntervenantsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiOperation({ summary: 'Supprimer un intervenant par ID' })
   @ApiParam({ name: 'id', required: true, description: 'ID de l\'intervenant' })

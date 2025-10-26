@@ -3,14 +3,15 @@ import {
   Container,
   Typography,
   Grid,
-  Paper,
   Box,
   TextField,
   InputAdornment,
   Autocomplete,
+  LinearProgress,
   Card,
   CardContent,
-  LinearProgress,
+  Stack,
+  Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -19,6 +20,9 @@ import {
   School,
   Person,
   Assessment,
+  ArrowForward,
+  Bolt,
+  Group,
 } from '@mui/icons-material';
 import { intervenantsService } from '../services/intervenants';
 import { Intervenant } from '../types/intervenant';
@@ -122,25 +126,61 @@ const AdminDashboard = () => {
   };
 
 
-  const KPICard = ({ title, value, subtitle, icon, color }: {
+  const KPICard = ({ title, value, subtitle, icon, color, glow }: {
     title: string;
     value: number;
     subtitle: string;
     icon: React.ReactNode;
     color: string;
+    glow?: string;
   }) => (
-    <Card sx={{ height: '100%', bgcolor: 'background.paper' }}>
-      <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" color="text.secondary">
+    <Card sx={{ 
+      height: '100%', 
+      bgcolor: 'transparent',
+      border: '1px solid',
+      borderColor: 'rgba(255, 0, 110, 0.3)',
+      position: 'relative',
+      overflow: 'hidden',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        borderColor: color,
+        transform: 'translateY(-4px)',
+        boxShadow: `0 10px 30px ${glow || color}40`,
+      }
+    }}>
+      <Box sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '2px',
+        background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
+      }} />
+      <CardContent sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 300 }}>
             {title}
           </Typography>
-          {icon}
+          <Box sx={{ 
+            color: color,
+            filter: `drop-shadow(0 0 8px ${glow || color})`
+          }}>
+            {icon}
+          </Box>
         </Box>
-        <Typography variant="h4" sx={{ color: color, mb: 1 }}>
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            color: color,
+            fontWeight: 900,
+            letterSpacing: '-0.05em',
+            mb: 1,
+            textShadow: `0 0 20px ${glow || color}60`,
+          }}
+        >
           {value}%
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, opacity: 0.8 }}>
           {subtitle}
         </Typography>
         <LinearProgress 
@@ -148,11 +188,13 @@ const AdminDashboard = () => {
           value={value} 
           sx={{ 
             mt: 2,
-            height: 8,
-            borderRadius: 5,
-            bgcolor: `${color}22`,
+            height: 4,
+            borderRadius: 2,
+            bgcolor: 'rgba(255, 0, 110, 0.1)',
             '& .MuiLinearProgress-bar': {
               bgcolor: color,
+              boxShadow: `0 0 10px ${color}`,
+              borderRadius: 2,
             }
           }} 
         />
@@ -163,30 +205,30 @@ const AdminDashboard = () => {
   const dashboardContent = (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       {/* En-tête du Dashboard avec bouton de déconnexion */}
-      <Box sx={{ 
-        mb: 4, 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <Box>
-          <Typography variant="h4" gutterBottom>
-            Tableau de Bord Administrateur
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Vue d'ensemble des indicateurs et des activités
-          </Typography>
-        </Box>
+      <Box sx={{ mb: 6 }}>
+        <Typography 
+          variant="h3" 
+          gutterBottom
+          sx={{
+            fontWeight: 900,
+            letterSpacing: '-0.05em',
+            background: 'linear-gradient(90deg, #FF006E 0%, #C77DFF 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textShadow: '0 0 40px rgba(255, 0, 110, 0.3)',
+          }}
+        >
+          Dashboard Admin
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 300, opacity: 0.7 }}>
+          Vue d'ensemble en temps réel
+        </Typography>
       </Box>
 
       {/* Barre de Recherche Globale */}
-      <Paper 
-        elevation={3} 
+      <Box
         sx={{ 
-          p: 2, 
-          mb: 4,
-          display: 'flex',
-          alignItems: 'center'
+          mb: 6,
         }}
       >
         <Autocomplete
@@ -240,7 +282,7 @@ const AdminDashboard = () => {
             handleSearch(newInputValue);
           }}
         />
-      </Paper>
+      </Box>
 
       {/* KPIs */}
       <Grid container spacing={3}>
@@ -249,8 +291,9 @@ const AdminDashboard = () => {
             title="Satisfaction"
             value={kpiData.satisfaction.global}
             subtitle={kpiData.satisfaction.details}
-            icon={<TrendingUp sx={{ color: '#4CAF50' }} />}
-            color="#4CAF50"
+            icon={<TrendingUp sx={{ fontSize: 32 }} />}
+            color="#00FF88"
+            glow="#00FF88"
           />
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -258,8 +301,9 @@ const AdminDashboard = () => {
             title="Taux de Réussite"
             value={kpiData.reussite.certification}
             subtitle={`${kpiData.reussite.presence}% de présence`}
-            icon={<School sx={{ color: '#2196F3' }} />}
-            color="#2196F3"
+            icon={<School sx={{ fontSize: 32 }} />}
+            color="#FF006E"
+            glow="#FF006E"
           />
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -267,8 +311,9 @@ const AdminDashboard = () => {
             title="Compétences"
             value={kpiData.competences.objectifsAtteints}
             subtitle={`${kpiData.competences.progression}% de progression`}
-            icon={<Assessment sx={{ color: '#9C27B0' }} />}
-            color="#9C27B0"
+            icon={<Assessment sx={{ fontSize: 32 }} />}
+            color="#C77DFF"
+            glow="#C77DFF"
           />
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -276,9 +321,139 @@ const AdminDashboard = () => {
             title="Qualité Intervenants"
             value={kpiData.qualiteIntervenants.conformite}
             subtitle={`${kpiData.qualiteIntervenants.miseAJour}% à jour`}
-            icon={<Person sx={{ color: '#FF9800' }} />}
-            color="#FF9800"
+            icon={<Person sx={{ fontSize: 32 }} />}
+            color="#FF3399"
+            glow="#FF3399"
           />
+        </Grid>
+      </Grid>
+
+      {/* Actions rapides */}
+      <Divider sx={{ my: 6, borderColor: 'rgba(255, 0, 110, 0.2)' }} />
+      
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, mb: 4 }}>
+          Actions rapides
+        </Typography>
+      </Box>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <Card 
+            sx={{ 
+              height: '100%', 
+              cursor: 'pointer',
+              bgcolor: 'transparent',
+              border: '1px solid rgba(255, 0, 110, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': { 
+                borderColor: '#FF006E',
+                transform: 'translateY(-8px)',
+                boxShadow: '0 10px 40px rgba(255, 0, 110, 0.3)',
+              }
+            }}
+            onClick={() => navigate('/admin/cohortes')}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 2,
+                  bgcolor: 'rgba(255, 0, 110, 0.1)',
+                  border: '1px solid rgba(255, 0, 110, 0.3)'
+                }}>
+                  <School sx={{ fontSize: 32, color: '#FF006E' }} />
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Cohortes
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Gérer les groupes
+                  </Typography>
+                </Box>
+                <ArrowForward sx={{ color: '#FF006E' }} />
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Card 
+            sx={{ 
+              height: '100%', 
+              cursor: 'pointer',
+              bgcolor: 'transparent',
+              border: '1px solid rgba(255, 0, 110, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': { 
+                borderColor: '#C77DFF',
+                transform: 'translateY(-8px)',
+                boxShadow: '0 10px 40px rgba(199, 125, 255, 0.3)',
+              }
+            }}
+            onClick={() => navigate('/admin/users')}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 2,
+                  bgcolor: 'rgba(199, 125, 255, 0.1)',
+                  border: '1px solid rgba(199, 125, 255, 0.3)'
+                }}>
+                  <Group sx={{ fontSize: 32, color: '#C77DFF' }} />
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Utilisateurs
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Administrer les comptes
+                  </Typography>
+                </Box>
+                <ArrowForward sx={{ color: '#C77DFF' }} />
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Card 
+            sx={{ 
+              height: '100%', 
+              cursor: 'pointer',
+              bgcolor: 'transparent',
+              border: '1px solid rgba(255, 0, 110, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': { 
+                borderColor: '#00FF88',
+                transform: 'translateY(-8px)',
+                boxShadow: '0 10px 40px rgba(0, 255, 136, 0.3)',
+              }
+            }}
+            onClick={() => navigate('/admin/intervenant-list')}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 2,
+                  bgcolor: 'rgba(0, 255, 136, 0.1)',
+                  border: '1px solid rgba(0, 255, 136, 0.3)'
+                }}>
+                  <Bolt sx={{ fontSize: 32, color: '#00FF88' }} />
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Intervenants
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Gérer les profs
+                  </Typography>
+                </Box>
+                <ArrowForward sx={{ color: '#00FF88' }} />
+              </Stack>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </Container>

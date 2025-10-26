@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Controller, Post, Body, UseGuards, Delete, Get, HttpStatus, Param, Put, ConflictException, InternalServerErrorException } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UsersService } from '../users/users.service';
@@ -27,7 +27,7 @@ export class AdminController {
 
   // Routes protégées nécessitant une authentification et des droits d'admin
   @Post()
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(DevAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Créer un nouvel administrateur' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Administrateur créé avec succès' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Non autorisé' })
@@ -37,7 +37,7 @@ export class AdminController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(DevAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Récupérer tous les administrateurs' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Liste des administrateurs récupérée avec succès' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Non autorisé' })
@@ -46,7 +46,7 @@ export class AdminController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(DevAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Récupérer un administrateur par son ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Administrateur trouvé' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Administrateur non trouvé' })
@@ -56,7 +56,7 @@ export class AdminController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(DevAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Mettre à jour un administrateur' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Administrateur mis à jour avec succès' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Administrateur non trouvé' })
@@ -66,7 +66,7 @@ export class AdminController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(DevAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Supprimer un administrateur' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Administrateur supprimé avec succès' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Administrateur non trouvé' })

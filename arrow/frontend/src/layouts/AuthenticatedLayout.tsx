@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import Navigation from '../components/Navigation';
+import SidebarNew from '../components/SidebarNew';
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
@@ -8,11 +7,13 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   return (
-    <Box>
-      <Navigation />
-      {children}
-    </Box>
+    <div className="flex min-h-screen bg-vaporwave-darker">
+      <SidebarNew />
+      <main className="flex-1 p-8 ml-[280px] transition-all duration-300">
+        {children}
+      </main>
+    </div>
   );
 };
 
-export default AuthenticatedLayout; 
+export default AuthenticatedLayout;

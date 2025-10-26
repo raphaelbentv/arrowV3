@@ -27,8 +27,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // MODE DÉVELOPPEMENT : Simulation d'un utilisateur admin connecté
+  const DEV_MODE = true; // Mettre à false en production
+
   useEffect(() => {
     const initAuth = async () => {
+      if (DEV_MODE) {
+        // En mode développement, simuler un utilisateur admin connecté
+        setUser({
+          id: 'dev-admin-id',
+          role: 'admin',
+          firstName: 'Admin',
+          lastName: 'Dev',
+          email: 'admin@dev.com'
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Mode production : authentification normale
       const token = localStorage.getItem("token");
       if (token) {
         try {

@@ -5,8 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { IntervenantsModule } from './intervenants/intervenants.module';
 import { AdminModule } from './admin/admin.module';
+import { CohortesModule } from './cohortes/cohortes.module';
+import { IntervenantsModule } from './intervenants/intervenants.module';
 // Importez vos autres modules ici
 
 @Module({
@@ -14,12 +15,12 @@ import { AdminModule } from './admin/admin.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost/arrow'),
+    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost/arrow'),
     AuthModule,
     UsersModule,
-    IntervenantsModule,
     AdminModule,
-    // Ajoutez vos autres modules ici
+    CohortesModule,
+    IntervenantsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

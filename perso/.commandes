@@ -8,10 +8,10 @@ arreter le serveur :
 npm run stop
 
 port du backend :
-3000
+4000
 
 port du frontend :
-3001
+3000
 
 
 me placer dans le dossier backend :

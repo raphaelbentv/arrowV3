@@ -24,6 +24,10 @@ export class IntervenantsService {
     return this.intervenantModel.find().exec();
   }
 
+  async findAll(): Promise<Intervenant[]> {
+    return await this.intervenantModel.find().exec();
+  }
+
   async findOne(id: string): Promise<Intervenant> {
     const intervenant = await this.intervenantModel.findById(id).exec();
     if (!intervenant) {
