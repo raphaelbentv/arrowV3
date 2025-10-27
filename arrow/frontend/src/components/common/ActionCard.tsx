@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box, IconButton } from '@mui/material';
-import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface ActionCardProps {
@@ -23,61 +24,42 @@ const ActionCard: React.FC<ActionCardProps> = ({
   return (
     <Card
       onClick={() => navigate(path)}
-      sx={{
-        height: '100%',
-        cursor: 'pointer',
-        background: 'background.paper',
-        border: '1px solid rgba(255, 255, 255, 0.05)',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          transform: 'translateY(-8px)',
-          boxShadow: `0 12px 32px ${color}25`,
-          border: `1px solid ${color}`,
-          '& .action-icon': {
-            transform: 'rotate(-45deg)',
-            backgroundColor: color,
-            color: '#000',
-          },
-        },
+      className="h-full cursor-pointer border border-white/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl group"
+      style={{
+        ['--hover-shadow' as string]: `0 12px 32px ${color}25`,
       }}
     >
-      <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Box
-          sx={{
-            width: 64,
-            height: 64,
-            borderRadius: 2,
-            backgroundColor: `${color}15`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mb: 2,
-          }}
+      <CardContent className="p-6 h-full flex flex-col">
+        <div
+          className="w-16 h-16 rounded-lg flex items-center justify-center mb-4"
+          style={{ backgroundColor: `${color}15` }}
         >
           {React.cloneElement(icon, {
-            sx: { fontSize: 36, color: color },
+            style: { fontSize: 36, color },
+            className: 'w-9 h-9'
           })}
-        </Box>
+        </div>
 
-        <Typography variant="h6" sx={{ mb: 1, color: 'text.primary' }}>
+        <h3 className="text-lg font-semibold mb-2 text-foreground">
           {title}
-        </Typography>
+        </h3>
 
-        <Typography variant="body2" sx={{ color: 'text.label', mb: 2, flexGrow: 1 }}>
+        <p className="text-sm text-muted-foreground mb-4 flex-grow">
           {description}
-        </Typography>
+        </p>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton
-            className="action-icon"
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              transition: 'all 0.3s ease',
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="action-icon bg-white/5 transition-all duration-300 group-hover:rotate-[-45deg] group-hover:text-black"
+            style={{
+              ['--hover-bg' as string]: color,
             }}
           >
-            <ArrowForwardIcon />
-          </IconButton>
-        </Box>
+            <ArrowRight className="h-5 w-5" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

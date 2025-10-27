@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent, Typography, Avatar, Box, CardActionArea } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Intervenant } from '../../types/intervenant';
 

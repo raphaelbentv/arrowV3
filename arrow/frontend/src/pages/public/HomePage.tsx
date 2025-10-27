@@ -1,141 +1,103 @@
 import React from 'react';
-import { 
-  Container, 
-  Box, 
-  Typography, 
-  Card, 
-  CardContent, 
-  CardActions, 
-  Button, 
-  Grid,
-  useTheme
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { AdminPanelSettings, School, Person } from '@mui/icons-material';
+import { Shield, User, GraduationCap } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const loginOptions = [
     {
       title: 'Administrateur',
       description: 'Accès au panneau d\'administration',
-      icon: <AdminPanelSettings sx={{ fontSize: 60, color: theme.palette.primary.main }} />,
+      icon: Shield,
       path: '/admin/login',
-      available: true
+      available: true,
+      color: '#3d9bff'
     },
     {
       title: 'Intervenant',
       description: 'Accès à l\'espace intervenant',
-      icon: <Person sx={{ fontSize: 60, color: theme.palette.secondary.main }} />,
+      icon: User,
       path: '/login/intervenant',
-      available: false
+      available: false,
+      color: '#87ceeb'
     },
     {
       title: 'Étudiant',
       description: 'Accès à l\'espace étudiant',
-      icon: <School sx={{ fontSize: 60, color: theme.palette.info.main }} />,
+      icon: GraduationCap,
       path: '/login/etudiant',
-      available: false
+      available: false,
+      color: '#5dbaff'
     }
   ];
 
   return (
-    <Box 
-      sx={{ 
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        p: 2
-      }}
-    >
-      <Container 
-        maxWidth="lg" 
-        sx={{ 
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <Box sx={{ 
-          width: '100%',
-          maxWidth: 1200,
-          mx: 'auto',
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center' 
-        }}>
-          <Typography variant="h2" component="h1" gutterBottom align="center">
+    <div className="min-h-screen flex flex-col justify-center items-center w-full p-4 relative z-10">
+      <div className="max-w-7xl w-full flex flex-col items-center justify-center">
+        <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+          <h1 className="text-5xl font-bold text-center mb-4 text-vaporwave text-glow">
             Bienvenue sur Arrow
-          </Typography>
-          <Typography variant="h5" component="h2" gutterBottom align="center" color="textSecondary">
+          </h1>
+          <h2 className="text-2xl text-center mb-12 text-muted-foreground">
             Choisissez votre espace de connexion
-          </Typography>
+          </h2>
 
-          <Grid container spacing={4} sx={{ mt: 4, justifyContent: 'center' }}>
-            {loginOptions.map((option) => (
-              <Grid item xs={12} sm={6} md={4} key={option.title}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8 w-full">
+            {loginOptions.map((option) => {
+              const Icon = option.icon;
+              return (
                 <Card 
-                  sx={{ 
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    p: 2,
-                    opacity: option.available ? 1 : 0.7
+                  key={option.title}
+                  className={`h-full flex flex-col items-center p-6 transition-all duration-300 hover:scale-105 box-glow ${
+                    !option.available ? 'opacity-70' : ''
+                  }`}
+                  style={{
+                    background: `linear-gradient(135deg, rgba(61, 155, 255, 0.05) 0%, rgba(135, 206, 235, 0.05) 100%)`,
                   }}
                 >
-                  <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    mb: 2,
-                    mt: 2 
-                  }}>
-                    {option.icon}
-                  </Box>
-                  <CardContent sx={{ textAlign: 'center', flexGrow: 1 }}>
-                    <Typography variant="h5" component="h3" gutterBottom>
+                  <div className="flex justify-center mb-4 mt-2">
+                    <Icon 
+                      size={60} 
+                      style={{ color: option.color }}
+                      className="animate-pulse"
+                    />
+                  </div>
+                  <CardContent className="text-center flex-grow p-4">
+                    <h3 className="text-2xl font-semibold mb-2">
                       {option.title}
-                    </Typography>
-                    <Typography variant="body1" color="textSecondary">
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
                       {option.description}
-                    </Typography>
+                    </p>
                     {!option.available && (
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          mt: 2,
-                          color: 'warning.main',
-                          fontStyle: 'italic'
-                        }}
-                      >
+                      <p className="text-sm italic text-yellow-400 mt-2">
                         Bientôt disponible
-                      </Typography>
+                      </p>
                     )}
                   </CardContent>
-                  <CardActions sx={{ width: '100%', p: 2 }}>
+                  <div className="w-full p-2">
                     <Button 
-                      size="large" 
-                      variant="contained" 
+                      size="lg"
                       onClick={() => navigate(option.path)}
                       disabled={!option.available}
-                      fullWidth
+                      className="w-full"
+                      style={option.available ? {
+                        background: `linear-gradient(135deg, ${option.color}, ${option.color}dd)`,
+                      } : {}}
                     >
                       Se connecter
                     </Button>
-                  </CardActions>
+                  </div>
                 </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Container>
-    </Box>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

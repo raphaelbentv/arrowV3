@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import {
-  TextField,
-  Button,
-  Box,
-  Grid,
-  Typography,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Chip,
-  SelectChangeEvent
-} from '@mui/material';
-import { 
-  ExpandMore as ExpandMoreIcon, 
-  Add as AddIcon
-} from '@mui/icons-material';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select } from '@/components/ui/select';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Chip } from '@/components/ui/chip';
+import { Typography } from '@/components/ui/typography';
+import { Plus, Loader2 } from 'lucide-react';
 import { CohorteFormData, CreateCohorteDto, UpdateCohorteDto, Cohorte, TypeFormation, StatutCohorte, TypeFinancement } from '../../types/cohorte';
 
 interface CohorteFormProps {

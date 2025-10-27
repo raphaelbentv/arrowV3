@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Grid, Typography, Divider } from '@mui/material';
-
 const AddIntervenant = () => {
   const [formData, setFormData] = useState({
     nom: '',

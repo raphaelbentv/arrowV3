@@ -1,35 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  InputAdornment,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  CircularProgress,
-  Alert,
-  Snackbar
-} from '@mui/material';
-import {
-  Search,
-  Add,
-  Delete,
-  Edit,
-  Visibility
-} from '@mui/icons-material';
 import { intervenantsService } from '../../services/intervenants';
 import { Intervenant } from '../../types/intervenant';
 import MainLayout from '../../components/layout/MainLayout';

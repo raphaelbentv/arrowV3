@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box } from '@mui/material';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 const QuickActions: React.FC = () => {
@@ -9,12 +9,11 @@ const QuickActions: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-around', padding: 2 }}>
-      <Button variant="contained" color="primary" onClick={handleAddIntervenant}>
+    <div className="flex justify-around p-4">
+      <Button onClick={handleAddIntervenant}>
         Ajouter un Intervenant
       </Button>
-      {/* Ajoutez d'autres boutons d'actions rapides ici */}
-    </Box>
+    </div>
   );
 };
 

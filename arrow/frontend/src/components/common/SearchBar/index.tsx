@@ -1,13 +1,4 @@
 import React, { useState } from 'react';
-import {
-  Autocomplete,
-  TextField,
-  InputAdornment,
-  Box,
-  Typography,
-  CircularProgress
-} from '@mui/material';
-import { Search } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Intervenant } from '../../../types/intervenant';
 

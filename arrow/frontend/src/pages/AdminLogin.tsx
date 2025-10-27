@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  Container, 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Paper,
-  Alert,
-  CircularProgress
-} from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Shield, Mail, Lock, Loader2, ArrowLeft, AlertCircle, Info } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import api from '../services/api';
 
 const AdminLogin: React.FC = () => {
@@ -64,75 +59,118 @@ const AdminLogin: React.FC = () => {
   }, [email, error, loading, location]);
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Paper sx={{ p: 4, width: '100%' }}>
-          <Typography variant="h4" component="h1" align="center" gutterBottom>
-            Connexion Administrateur
-          </Typography>
-          <Typography variant="body1" align="center" sx={{ mb: 3 }}>
-            Veuillez vous connecter pour accéder au tableau de bord
-          </Typography>
-          
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-          
-          <Box component="form" onSubmit={handleSubmit} noValidate>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(e) => {
-                console.log('Email modifié:', e.target.value);
-                setEmail(e.target.value);
-              }}
-              error={!!error}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Mot de passe"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => {
-                console.log('Mot de passe modifié');
-                setPassword(e.target.value);
-              }}
-              error={!!error}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                'Se connecter'
-              )}
-            </Button>
-          </Box>
-          <Alert severity="info" sx={{ mt: 2 }}>
-            En mode développement, utilisez n'importe quel email/mot de passe.
-          </Alert>
-        </Paper>
-      </Box>
-    </Container>
+    <div className="min-h-screen flex flex-col justify-center items-center w-full p-4 relative z-10">
+      {/* Bouton retour */}
+      <Button
+        variant="ghost"
+        onClick={() => navigate('/')}
+        className="absolute top-8 left-8 text-primary hover:text-primary/80"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Retour
+      </Button>
+
+      <div className="w-full max-w-md">
+        <Card className="box-glow border-vaporwave">
+          <CardHeader className="text-center space-y-4">
+            <div className="flex justify-center">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                <Shield className="w-12 h-12 text-primary animate-pulse" />
+              </div>
+            </div>
+            <CardTitle className="text-3xl font-bold text-vaporwave text-glow">
+              Connexion Administrateur
+            </CardTitle>
+            <p className="text-muted-foreground">
+              Veuillez vous connecter pour accéder au tableau de bord
+            </p>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            {error && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary" />
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="admin@example.com"
+                  autoComplete="email"
+                  autoFocus
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    console.log('Email modifié:', e.target.value);
+                    setEmail(e.target.value);
+                  }}
+                  className={error ? 'border-destructive' : ''}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-primary" />
+                  Mot de passe
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => {
+                    console.log('Mot de passe modifié');
+                    setPassword(e.target.value);
+                  }}
+                  className={error ? 'border-destructive' : ''}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full mt-6"
+                size="lg"
+                disabled={loading}
+                style={{
+                  background: 'linear-gradient(135deg, #3d9bff, #87ceeb)',
+                }}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Connexion en cours...
+                  </>
+                ) : (
+                  <>
+                    <Shield className="mr-2 h-5 w-5" />
+                    Se connecter
+                  </>
+                )}
+              </Button>
+            </form>
+
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+              <Info className="h-5 w-5 flex-shrink-0 text-blue-400 mt-0.5" />
+              <p className="text-sm text-blue-300">
+                En mode développement, utilisez n'importe quel email/mot de passe.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 

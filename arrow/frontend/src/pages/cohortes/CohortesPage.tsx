@@ -1,23 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Box,
-  Alert,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Paper,
-  Chip,
-  Stack
-} from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
 import { CohorteCard } from '../../components/cohortes/CohorteCard';
 import { CohorteForm } from '../../components/cohortes/CohorteForm';
 import { Cohorte, CreateCohorteDto, UpdateCohorteDto, CohorteFilters } from '../../types/cohorte';

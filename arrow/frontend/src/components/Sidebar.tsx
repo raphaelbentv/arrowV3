@@ -1,33 +1,4 @@
 import React, { useState } from 'react';
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemButton,
-  Box,
-  Typography,
-  IconButton,
-  Divider,
-  Collapse,
-} from '@mui/material';
-import {
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
-  School as SchoolIcon,
-  CalendarMonth as CalendarIcon,
-  Assignment as AssignmentIcon,
-  BarChart as BarChartIcon,
-  Settings as SettingsIcon,
-  Logout as LogoutIcon,
-  Menu as MenuIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ExpandLess,
-  ExpandMore,
-  PersonAdd as PersonAddIcon,
-  Class as ClassIcon,
-} from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 

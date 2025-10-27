@@ -1,31 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container,
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Grid,
-  Paper,
-  Box,
-  TextField,
-  InputAdornment,
-  Autocomplete,
-  Card,
-  CardContent,
-  LinearProgress,
-  Tooltip,
-  IconButton,
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import {
-  Search,
-  TrendingUp,
-  School,
-  Person,
-  Assessment,
-  Info,
-} from '@mui/icons-material';
 import { intervenantsService } from '../../services/intervenants';
 import { Intervenant } from '../../types/intervenant';
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { CircularProgress, Box } from '@mui/material';
+import { Loader2 } from 'lucide-react';
 
 interface IntervenantRouteProps {
   children: React.ReactNode;
@@ -31,9 +31,9 @@ const IntervenantRoute: React.FC<IntervenantRouteProps> = ({ children }) => {
   
   if (isIntervenant === null) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
     );
   }
   

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box, LinearProgress } from '@mui/material';
-import { SxProps, Theme } from '@mui/material/styles';
+import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 
 interface StatCardProps {
   title: string;
@@ -13,7 +13,7 @@ interface StatCardProps {
     value: number;
     isPositive: boolean;
   };
-  sx?: SxProps<Theme>;
+  className?: string;
 }
 
 const StatCard: React.FC<StatCardProps> = ({
@@ -24,99 +24,71 @@ const StatCard: React.FC<StatCardProps> = ({
   color = '#FFD700',
   progress,
   trend,
-  sx,
+  className = '',
 }) => {
   return (
     <Card
-      sx={{
-        height: '100%',
+      className={`h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border ${className}`}
+      style={{
         background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 215, 0, 0.01) 100%)',
-        border: '1px solid rgba(255, 215, 0, 0.1)',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 8px 24px rgba(255, 215, 0, 0.15)',
-          border: '1px solid rgba(255, 215, 0, 0.3)',
-        },
-        ...sx,
+        borderColor: 'rgba(255, 215, 0, 0.1)',
       }}
     >
-      <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-          <Box>
-            <Typography variant="body2" sx={{ color: 'text.label', mb: 1, textTransform: 'uppercase', fontSize: '0.75rem' }}>
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <p className="text-xs uppercase text-muted-foreground mb-2">
               {title}
-            </Typography>
-            <Typography variant="h3" sx={{ color: color, fontWeight: 900, mb: 0.5 }}>
+            </p>
+            <h3 className="text-3xl font-black mb-1" style={{ color }}>
               {value}
-            </Typography>
+            </h3>
             {subtitle && (
-              <Typography variant="body2" sx={{ color: 'text.label' }}>
+              <p className="text-sm text-muted-foreground">
                 {subtitle}
-              </Typography>
+              </p>
             )}
-          </Box>
+          </div>
           {icon && (
-            <Box
-              sx={{
-                backgroundColor: `${color}15`,
-                borderRadius: 2,
-                p: 1.5,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+            <div
+              className="rounded-lg p-3 flex items-center justify-center"
+              style={{ backgroundColor: `${color}15` }}
             >
               {React.cloneElement(icon, {
-                sx: { fontSize: 32, color: color },
+                style: { fontSize: 32, color },
+                className: 'w-8 h-8'
               })}
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
 
         {progress !== undefined && (
-          <Box sx={{ mt: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="caption" sx={{ color: 'text.label' }}>
+          <div className="mt-4">
+            <div className="flex justify-between mb-1">
+              <span className="text-xs text-muted-foreground">
                 Progression
-              </Typography>
-              <Typography variant="caption" sx={{ color: color, fontWeight: 600 }}>
+              </span>
+              <span className="text-xs font-semibold" style={{ color }}>
                 {progress}%
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={progress}
-              sx={{
-                height: 6,
-                borderRadius: 3,
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: color,
-                  borderRadius: 3,
-                },
-              }}
-            />
-          </Box>
+              </span>
+            </div>
+            <Progress value={progress} className="h-1.5" />
+          </div>
         )}
 
         {trend && (
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-            <Typography
-              variant="caption"
-              sx={{
-                color: trend.isPositive ? 'success.main' : 'error.main',
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-              }}
+          <div className="flex items-center mt-4">
+            <span
+              className={`text-xs font-semibold flex items-center ${
+                trend.isPositive ? 'text-green-500' : 'text-red-500'
+              }`}
             >
               {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.label', ml: 1 }}>
+            </span>
+            <span className="text-xs text-muted-foreground ml-2">
               vs mois dernier
-            </Typography>
-          </Box>
+            </span>
+          </div>
         )}
       </CardContent>
     </Card>

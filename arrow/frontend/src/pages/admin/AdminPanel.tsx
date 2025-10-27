@@ -1,22 +1,4 @@
 import React from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  Grid,
-  TextField,
-  InputAdornment,
-} from '@mui/material';
-import {
-  Search as SearchIcon,
-  School as SchoolIcon,
-  People as PeopleIcon,
-  Person as PersonIcon,
-  TrendingUp as TrendingUpIcon,
-  Class as ClassIcon,
-  Assignment as AssignmentIcon,
-  BarChart as BarChartIcon,
-} from '@mui/icons-material';
 import StatCard from '../../components/common/StatCard';
 import ActionCard from '../../components/common/ActionCard';
 

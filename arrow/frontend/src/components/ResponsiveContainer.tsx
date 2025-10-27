@@ -1,28 +1,10 @@
 import React from 'react';
-import { Box } from '@mui/material';
 
 const ResponsiveContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <Box
-      sx={{
-        width: '100%',
-        maxWidth: {
-          xs: '100%',  // Mobile
-          sm: '90%',   // Tablette
-          md: '80%',   // Petit écran de PC
-          lg: '70%',   // Grand écran
-          xl: '60%',   // Très grand écran
-        },
-        margin: '0 auto',
-        padding: {
-          xs: '1rem',
-          sm: '2rem',
-          md: '3rem',
-        },
-      }}
-    >
+    <div className="w-full max-w-full sm:max-w-[90%] md:max-w-[80%] lg:max-w-[70%] xl:max-w-[60%] mx-auto p-4 sm:p-8 md:p-12">
       {children}
-    </Box>
+    </div>
   );
 };
 

@@ -1,29 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container,
-  Typography,
-  Grid,
-  Box,
-  TextField,
-  InputAdornment,
-  Autocomplete,
-  LinearProgress,
-  Card,
-  CardContent,
-  Stack,
-  Divider,
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import {
-  Search,
-  TrendingUp,
-  School,
-  Person,
-  Assessment,
-  ArrowForward,
-  Bolt,
-  Group,
-} from '@mui/icons-material';
 import { intervenantsService } from '../services/intervenants';
 import { Intervenant } from '../types/intervenant';
 import MainLayout from '../components/layout/MainLayout';

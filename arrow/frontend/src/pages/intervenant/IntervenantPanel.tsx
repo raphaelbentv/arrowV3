@@ -1,13 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Container, 
-  Typography, 
-  CircularProgress, 
-  Box,
-  Grid,
-  Paper,
-  Alert
-} from '@mui/material';
 import { intervenantsService } from '../../services/intervenants';
 import { Intervenant } from '../../types/intervenant';
 

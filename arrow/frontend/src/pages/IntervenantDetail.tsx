@@ -2,26 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Intervenant } from '../types/intervenant';
 import { intervenantsService } from '../services/intervenants';
-import { 
-  Box, 
-  Paper, 
-  Grid, 
-  Typography, 
-  useTheme,
-  Chip,
-  Divider,
-  Avatar
-} from '@mui/material';
-import { 
-  Email,
-  Phone,
-  LocationOn,
-  Work,
-  School,
-  DateRange,
-  Assignment
-} from '@mui/icons-material';
-
 interface TabPanelProps {
   children?: React.ReactNode;
   value: number;

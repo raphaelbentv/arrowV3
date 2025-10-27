@@ -1,33 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
-  Box, 
-  Drawer, 
-  List, 
-  ListItem,
-  ListItemButton,
-  ListItemIcon, 
-  ListItemText, 
-  AppBar, 
-  Toolbar, 
-  Typography,
-  IconButton,
-  useMediaQuery,
-  useTheme,
-  Divider,
-  Collapse
-} from '@mui/material';
-import { 
-  Dashboard as DashboardIcon,
-  Person as PeopleIcon,
-  Settings as SettingsIcon,
-  AdminPanelSettings as AdminPanelSettingsIcon,
-  Menu as MenuIcon,
-  Logout,
-  ExpandLess,
-  ExpandMore
-} from '@mui/icons-material';
+  LayoutDashboard,
+  Users,
+  Settings,
+  Shield,
+  Menu,
+  LogOut,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 const DRAWER_WIDTH = 240;
 
@@ -38,11 +23,19 @@ interface MainLayoutProps {
 const MainLayout = ({ children }: MainLayoutProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
   const { logout } = useAuth();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Détecter le changement de taille d'écran
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -58,12 +51,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const mainMenuItems = [
     {
       text: 'Dashboard',
-      icon: <DashboardIcon />,
+      icon: LayoutDashboard,
       path: '/admin/dashboard'
     },
     {
       text: 'Intervenants',
-      icon: <PeopleIcon />,
+      icon: Users,
       path: '/admin/intervenant-list'
     }
   ];
@@ -71,10 +64,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const settingsMenuItems = [
     {
       text: 'Administrateurs',
-      icon: <AdminPanelSettingsIcon />,
+      icon: Shield,
       path: '/admin/administrator-list'
     }
-    // Vous pourrez ajouter d'autres éléments de paramètres ici
   ];
 
   const handleSettingsClick = () => {
@@ -83,154 +75,125 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   const isPathActive = (path: string) => location.pathname === path;
 
+  const MenuItem = ({ item }: { item: typeof mainMenuItems[0] }) => {
+    const Icon = item.icon;
+    return (
+      <button
+        onClick={() => {
+          navigate(item.path);
+          if (isMobile) handleDrawerToggle();
+        }}
+        className={`w-full flex items-center px-4 py-3 text-white hover:bg-white/10 transition-colors ${
+          isPathActive(item.path) ? 'bg-white/15 border-l-4 border-[#FFD700]' : ''
+        }`}
+      >
+        <Icon className="w-5 h-5 mr-3" />
+        <span>{item.text}</span>
+      </button>
+    );
+  };
+
   const drawer = (
-    <Box sx={{ overflow: 'auto', color: 'white', display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Toolbar /> {/* Espace pour le header */}
-      <List>
+    <div className="flex flex-col h-full text-white overflow-auto">
+      <div className="h-16" /> {/* Espace pour le header */}
+      <nav className="flex-1">
         {mainMenuItems.map((item) => (
-          <ListItemButton
-            key={item.text}
-            onClick={() => {
-              navigate(item.path);
-              if (isMobile) handleDrawerToggle();
-            }}
-            selected={isPathActive(item.path)}
-          >
-            <ListItemIcon sx={{ color: 'white' }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItemButton>
+          <MenuItem key={item.text} item={item} />
         ))}
-      </List>
-      <Divider sx={{ my: 1 }} />
-      <List>
-        <ListItemButton onClick={handleSettingsClick}>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Paramètres" />
-          {settingsOpen ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-      </List>
-      <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {settingsMenuItems.map((item) => (
-            <ListItemButton
-              key={item.text}
-              sx={{ pl: 4 }}
-              onClick={() => {
-                navigate(item.path);
-                if (isMobile) handleDrawerToggle();
-              }}
-              selected={isPathActive(item.path)}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          ))}
-        </List>
-      </Collapse>
-      <Box sx={{ flexGrow: 1 }} /> {/* Espace flexible */}
-      <Divider sx={{ bgcolor: 'rgba(255, 255, 255, 0.12)' }} />
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={handleLogout}
-            sx={{
-              '&:hover': {
-                bgcolor: 'rgba(255, 0, 0, 0.1)',
-              },
-            }}
+        <Separator className="my-1 bg-white/12" />
+        <div>
+          <button
+            onClick={handleSettingsClick}
+            className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/10 transition-colors"
           >
-            <ListItemIcon sx={{ color: 'error.main' }}>
-              <Logout />
-            </ListItemIcon>
-            <ListItemText primary="Déconnexion" sx={{ color: 'error.main' }} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
+            <div className="flex items-center">
+              <Settings className="w-5 h-5 mr-3" />
+              <span>Paramètres</span>
+            </div>
+            {settingsOpen ? <ChevronUp /> : <ChevronDown />}
+          </button>
+          <div className={`overflow-hidden transition-all ${settingsOpen ? 'max-h-96' : 'max-h-0'}`}>
+            {settingsMenuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.text}
+                  onClick={() => {
+                    navigate(item.path);
+                    if (isMobile) handleDrawerToggle();
+                  }}
+                  className={`w-full flex items-center pl-8 py-3 hover:bg-white/10 transition-colors ${
+                    isPathActive(item.path) ? 'bg-white/15 border-l-4 border-[#FFD700]' : ''
+                  }`}
+                >
+                  <Icon className="w-4 h-4 mr-3" />
+                  <span>{item.text}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+      <div className="flex-grow" />
+      <Separator className="bg-white/12" />
+      <button
+        onClick={handleLogout}
+        className="flex items-center px-4 py-3 text-red-400 hover:bg-red-400/10 transition-colors"
+      >
+        <LogOut className="w-5 h-5 mr-3" />
+        <span>Déconnexion</span>
+      </button>
+    </div>
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar 
-        position="fixed" 
-        sx={{ 
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          bgcolor: '#252525'
-        }}
-      >
-        <Toolbar>
-          {isMobile && (
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
-          <Typography variant="h6" noWrap component="div" sx={{ color: '#FFD700' }}>
-            ArroW
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <div className="flex">
+      {/* AppBar fixe */}
+      <header className="fixed top-0 left-0 right-0 h-16 bg-[#252525] z-50 flex items-center px-4">
+        {isMobile && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleDrawerToggle}
+            className="mr-2 text-white"
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        )}
+        <h1 className="text-xl font-bold text-[#FFD700]">ArroW</h1>
+      </header>
 
       {/* Drawer pour mobile */}
-      {isMobile ? (
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Meilleure performance sur mobile
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: DRAWER_WIDTH,
-              bgcolor: '#252525',
-            },
-          }}
+      {isMobile && mobileOpen && (
+        <div 
+          className="fixed inset-0 z-40"
+          onClick={handleDrawerToggle}
         >
-          {drawer}
-        </Drawer>
-      ) : (
-        // Drawer pour desktop
-        <Drawer
-          variant="permanent"
-          sx={{
-            width: DRAWER_WIDTH,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: DRAWER_WIDTH,
-              boxSizing: 'border-box',
-              bgcolor: '#252525',
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
+          <div 
+            className="fixed left-0 top-0 h-full w-60 bg-[#252525] z-50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {drawer}
+          </div>
+        </div>
       )}
 
-      <Box 
-        component="main" 
-        sx={{ 
-          flexGrow: 1, 
-          p: 3,
-          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-          minHeight: '100vh'
-        }}
-      >
-        <Toolbar />
+      {/* Drawer pour desktop */}
+      {!isMobile && (
+        <aside className="w-60 flex-shrink-0 h-screen sticky top-0 bg-[#252525]">
+          {drawer}
+        </aside>
+      )}
+
+      {/* Main content */}
+      <main className="flex-1 p-6 min-h-screen" style={{ 
+        marginLeft: !isMobile ? '0' : '0',
+        width: isMobile ? '100%' : `calc(100% - ${DRAWER_WIDTH}px)`
+      }}>
+        <div className="h-16" />
         {children}
-      </Box>
-    </Box>
+      </main>
+    </div>
   );
 };
 

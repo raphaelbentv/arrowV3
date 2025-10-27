@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import { Intervenant } from "../types/intervenant";
 import { intervenantsService } from "../services/intervenants";
-import { Box, Typography, Paper, Grid, TextField } from "@mui/material";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Typography } from "@/components/ui/typography";
 import IntervenantCard from './intervenantCard';
 
 const Intervenants = () => {
@@ -37,29 +39,27 @@ const Intervenants = () => {
   if (error) return <div>Erreur: {error}</div>;
 
   return (
-    <Box sx={{ padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
+    <div className="p-4">
+      <Typography variant="h4" className="mb-4">
         Liste des Intervenants
       </Typography>
-      <TextField
-        fullWidth
-        label="Rechercher un intervenant"
+      <Input
+        placeholder="Rechercher un intervenant"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mb: 3 }}
+        className="mb-6"
       />
-      <Paper sx={{ padding: 2 }}>
-        <Grid container spacing={3}>
+      <Card className="p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {filteredIntervenants.map((intervenant) => (
-            <Grid item xs={12} sm={6} md={4} key={intervenant._id}>
-              <IntervenantCard
-                intervenant={intervenant}
-              />
-            </Grid>
+            <IntervenantCard
+              key={intervenant._id}
+              intervenant={intervenant}
+            />
           ))}
-        </Grid>
-      </Paper>
-    </Box>
+        </div>
+      </Card>
+    </div>
   );
 };
 

@@ -1,36 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  CircularProgress,
-  Alert,
-  Snackbar,
-  InputAdornment
-} from '@mui/material';
-import {
-  Search,
-  Add,
-  Delete,
-  Edit,
-  CheckCircle,
-  Cancel
-} from '@mui/icons-material';
 import { administratorsService } from '../../services/administrators';
 import MainLayout from '../../components/layout/MainLayout';
 

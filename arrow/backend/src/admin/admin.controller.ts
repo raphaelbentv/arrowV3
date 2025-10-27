@@ -83,7 +83,7 @@ export class AdminController {
   async createInitialAdmin(@Body() adminData: any) {
     console.log('Données reçues:', adminData);
 
-    const uri = 'mongodb+srv://raphaelbentv:UraRJervWInvUFJW@cluster0.d7cns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/arrow';
     const client = new MongoClient(uri);
 
     try {

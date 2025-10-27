@@ -1,22 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Box, 
-  Container, 
-  Paper, 
-  TextField, 
-  Button, 
-  Typography, 
-  Alert,
-  Checkbox,
-  FormControlLabel,
-  Link,
-  IconButton,
-  InputAdornment,
-  Fade,
-  Divider
-} from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 import { useAuth } from "../../../context/authContext";
 import axios from "axios";
 

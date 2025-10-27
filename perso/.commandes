@@ -27,3 +27,7 @@ tree -L 3
 
 versions des dependances :
 npm list --depth=0
+
+
+UI
+shadcn/ui + Tailwind 

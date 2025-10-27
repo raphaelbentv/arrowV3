@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Container, Paper } from '@mui/material';
 import { Intervenant } from '../../types/intervenant';
 import { intervenantsService } from '../../services/intervenants';
 import SearchBar from '../common/SearchBar';

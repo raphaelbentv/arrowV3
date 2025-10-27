@@ -1,20 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Paper, 
-  Grid, 
-  Card, 
-  CardContent, 
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  CircularProgress,
-  Alert
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
