@@ -298,9 +298,9 @@
 
 @keyframes grid-move {
   0% {
-    background-position: 0 0;
+    transform: perspective(500px) rotateX(60deg) translate(0, 0);
   }
   100% {
-    background-position: 0 40px;
+    transform: perspective(500px) rotateX(60deg) translate(50px, 50px);
   }
 }

@@ -9,7 +9,7 @@ console.log('Chemin du fichier .env:', envPath);
 
 const result = config({ path: envPath });
 console.log('Résultat du chargement .env:', result);
-console.log('MONGO_URI chargée :', process.env.MONGO_URI);
+console.log('MONGODB_URI chargée :', process.env.MONGODB_URI);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
