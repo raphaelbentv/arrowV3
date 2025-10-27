@@ -1,0 +1,71 @@
+/* =====================================================
+   BASE.CSS - Styles de base et reset
+   ===================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-color: hsl(var(--border));
+}
+
+body {
+  font-family: 'League Spartan', sans-serif;
+  background: #0a0a0a;
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Vaporwave - Gradient sunset */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, 
+    #000000 0%,
+    #0a1a2f 20%,
+    #1a3a5a 40%,
+    #3d9bff 80%,
+    #87ceeb 100%);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Grille rétro avec animation */
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 39px,
+    rgba(61, 155, 255, 0.2) 40px,
+    rgba(61, 155, 255, 0.2) 41px
+  );
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: bottom;
+  z-index: 0;
+  pointer-events: none;
+  animation: grid-move 20s linear infinite;
+}
+
+/* Animation de la grille */
+@keyframes grid-move {
+  0% {
+    transform: perspective(500px) rotateX(60deg) translate(0, 0);
+  }
+  100% {
+    transform: perspective(500px) rotateX(60deg) translate(50px, 50px);
+  }
+}
+

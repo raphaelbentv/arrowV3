@@ -1,0 +1,35 @@
+/* =====================================================
+   BADGE.MODULE.CSS - Styles des badges Vaporwave
+   ===================================================== */
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border: 2px solid;
+}
+
+.badgeSuccess {
+  background: rgba(0, 255, 170, 0.15);
+  color: #00ffaa;
+  border-color: #00ffaa;
+  box-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
+}
+
+.badgeWarning {
+  background: rgba(255, 159, 0, 0.15);
+  color: #ff9f00;
+  border-color: #ff9f00;
+  box-shadow: 0 0 15px rgba(255, 159, 0, 0.4);
+}
+
+.badgeError {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+}
+

@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Search, TrendingUp, School, BarChart3, Users, GraduationCap, ArrowRight } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { useAuth } from '../context/authContext';
 import { intervenantsService } from '../services/intervenants';
 import { Intervenant } from '../types/intervenant';
-import MainLayout from '../components/layout/MainLayout';
-import { useAuth } from '../context/authContext';
+import styles from './AdminDashboard.module.css';
 
 // Types pour la recherche globale
 interface SearchResult {
@@ -19,10 +23,10 @@ const AdminDashboard = () => {
   useAuth();
 
   // État pour la recherche
-  const [, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [intervenants, setIntervenants] = useState<Intervenant[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   // Données KPI (à connecter avec l'API)
   const kpiData = {
@@ -101,345 +105,228 @@ const AdminDashboard = () => {
     setSearchResults(intervenantResults);
   };
 
-
-  const KPICard = ({ title, value, subtitle, icon, color, glow }: {
-    title: string;
-    value: number;
-    subtitle: string;
-    icon: React.ReactNode;
-    color: string;
-    glow?: string;
-  }) => (
-    <Card sx={{ 
-      height: '100%', 
-      bgcolor: 'transparent',
-      border: '1px solid',
-      borderColor: 'rgba(255, 0, 110, 0.3)',
-      position: 'relative',
-      overflow: 'hidden',
-      transition: 'all 0.3s ease',
-      '&:hover': {
-        borderColor: color,
-        transform: 'translateY(-4px)',
-        boxShadow: `0 10px 30px ${glow || color}40`,
-      }
-    }}>
-      <Box sx={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '2px',
-        background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
-      }} />
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 300 }}>
-            {title}
-          </Typography>
-          <Box sx={{ 
-            color: color,
-            filter: `drop-shadow(0 0 8px ${glow || color})`
-          }}>
-            {icon}
-          </Box>
-        </Box>
-        <Typography 
-          variant="h3" 
-          sx={{ 
-            color: color,
-            fontWeight: 900,
-            letterSpacing: '-0.05em',
-            mb: 1,
-            textShadow: `0 0 20px ${glow || color}60`,
-          }}
-        >
-          {value}%
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, opacity: 0.8 }}>
-          {subtitle}
-        </Typography>
-        <LinearProgress 
-          variant="determinate" 
-          value={value} 
-          sx={{ 
-            mt: 2,
-            height: 4,
-            borderRadius: 2,
-            bgcolor: 'rgba(255, 0, 110, 0.1)',
-            '& .MuiLinearProgress-bar': {
-              bgcolor: color,
-              boxShadow: `0 0 10px ${color}`,
-              borderRadius: 2,
-            }
-          }} 
-        />
-      </CardContent>
-    </Card>
-  );
-
-  const dashboardContent = (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      {/* En-tête du Dashboard avec bouton de déconnexion */}
-      <Box sx={{ mb: 6 }}>
-        <Typography 
-          variant="h3" 
-          gutterBottom
-          sx={{
-            fontWeight: 900,
-            letterSpacing: '-0.05em',
-            background: 'linear-gradient(90deg, #FF006E 0%, #C77DFF 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 40px rgba(255, 0, 110, 0.3)',
-          }}
-        >
-          Dashboard Admin
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 300, opacity: 0.7 }}>
-          Vue d'ensemble en temps réel
-        </Typography>
-      </Box>
-
-      {/* Barre de Recherche Globale */}
-      <Box
-        sx={{ 
-          mb: 6,
-        }}
-      >
-        <Autocomplete
-          fullWidth
-          freeSolo
-          loading={loading}
-          options={searchResults}
-          getOptionLabel={(option) => 
-            typeof option === 'string' ? option : option.title
-          }
-          renderOption={(props, option) => {
-            const { key, ...otherProps } = props;
-            return (
-              <li key={key} {...otherProps}>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="body1">
-                    {option.title}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {option.type === 'intervenant' ? '👤 Intervenant' : ''} - {option.description}
-                  </Typography>
-                </Box>
-              </li>
-            );
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Rechercher un intervenant, une formation, un document..."
-              variant="outlined"
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-          onChange={(_, value) => {
-            if (typeof value === 'string') {
-              handleSearch(value);
-            } else if (value) {
-              if (value.type === 'intervenant') {
-                navigate(`/intervenants/${value.id}`);
-              }
-            }
-          }}
-          onInputChange={(_, newInputValue) => {
-            handleSearch(newInputValue);
-          }}
-        />
-      </Box>
-
-      {/* KPIs */}
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6} lg={3}>
-          <KPICard
-            title="Satisfaction"
-            value={kpiData.satisfaction.global}
-            subtitle={kpiData.satisfaction.details}
-            icon={<TrendingUp sx={{ fontSize: 32 }} />}
-            color="#00FF88"
-            glow="#00FF88"
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
-          <KPICard
-            title="Taux de Réussite"
-            value={kpiData.reussite.certification}
-            subtitle={`${kpiData.reussite.presence}% de présence`}
-            icon={<School sx={{ fontSize: 32 }} />}
-            color="#FF006E"
-            glow="#FF006E"
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
-          <KPICard
-            title="Compétences"
-            value={kpiData.competences.objectifsAtteints}
-            subtitle={`${kpiData.competences.progression}% de progression`}
-            icon={<Assessment sx={{ fontSize: 32 }} />}
-            color="#C77DFF"
-            glow="#C77DFF"
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
-          <KPICard
-            title="Qualité Intervenants"
-            value={kpiData.qualiteIntervenants.conformite}
-            subtitle={`${kpiData.qualiteIntervenants.miseAJour}% à jour`}
-            icon={<Person sx={{ fontSize: 32 }} />}
-            color="#FF3399"
-            glow="#FF3399"
-          />
-        </Grid>
-      </Grid>
-
-      {/* Actions rapides */}
-      <Divider sx={{ my: 6, borderColor: 'rgba(255, 0, 110, 0.2)' }} />
-      
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, mb: 4 }}>
-          Actions rapides
-        </Typography>
-      </Box>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Card 
-            sx={{ 
-              height: '100%', 
-              cursor: 'pointer',
-              bgcolor: 'transparent',
-              border: '1px solid rgba(255, 0, 110, 0.3)',
-              transition: 'all 0.3s ease',
-              '&:hover': { 
-                borderColor: '#FF006E',
-                transform: 'translateY(-8px)',
-                boxShadow: '0 10px 40px rgba(255, 0, 110, 0.3)',
-              }
-            }}
-            onClick={() => navigate('/admin/cohortes')}
-          >
-            <CardContent sx={{ p: 4 }}>
-              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                <Box sx={{ 
-                  p: 2, 
-                  borderRadius: 2,
-                  bgcolor: 'rgba(255, 0, 110, 0.1)',
-                  border: '1px solid rgba(255, 0, 110, 0.3)'
-                }}>
-                  <School sx={{ fontSize: 32, color: '#FF006E' }} />
-                </Box>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Cohortes
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Gérer les groupes
-                  </Typography>
-                </Box>
-                <ArrowForward sx={{ color: '#FF006E' }} />
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card 
-            sx={{ 
-              height: '100%', 
-              cursor: 'pointer',
-              bgcolor: 'transparent',
-              border: '1px solid rgba(255, 0, 110, 0.3)',
-              transition: 'all 0.3s ease',
-              '&:hover': { 
-                borderColor: '#C77DFF',
-                transform: 'translateY(-8px)',
-                boxShadow: '0 10px 40px rgba(199, 125, 255, 0.3)',
-              }
-            }}
-            onClick={() => navigate('/admin/users')}
-          >
-            <CardContent sx={{ p: 4 }}>
-              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                <Box sx={{ 
-                  p: 2, 
-                  borderRadius: 2,
-                  bgcolor: 'rgba(199, 125, 255, 0.1)',
-                  border: '1px solid rgba(199, 125, 255, 0.3)'
-                }}>
-                  <Group sx={{ fontSize: 32, color: '#C77DFF' }} />
-                </Box>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Utilisateurs
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Administrer les comptes
-                  </Typography>
-                </Box>
-                <ArrowForward sx={{ color: '#C77DFF' }} />
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card 
-            sx={{ 
-              height: '100%', 
-              cursor: 'pointer',
-              bgcolor: 'transparent',
-              border: '1px solid rgba(255, 0, 110, 0.3)',
-              transition: 'all 0.3s ease',
-              '&:hover': { 
-                borderColor: '#00FF88',
-                transform: 'translateY(-8px)',
-                boxShadow: '0 10px 40px rgba(0, 255, 136, 0.3)',
-              }
-            }}
-            onClick={() => navigate('/admin/intervenant-list')}
-          >
-            <CardContent sx={{ p: 4 }}>
-              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                <Box sx={{ 
-                  p: 2, 
-                  borderRadius: 2,
-                  bgcolor: 'rgba(0, 255, 136, 0.1)',
-                  border: '1px solid rgba(0, 255, 136, 0.3)'
-                }}>
-                  <Bolt sx={{ fontSize: 32, color: '#00FF88' }} />
-                </Box>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Intervenants
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Gérer les profs
-                  </Typography>
-                </Box>
-                <ArrowForward sx={{ color: '#00FF88' }} />
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Container>
-  );
-
   return (
-    <MainLayout>
-      {dashboardContent}
-    </MainLayout>
+    <div className="px-4 sm:px-6 lg:px-8">
+      {/* Background Vaporwave */}
+      <div className="fixed inset-0 -z-10">
+        {/* Gradient sunset */}
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            background: 'linear-gradient(180deg, #000000 0%, #0a1a2f 20%, #1a3a5a 40%, rgba(61, 155, 255, 0.3) 80%, rgba(135, 206, 235, 0.3) 100%)'
+          }}
+        />
+        
+        {/* Grille rétro */}
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-1/2"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(61, 155, 255, 0.2) 40px, rgba(61, 155, 255, 0.2) 41px)',
+            transform: 'perspective(500px) rotateX(60deg)',
+            transformOrigin: 'bottom',
+            animation: 'grid-move 20s linear infinite'
+          }}
+        />
+      </div>
+
+      <div className="content-wrapper max-w-7xl mx-auto py-6">
+        {/* Header */}
+        <div className="mb-6 text-right">
+          <h1 className="text-2xl font-bold text-vaporwave text-glow uppercase tracking-wider">
+            DASHBOARD ADMIN
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">
+            Vue d'ensemble en temps réel
+          </p>
+        </div>
+
+        {/* Barre de recherche */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#87ceeb] opacity-50" />
+            <Input
+              type="text"
+              placeholder="Rechercher un intervenant, une formation, un document..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className={`${styles.searchInput} pl-12 h-14 text-lg`}
+            />
+          </div>
+          {searchResults.length > 0 && (
+            <div className={`${styles.searchResults} mt-2 rounded-lg p-2 max-h-60 overflow-y-auto`}>
+              {searchResults.map((result) => (
+                <div
+                  key={result.id}
+                  onClick={() => {
+                    if (result.type === 'intervenant') {
+                      navigate(`/intervenants/${result.id}`);
+                    }
+                    setSearchQuery('');
+                    setSearchResults([]);
+                  }}
+                  className={`${styles.searchResultItem} p-3 rounded cursor-pointer transition-all duration-300`}
+                >
+                  <div className="font-semibold text-white">{result.title}</div>
+                  <div className="text-sm text-gray-400">
+                    👤 {result.type === 'intervenant' ? 'Intervenant' : ''} - {result.description}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <Card className={`${styles.kpiCard} group cursor-pointer`}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xs uppercase tracking-wider text-[#87ceeb] font-bold">
+                  Satisfaction
+                </h3>
+                <div className={`${styles.kpiIconBox} w-[50px] h-[50px] rounded flex items-center justify-center`}>
+                  <TrendingUp className="h-8 w-8 text-[#3d9bff]" />
+                </div>
+              </div>
+              <h2 className="text-5xl font-extrabold mb-2 text-vaporwave text-glow">
+                {kpiData.satisfaction.global}%
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                {kpiData.satisfaction.details}
+              </p>
+              <Progress value={kpiData.satisfaction.global} className="h-1" />
+            </CardContent>
+          </Card>
+
+          <Card className={`${styles.kpiCard} group cursor-pointer`}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xs uppercase tracking-wider text-[#87ceeb] font-bold">
+                  Taux de Réussite
+                </h3>
+                <div className={`${styles.kpiIconBox} w-[50px] h-[50px] rounded flex items-center justify-center`}>
+                  <School className="h-8 w-8 text-[#3d9bff]" />
+                </div>
+              </div>
+              <h2 className="text-5xl font-extrabold mb-2 text-vaporwave text-glow">
+                {kpiData.reussite.certification}%
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                {kpiData.reussite.presence}% de présence
+              </p>
+              <Progress value={kpiData.reussite.certification} className="h-1" />
+            </CardContent>
+          </Card>
+
+          <Card className={`${styles.kpiCard} group cursor-pointer`}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xs uppercase tracking-wider text-[#87ceeb] font-bold">
+                  Compétences
+                </h3>
+                <div className={`${styles.kpiIconBox} w-[50px] h-[50px] rounded flex items-center justify-center`}>
+                  <BarChart3 className="h-8 w-8 text-[#3d9bff]" />
+                </div>
+              </div>
+              <h2 className="text-5xl font-extrabold mb-2 text-vaporwave text-glow">
+                {kpiData.competences.objectifsAtteints}%
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                {kpiData.competences.progression}% de progression
+              </p>
+              <Progress value={kpiData.competences.objectifsAtteints} className="h-1" />
+            </CardContent>
+          </Card>
+
+          <Card className={`${styles.kpiCard} group cursor-pointer`}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xs uppercase tracking-wider text-[#87ceeb] font-bold">
+                  Qualité Intervenants
+                </h3>
+                <div className={`${styles.kpiIconBox} w-[50px] h-[50px] rounded flex items-center justify-center`}>
+                  <Users className="h-8 w-8 text-[#3d9bff]" />
+                </div>
+              </div>
+              <h2 className="text-5xl font-extrabold mb-2 text-vaporwave text-glow">
+                {kpiData.qualiteIntervenants.conformite}%
+              </h2>
+              <p className="text-sm text-gray-400 mb-4">
+                {kpiData.qualiteIntervenants.miseAJour}% à jour
+              </p>
+              <Progress value={kpiData.qualiteIntervenants.conformite} className="h-1" />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Actions rapides */}
+        <div className="border-t border-[rgba(61,155,255,0.2)] my-8 pt-8">
+          <h2 className="text-2xl font-bold mb-6 uppercase tracking-wide text-[#87ceeb]">
+            Actions rapides
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Cohorte Card */}
+            <Card 
+              className={`${styles.actionCard} h-full cursor-pointer group`}
+              onClick={() => navigate('/admin/cohortes')}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className={`${styles.kpiIconBox} w-16 h-16 rounded-lg flex items-center justify-center`}>
+                    <GraduationCap className="h-8 w-8 text-[#3d9bff]" />
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-bold text-[#87ceeb] uppercase">Cohortes</h3>
+                    <p className="text-sm text-gray-400">Gérer les groupes</p>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-[#87ceeb] transition-transform group-hover:translate-x-2" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Users Card */}
+            <Card 
+              className={`${styles.actionCard} h-full cursor-pointer group`}
+              onClick={() => navigate('/admin/users')}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className={`${styles.kpiIconBox} w-16 h-16 rounded-lg flex items-center justify-center`}>
+                    <Users className="h-8 w-8 text-[#3d9bff]" />
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-bold text-[#87ceeb] uppercase">Utilisateurs</h3>
+                    <p className="text-sm text-gray-400">Administrer les comptes</p>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-[#87ceeb] transition-transform group-hover:translate-x-2" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Intervenants Card */}
+            <Card 
+              className={`${styles.actionCard} h-full cursor-pointer group`}
+              onClick={() => navigate('/admin/intervenant-list')}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className={`${styles.kpiIconBox} w-16 h-16 rounded-lg flex items-center justify-center`}>
+                    <Users className="h-8 w-8 text-[#3d9bff]" />
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-bold text-[#87ceeb] uppercase">Intervenants</h3>
+                    <p className="text-sm text-gray-400">Gérer les profs</p>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-[#87ceeb] transition-transform group-hover:translate-x-2" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default AdminDashboard; 
+export default AdminDashboard;

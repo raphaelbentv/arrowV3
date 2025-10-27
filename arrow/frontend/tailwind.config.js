@@ -2,10 +2,12 @@
 module.exports = {
     darkMode: ["class"],
     content: [
-      './pages/**/*.{ts,tsx}',
-      './components/**/*.{ts,tsx}',
-      './app/**/*.{ts,tsx}',
-      './src/**/*.{ts,tsx}',
+      // Fichiers source TypeScript/React
+      './src/**/*.{ts,tsx,js,jsx}',
+      // Fichiers HTML si présents
+      './index.html',
+      // Fichiers CSS modules pour purge
+      './src/**/*.module.css',
     ],
     prefix: "",
     theme: {

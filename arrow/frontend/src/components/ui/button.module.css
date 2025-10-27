@@ -1,0 +1,29 @@
+/* =====================================================
+   BUTTON.MODULE.CSS - Styles des boutons Vaporwave
+   ===================================================== */
+
+.btn {
+  background: linear-gradient(135deg, #3d9bff, #5dbaff);
+  color: #000;
+  border: none;
+  padding: 0.9rem 2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  box-shadow: 0 5px 20px rgba(61, 155, 255, 0.4);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 35px rgba(61, 155, 255, 0.7);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+

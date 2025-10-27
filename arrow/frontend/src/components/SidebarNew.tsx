@@ -14,9 +14,6 @@ import {
   Menu,
 } from 'lucide-react';
 
-const DRAWER_WIDTH = 280;
-const DRAWER_WIDTH_COLLAPSED = 70;
-
 interface MenuItem {
   title: string;
   icon: React.ReactElement;
@@ -31,7 +28,7 @@ const SidebarNew: React.FC = () => {
   const { user, logout } = useAuth();
 
   const menuItems: MenuItem[] = [
-    { title: 'Dashboard', icon: <LayoutDashboard />, path: '/admin', role: ['admin'] },
+    { title: 'Dashboard', icon: <LayoutDashboard />, path: '/admin/dashboard', role: ['admin'] },
     { title: 'Cohortes', icon: <GraduationCap />, path: '/admin/cohortes', role: ['admin'] },
     { title: 'Étudiants', icon: <Users />, path: '/admin/etudiants', role: ['admin'] },
     { title: 'Intervenants', icon: <Users />, path: '/admin/intervenant-list', role: ['admin'] },
@@ -43,7 +40,7 @@ const SidebarNew: React.FC = () => {
 
   const filteredItems = menuItems.filter((item) => {
     if (!item.role) return true;
-    return user && item.role.includes(user.role);
+    return user && user.role && item.role.includes(user.role);
   });
 
   const handleLogout = () => {
@@ -53,20 +50,20 @@ const SidebarNew: React.FC = () => {
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-vaporwave-darker border-r border-vaporwave transition-all duration-300 z-50 ${
+      className={`fixed left-0 top-0 h-full bg-black/85 backdrop-blur-sm border-r-[3px] border-[#3d9bff]/30 transition-all duration-300 z-50 ${
         open ? 'w-[280px]' : 'w-[70px]'
-      }`}
+      } sm:block hidden`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-vaporwave">
+      <div className="flex items-center justify-between p-4 border-b border-[rgba(61,155,255,0.2)]">
         {open && (
           <h2 className="text-xl font-bold text-vaporwave text-glow">ARROW</h2>
         )}
         <button
           onClick={() => setOpen(!open)}
-          className="p-2 rounded-lg hover:bg-vaporwave-dark transition-colors"
+          className="p-2 rounded-lg hover:bg-[rgba(61,155,255,0.1)] transition-colors"
         >
-          {open ? <ChevronLeft className="w-5 h-5 text-vaporwave" /> : <Menu className="w-5 h-5 text-vaporwave" />}
+          {open ? <ChevronLeft className="w-5 h-5 text-[#87ceeb]" /> : <Menu className="w-5 h-5 text-[#87ceeb]" />}
         </button>
       </div>
 
@@ -80,8 +77,8 @@ const SidebarNew: React.FC = () => {
               onClick={() => item.path && navigate(item.path)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 isActive
-                  ? 'bg-vaporwave-blue/20 text-vaporwave-blue border border-vaporwave-blue'
-                  : 'text-white/70 hover:bg-vaporwave-dark hover:text-white'
+                  ? 'bg-[rgba(61,155,255,0.2)] text-[#3d9bff] border border-[#3d9bff] shadow-[0_0_15px_rgba(61,155,255,0.3)]'
+                  : 'text-white/70 hover:bg-[rgba(61,155,255,0.1)] hover:text-white'
               }`}
             >
               <span className="flex-shrink-0">{item.icon}</span>
@@ -92,11 +89,11 @@ const SidebarNew: React.FC = () => {
       </nav>
 
       {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-vaporwave">
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[rgba(61,155,255,0.2)]">
         {open && user && (
-          <div className="mb-4 px-4 py-2 bg-vaporwave-dark rounded-lg">
+          <div className="mb-4 px-4 py-2 bg-[rgba(61,155,255,0.05)] border border-[rgba(61,155,255,0.2)] rounded-lg">
             <p className="text-sm text-white font-medium">{user.firstName} {user.lastName}</p>
-            <p className="text-xs text-vaporwave-sky">{user.email}</p>
+            <p className="text-xs text-[#87ceeb]">{user.email}</p>
           </div>
         )}
         <button
@@ -112,4 +109,3 @@ const SidebarNew: React.FC = () => {
 };
 
 export default SidebarNew;
-
