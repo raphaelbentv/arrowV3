@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2 } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
 import { Intervenant } from '../../../types/intervenant';
 
 export interface SearchResult {
@@ -30,7 +31,7 @@ const SearchBar = ({
   fullWidth = true,
   customStyles,
   onResultClick
-}: SearchBarProps) => {
+}: SearchBarProps拳 {
   const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -129,3 +130,4 @@ const SearchBar = ({
 };
 
 export default SearchBar;
+

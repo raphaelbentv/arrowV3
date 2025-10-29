@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthenticatedLayout from './layouts/AuthenticatedLayout';
-import AdminDashboard from './pages/AdminDashboard';
-import Login from './pages/public/login/login';
-import AdminPanel from './pages/admin/AdminPanel';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import Login from './pages/Login';
 import IntervenantPanel from './pages/intervenant/IntervenantPanel';
-import AdminLogin from './pages/AdminLogin';
+import AdminLogin from './pages/admin/AdminLogin';
 import HomePage from './pages/public/HomePage';
 import IntervenantList from './pages/admin/intervenantList';
 import { CohortesPage } from './pages/cohortes/CohortesPage';
+import AdministratorList from './pages/admin/AdministratorList';
 
 function App() {
   return (
@@ -23,9 +23,9 @@ function App() {
           <AuthenticatedLayout>
             <Routes>
               <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="panel/*" element={<AdminPanel />} />
               <Route path="intervenant-list" element={<IntervenantList />} />
               <Route path="cohortes" element={<CohortesPage />} />
+              <Route path="administrators" element={<AdministratorList />} />
               <Route index element={<Navigate to="dashboard" replace />} />
             </Routes>
           </AuthenticatedLayout>

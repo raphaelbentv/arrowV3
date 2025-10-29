@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Typography } from '@/components/ui/typography';
+
 const AddIntervenant = () => {
   const [formData, setFormData] = useState({
     nom: '',
@@ -68,404 +74,438 @@ const AddIntervenant = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>Ajouter un Intervenant</Typography>
+    <div className="container mx-auto p-6">
+      <Typography variant="h1" className="mb-4">Ajouter un Intervenant</Typography>
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Informations Générales */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Informations Générales</Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Nom"
+          <div className="col-span-2">
+            <Typography variant="h2" className="mt-8 mb-2">Informations Générales</Typography>
+            <Separator className="mb-4" />
+          </div>
+          
+          <div>
+            <Label htmlFor="nom">Nom *</Label>
+            <Input
+              id="nom"
               name="nom"
               value={formData.nom}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Prénom"
+          </div>
+          
+          <div>
+            <Label htmlFor="prenom">Prénom *</Label>
+            <Input
+              id="prenom"
               name="prenom"
               value={formData.prenom}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Email"
+          </div>
+          
+          <div>
+            <Label htmlFor="email">Email *</Label>
+            <Input
+              id="email"
               name="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Téléphone"
+          </div>
+          
+          <div>
+            <Label htmlFor="telephone">Téléphone *</Label>
+            <Input
+              id="telephone"
               name="telephone"
               value={formData.telephone}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Adresse"
+          </div>
+          
+          <div>
+            <Label htmlFor="adresse">Adresse</Label>
+            <Input
+              id="adresse"
               name="adresse"
               value={formData.adresse}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Date de Naissance"
+          </div>
+          
+          <div>
+            <Label htmlFor="dateNaissance">Date de Naissance</Label>
+            <Input
+              id="dateNaissance"
               name="dateNaissance"
               type="date"
               value={formData.dateNaissance}
               onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Photo"
+          </div>
+          
+          <div>
+            <Label htmlFor="photo">Photo</Label>
+            <Input
+              id="photo"
               name="photo"
               value={formData.photo}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
           {/* Informations Professionnelles */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Informations Professionnelles</Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Poste"
+          <div className="col-span-2">
+            <Typography variant="h2" className="mt-8 mb-2">Informations Professionnelles</Typography>
+            <Separator className="mb-4" />
+          </div>
+          
+          <div>
+            <Label htmlFor="poste">Poste *</Label>
+            <Input
+              id="poste"
               name="poste"
               value={formData.poste}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Statut"
+          </div>
+          
+          <div>
+            <Label htmlFor="statut">Statut *</Label>
+            <Input
+              id="statut"
               name="statut"
               value={formData.statut}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Expérience"
+          </div>
+          
+          <div>
+            <Label htmlFor="experience">Expérience</Label>
+            <Input
+              id="experience"
               name="experience"
               value={formData.experience}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Domaines d'Expertise"
+          </div>
+          
+          <div>
+            <Label htmlFor="domainesExpertise">Domaines d'Expertise</Label>
+            <Input
+              id="domainesExpertise"
               name="domainesExpertise"
               value={formData.domainesExpertise}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Diplômes"
+          </div>
+          
+          <div>
+            <Label htmlFor="diplomes">Diplômes</Label>
+            <Input
+              id="diplomes"
               name="diplomes"
               value={formData.diplomes}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="CV"
+          </div>
+          
+          <div>
+            <Label htmlFor="cv">CV</Label>
+            <Input
+              id="cv"
               name="cv"
               value={formData.cv}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
           {/* Données Contractuelles */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Données Contractuelles</Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Type de Contrat"
+          <div className="col-span-2">
+            <Typography variant="h2" className="mt-8 mb-2">Données Contractuelles</Typography>
+            <Separator className="mb-4" />
+          </div>
+          
+          <div>
+            <Label htmlFor="typeContrat">Type de Contrat *</Label>
+            <Input
+              id="typeContrat"
               name="typeContrat"
               value={formData.typeContrat}
               onChange={handleChange}
               required
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Date Début Mission"
+          </div>
+          
+          <div>
+            <Label htmlFor="dateDebutMission">Date Début Mission</Label>
+            <Input
+              id="dateDebutMission"
               name="dateDebutMission"
               type="date"
               value={formData.dateDebutMission}
               onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Date Fin Mission"
+          </div>
+          
+          <div>
+            <Label htmlFor="dateFinMission">Date Fin Mission</Label>
+            <Input
+              id="dateFinMission"
               name="dateFinMission"
               type="date"
               value={formData.dateFinMission}
               onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Tarification"
+          </div>
+          
+          <div>
+            <Label htmlFor="tarification">Tarification</Label>
+            <Input
+              id="tarification"
               name="tarification"
               value={formData.tarification}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Heures Prévues"
+          </div>
+          
+          <div>
+            <Label htmlFor="heuresPrevues">Heures Prévues</Label>
+            <Input
+              id="heuresPrevues"
               name="heuresPrevues"
               type="number"
               value={formData.heuresPrevues}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="RIB"
+          </div>
+          
+          <div>
+            <Label htmlFor="rib">RIB</Label>
+            <Input
+              id="rib"
               name="rib"
               value={formData.rib}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Clauses"
+          </div>
+          
+          <div className="col-span-2">
+            <Label htmlFor="clauses">Clauses</Label>
+            <Input
+              id="clauses"
               name="clauses"
               value={formData.clauses}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
           {/* Informations Pédagogiques */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Informations Pédagogiques</Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Modules Enseignés"
+          <div className="col-span-2">
+            <Typography variant="h2" className="mt-8 mb-2">Informations Pédagogiques</Typography>
+            <Separator className="mb-4" />
+          </div>
+          
+          <div>
+            <Label htmlFor="modulesEnseignes">Modules Enseignés</Label>
+            <Input
+              id="modulesEnseignes"
               name="modulesEnseignes"
               value={formData.modulesEnseignes}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Heures par Module"
+          </div>
+          
+          <div>
+            <Label htmlFor="heuresParModule">Heures par Module</Label>
+            <Input
+              id="heuresParModule"
               name="heuresParModule"
               type="number"
               value={formData.heuresParModule}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Niveau Étudiants"
+          </div>
+          
+          <div>
+            <Label htmlFor="niveauEtudiants">Niveau Étudiants</Label>
+            <Input
+              id="niveauEtudiants"
               name="niveauEtudiants"
               value={formData.niveauEtudiants}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Supports Pédagogiques"
+          </div>
+          
+          <div>
+            <Label htmlFor="supportsPedagogiques">Supports Pédagogiques</Label>
+            <Input
+              id="supportsPedagogiques"
               name="supportsPedagogiques"
               value={formData.supportsPedagogiques}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Méthodes Pédagogiques"
+          </div>
+          
+          <div className="col-span-2">
+            <Label htmlFor="methodesPedagogiques">Méthodes Pédagogiques</Label>
+            <Input
+              id="methodesPedagogiques"
               name="methodesPedagogiques"
               value={formData.methodesPedagogiques}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
           {/* Documents Administratifs */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Documents Administratifs</Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Pièce d'Identité"
+          <div className="col-span-2">
+            <Typography variant="h2" className="mt-8 mb-2">Documents Administratifs</Typography>
+            <Separator className="mb-4" />
+          </div>
+          
+          <div>
+            <Label htmlFor="pieceIdentite">Pièce d'Identité</Label>
+            <Input
+              id="pieceIdentite"
               name="pieceIdentite"
               value={formData.pieceIdentite}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Numéro SIRET"
+          </div>
+          
+          <div>
+            <Label htmlFor="numeroSiret">Numéro SIRET</Label>
+            <Input
+              id="numeroSiret"
               name="numeroSiret"
               value={formData.numeroSiret}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Assurance RC"
+          </div>
+          
+          <div>
+            <Label htmlFor="assuranceRC">Assurance RC</Label>
+            <Input
+              id="assuranceRC"
               name="assuranceRC"
               value={formData.assuranceRC}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Extrait Kbis"
+          </div>
+          
+          <div>
+            <Label htmlFor="extraitKbis">Extrait Kbis</Label>
+            <Input
+              id="extraitKbis"
               name="extraitKbis"
               value={formData.extraitKbis}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Justificatifs Diplômes"
+          </div>
+          
+          <div>
+            <Label htmlFor="justificatifsDiplomes">Justificatifs Diplômes</Label>
+            <Input
+              id="justificatifsDiplomes"
               name="justificatifsDiplomes"
               value={formData.justificatifsDiplomes}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Convention Contrat"
+          </div>
+          
+          <div>
+            <Label htmlFor="conventionContrat">Convention Contrat</Label>
+            <Input
+              id="conventionContrat"
               name="conventionContrat"
               value={formData.conventionContrat}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Attestation URSSAF"
+          </div>
+          
+          <div className="col-span-2">
+            <Label htmlFor="attestationURSSAF">Attestation URSSAF</Label>
+            <Input
+              id="attestationURSSAF"
               name="attestationURSSAF"
               value={formData.attestationURSSAF}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
           {/* Suivi et Évaluation */}
-          <Grid item xs={12}>
-            <Typography variant="h6">Suivi et Évaluation</Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Appréciations Étudiants"
+          <div className="col-span-2">
+            <Typography variant="h2" className="mt-8 mb-2">Suivi et Évaluation</Typography>
+            <Separator className="mb-4" />
+          </div>
+          
+          <div>
+            <Label htmlFor="appreciationsEtudiants">Appréciations Étudiants</Label>
+            <Input
+              id="appreciationsEtudiants"
               name="appreciationsEtudiants"
               value={formData.appreciationsEtudiants}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Feedback Responsables"
+          </div>
+          
+          <div>
+            <Label htmlFor="feedbackResponsables">Feedback Responsables</Label>
+            <Input
+              id="feedbackResponsables"
               name="feedbackResponsables"
               value={formData.feedbackResponsables}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Points d'Amélioration"
+          </div>
+          
+          <div>
+            <Label htmlFor="pointsAmelioration">Points d'Amélioration</Label>
+            <Input
+              id="pointsAmelioration"
               name="pointsAmelioration"
               value={formData.pointsAmelioration}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Disponibilités"
+          </div>
+          
+          <div>
+            <Label htmlFor="disponibilites">Disponibilités</Label>
+            <Input
+              id="disponibilites"
               name="disponibilites"
               value={formData.disponibilites}
               onChange={handleChange}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Engagement"
+          </div>
+          
+          <div className="col-span-2">
+            <Label htmlFor="engagement">Engagement</Label>
+            <Input
+              id="engagement"
               name="engagement"
               value={formData.engagement}
               onChange={handleChange}
             />
-          </Grid>
+          </div>
 
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
+          <div className="col-span-2 mt-6">
+            <Button type="submit" className="w-full md:w-auto">
               Ajouter
             </Button>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </form>
-    </Box>
+    </div>
   );
 };
 
-export default AddIntervenant; 
+export default AddIntervenant;

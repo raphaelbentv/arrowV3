@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Intervenant } from '../types/intervenant';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface IntervenantCardProps {
   intervenant: Intervenant;
@@ -10,66 +12,42 @@ const IntervenantCard: React.FC<IntervenantCardProps> = ({ intervenant }) => {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ minWidth: 250, maxWidth: 300 }}>
-      <CardActionArea
-        sx={{
-          minHeight: '280px',
-          minWidth: '250px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'stretch',
-          p: 2,
-          '& .MuiCardContent-root': {
-            flexGrow: 1,
-            minHeight: '150px',
-          },
-          '& .MuiBox-root': {
-            minHeight: '80px',
-          }
-        }}
-        onClick={() => navigate(`/intervenants/${intervenant._id}`)}
-      >
-        <Box sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: 2,
-          mb: 2
-        }}>
-          <Avatar
-            sx={{
-              width: 56,
-              height: 56,
-              bgcolor: 'primary.main'
-            }}
-          >
-            {intervenant.prenom[0]}
+    <Card 
+      className="min-w-[250px] max-w-[300px] cursor-pointer transition-all hover:shadow-lg hover:scale-105"
+      onClick={() => navigate(`/intervenants/${intervenant._id}`)}
+    >
+      <CardContent className="p-4">
+        <div className="flex items-center gap-4 mb-4">
+          <Avatar className="h-14 w-14 bg-primary">
+            <AvatarFallback className="text-white font-bold">
+              {intervenant.prenom?.[0] || '?'}
+            </AvatarFallback>
           </Avatar>
-          <Box>
-            <Typography variant="h6" component="h6">
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg">
               {intervenant.prenom} {intervenant.nom}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            </h3>
+            <p className="text-sm text-muted-foreground">
               {intervenant.poste}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            </p>
+            <p className="text-sm text-muted-foreground">
               {intervenant.statut}
-            </Typography>
-          </Box>
-        </Box>
+            </p>
+          </div>
+        </div>
 
-        <CardContent sx={{ pt: 0 }}>
-          <Typography variant="body2" color="text.secondary">
+        <div className="space-y-2 text-sm">
+          <p className="text-muted-foreground">
             Email: {intervenant.email}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+          </p>
+          <p className="text-muted-foreground">
             Téléphone: {intervenant.telephone}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+          </p>
+          <p className="text-muted-foreground">
             Domaines: {intervenant.domainesExpertise?.join(', ')}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+          </p>
+        </div>
+      </CardContent>
     </Card>
   );
 };

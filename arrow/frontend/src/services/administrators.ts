@@ -7,8 +7,7 @@ export interface Administrator {
   email: string;
   nom: string;
   prenom: string;
-  role: string;
-  statut: boolean;
+  createdAt?: string;
 }
 
 class AdministratorsService {
@@ -16,25 +15,11 @@ class AdministratorsService {
     console.log('🔍 Service: Début de getAll');
     
     try {
-      const token = localStorage.getItem('token');
-      console.log('🔑 Token trouvé:', token ? 'Oui' : 'Non');
-      
-      if (!token) {
-        console.error('❌ Service: Pas de token trouvé');
-        throw new Error('Non authentifié');
-      }
-
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      const url = `${API_URL}/intervenants`;
+      // Mode développement : pas d'authentification
+      const url = `${API_URL}/admin`;
       console.log('📡 Envoi de la requête à:', url);
       
-      const response = await axios.get(url, config);
+      const response = await axios.get(url);
       
       console.log('✅ Réponse reçue:', {
         status: response.status,
@@ -59,19 +44,8 @@ class AdministratorsService {
     console.log('📝 Tentative de création d\'un administrateur:', admin);
     
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Non authentifié');
-      }
-
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      const response = await axios.post(`${API_URL}/administrators`, admin, config);
+      // Mode développement : utiliser l'endpoint public pour la création
+      const response = await axios.post(`${API_URL}/admin`, admin);
       console.log('✅ Administrateur créé avec succès:', response.data);
       return response.data;
 
@@ -81,23 +55,27 @@ class AdministratorsService {
     }
   }
 
+  async update(id: string, admin: Partial<Administrator>): Promise<Administrator> {
+    console.log('✏️ Tentative de mise à jour de l\'administrateur:', id, admin);
+    
+    try {
+      // Mode développement : pas d'authentification
+      const response = await axios.put(`${API_URL}/admin/${id}`, admin);
+      console.log('✅ Administrateur mis à jour avec succès:', response.data);
+      return response.data;
+
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la mise à jour de l\'administrateur:', error);
+      throw new Error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+    }
+  }
+
   async delete(id: string): Promise<void> {
     console.log('🗑️ Tentative de suppression de l\'administrateur:', id);
     
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Non authentifié');
-      }
-
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      await axios.delete(`${API_URL}/administrators/${id}`, config);
+      // Mode développement : pas d'authentification
+      await axios.delete(`${API_URL}/admin/${id}`);
       console.log('✅ Administrateur supprimé avec succès');
 
     } catch (error: any) {

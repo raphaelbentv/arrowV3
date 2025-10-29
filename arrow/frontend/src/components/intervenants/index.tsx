@@ -3,6 +3,7 @@ import { Intervenant } from '../../types/intervenant';
 import { intervenantsService } from '../../services/intervenants';
 import SearchBar from '../common/SearchBar';
 import IntervenantCard from '../intervenantCard';
+import { Card } from '@/components/ui/card';
 
 const Intervenants = () => {
   const [intervenants, setIntervenants] = useState<Intervenant[]>([]);
@@ -41,54 +42,27 @@ const Intervenants = () => {
   };
 
   return (
-    <Container>
-      <Box sx={{ mb: 4, mt: 2 }}>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8 mt-4">
         <SearchBar
           data={intervenants}
           onSearch={handleSearch}
           loading={loading}
           placeholder="Rechercher un intervenant..."
         />
-      </Box>
+      </div>
 
-      <Paper 
-        sx={{ 
-          width: '100%',
-          minWidth: '100%',
-          flexGrow: 1,
-          p: 2,
-          boxSizing: 'border-box'
-        }}
-      >
-        <Grid 
-          container 
-          spacing={3}
-          sx={{
-            width: '100%',
-            margin: 0,
-            '& .MuiGrid-item': {
-              width: {
-                xs: '100%',
-                sm: '50%',
-                md: '33.333%'
-              },
-              minWidth: {
-                xs: '100%',
-                sm: '300px',
-                md: '300px'
-              }
-            }
-          }}
-        >
+      <Card className="w-full p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {filteredIntervenants.map((intervenant) => (
-            <Grid item key={intervenant._id}>
+            <div key={intervenant._id}>
               <IntervenantCard intervenant={intervenant} />
-            </Grid>
+            </div>
           ))}
-        </Grid>
-      </Paper>
-    </Container>
+        </div>
+      </Card>
+    </div>
   );
 };
 
-export default Intervenants; 
+export default Intervenants;

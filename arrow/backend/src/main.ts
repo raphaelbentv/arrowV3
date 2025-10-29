@@ -14,9 +14,12 @@ console.log('MONGODB_URI chargée :', process.env.MONGODB_URI);
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Configuration du préfixe global
+  app.setGlobalPrefix('api/v1');
+
   // Configuration CORS
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

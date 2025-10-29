@@ -1,5 +1,6 @@
 /* =====================================================
    INDEX.CSS - Point d'entrée principal des styles
+   Tous les styles globaux sont centralisés ici
    ===================================================== */
 
 /* Import de la police Google Fonts */
@@ -11,7 +12,7 @@
 @tailwind utilities;
 
 /* =====================================================
-   VARIABLES ET THÈME
+   VARIABLES CSS GLOBALES
    ===================================================== */
 @layer base {
   :root {
@@ -54,8 +55,44 @@
     --vaporwave-cyan: #00ffaa;
     --vaporwave-dark: #0a1a2f;
     --vaporwave-darker: #0a0a0a;
+    
+    /* Système d'espacement standardisé */
+    --spacing-xs: 0.25rem;    /* 4px */
+    --spacing-sm: 0.5rem;     /* 8px */
+    --spacing-md: 1rem;       /* 16px */
+    --spacing-lg: 1.5rem;     /* 24px */
+    --spacing-xl: 2rem;       /* 32px */
+    --spacing-2xl: 3rem;       /* 48px */
+    --spacing-3xl: 4rem;      /* 64px */
+    --spacing-4xl: 6rem;      /* 96px */
+    
+    /* Espacements pour sections et layouts */
+    --section-padding-y: var(--spacing-3xl);
+    --section-padding-x: var(--spacing-2xl);
+    --container-padding: var(--spacing-2xl);
+    --container-max-width: 1400px;
+    
+    /* Espacements pour composants */
+    --card-padding: var(--spacing-2xl);
+    --card-gap: var(--spacing-lg);
+    --card-margin-bottom: var(--spacing-xl);
+    
+    /* Espacements pour grilles */
+    --grid-gap: var(--spacing-2xl);
+    --grid-gap-small: var(--spacing-lg);
+    
+    /* Espacements pour texte */
+    --text-margin-bottom: var(--spacing-lg);
+    --heading-margin-bottom: var(--spacing-xl);
+    --paragraph-margin-bottom: var(--spacing-lg);
+    
+    /* Espacements pour header */
+    --header-padding-y: var(--spacing-xl);
+    --header-padding-x: var(--spacing-2xl);
+    --header-height: auto;
   }
 
+  /* Reset CSS */
   * {
     margin: 0;
     padding: 0;
@@ -63,6 +100,7 @@
     border-color: hsl(var(--border));
   }
 
+  /* Styles de base du body */
   body {
     font-family: 'League Spartan', sans-serif;
     background: #0a0a0a;
@@ -70,6 +108,195 @@
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Règles de marges pour les éléments de structure */
+  section {
+    margin-bottom: var(--spacing-3xl);
+    margin-left: var(--spacing-xl);
+    margin-right: var(--spacing-xl);
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+  }
+
+  article {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  /* Styles pour les headers - Agrandis avec thème bleu */
+  header {
+    background: linear-gradient(135deg, rgba(61, 155, 255, 0.2), rgba(135, 206, 235, 0.15), rgba(93, 186, 255, 0.2)) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 3px solid;
+    border-image: linear-gradient(90deg, #3d9bff, #87ceeb, #5dbaff, #3d9bff) 1;
+    box-shadow: 0 8px 32px rgba(61, 155, 255, 0.3);
+    padding: var(--header-padding-y) var(--header-padding-x);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  header * {
+    color: var(--vaporwave-blue) !important;
+  }
+
+  header a,
+  header button {
+    color: var(--vaporwave-sky) !important;
+  }
+
+  header a:hover,
+  header button:hover {
+    color: var(--vaporwave-light) !important;
+  }
+
+  /* Containers standardisés */
+  .container,
+  [class*="container"] {
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    width: 100%;
+  }
+
+  /* Espacement pour les layouts - marges supprimées pour permettre un contrôle précis */
+  main {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Espacement pour les titres */
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: var(--heading-margin-bottom);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: var(--spacing-2xl);
+    margin-top: var(--spacing-xl);
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    margin-bottom: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+  }
+
+  h4 {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    margin-bottom: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+  }
+
+  /* Espacement pour les paragraphes */
+  p {
+    margin-top: 0;
+    margin-bottom: var(--paragraph-margin-bottom);
+    margin-left: var(--spacing-lg);
+    margin-right: var(--spacing-lg);
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+  }
+
+  /* Espacement pour les listes */
+  ul, ol {
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    margin-left: var(--spacing-xl);
+    margin-right: var(--spacing-lg);
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-md);
+  }
+
+  li {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-xs);
+    padding-right: var(--spacing-xs);
+  }
+
+  /* Espacement pour les éléments de formulaire */
+  form {
+    margin-bottom: var(--spacing-2xl);
+    margin-left: var(--spacing-lg);
+    margin-right: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+  }
+
+  label {
+    display: block;
+    margin-bottom: var(--spacing-md);
+    margin-left: var(--spacing-sm);
+    margin-right: var(--spacing-sm);
+  }
+
+  input, textarea, select {
+    margin-bottom: var(--spacing-lg);
+    margin-left: var(--spacing-md);
+    margin-right: var(--spacing-md);
+  }
+
+  /* Espacement pour les boutons en groupe */
+  .button-group {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  /* Espacement pour les cartes */
+  [data-slot="card"],
+  .card {
+    margin-bottom: var(--card-margin-bottom);
+    margin-left: var(--spacing-lg);
+    margin-right: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+  }
+  
+  /* Espacement pour les articles */
+  article {
+    margin-bottom: var(--spacing-2xl);
+    margin-left: var(--spacing-lg);
+    margin-right: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+  }
+
+  /* Grilles standardisées - utiliser avec display: grid */
+  .grid-gap {
+    gap: var(--grid-gap);
+  }
+
+  .grid-gap-small {
+    gap: var(--grid-gap-small);
+  }
+
+  /* Flex avec espacement standardisé - utiliser avec display: flex */
+  .flex-gap {
+    gap: var(--spacing-md);
+  }
+
+  .flex-gap-large {
+    gap: var(--spacing-lg);
+  }
+
+  .flex-gap-small {
+    gap: var(--spacing-sm);
   }
 
   /* Background Vaporwave - Gradient sunset */
@@ -113,6 +340,7 @@
     animation: grid-move 20s linear infinite;
   }
 
+  /* Animations */
   @keyframes grid-move {
     0% {
       transform: perspective(500px) rotateX(60deg) translate(0, 0);
@@ -133,10 +361,10 @@
 }
 
 /* =====================================================
-   UTILITIES VAPORWAVE
+   CLASSES UTILITAIRES VAPORWAVE
    ===================================================== */
 @layer utilities {
-  /* Effets de texte Vaporwave */
+  /* Effets de texte */
   .text-vaporwave {
     background: linear-gradient(135deg, #3d9bff, #87ceeb);
     -webkit-background-clip: text;
@@ -148,25 +376,114 @@
     text-shadow: 0 0 15px rgba(61, 155, 255, 0.6);
   }
 
-  /* Bordures Vaporwave */
+  /* Bordures */
   .border-vaporwave {
     border: 3px solid;
     border-image: linear-gradient(135deg, #3d9bff, #87ceeb, #5dbaff) 1;
   }
 
-  /* Box glow */
+  /* Effets de boîte */
   .box-glow {
     box-shadow: 0 0 20px rgba(61, 155, 255, 0.5);
   }
 
-  /* Wrapper pour contenu au-dessus du fond */
+  /* Wrapper pour contenu */
   .content-wrapper {
     position: relative;
     z-index: 1;
   }
 
-  /* Animations communes */
+  /* Animations */
   .animate-glow-pulse {
     animation: glow-pulse 8s ease-in-out infinite;
+  }
+
+  /* Classes utilitaires d'espacement vertical */
+  .space-y-xs > * + * {
+    margin-top: var(--spacing-xs);
+  }
+
+  .space-y-sm > * + * {
+    margin-top: var(--spacing-sm);
+  }
+
+  .space-y-md > * + * {
+    margin-top: var(--spacing-md);
+  }
+
+  .space-y-lg > * + * {
+    margin-top: var(--spacing-lg);
+  }
+
+  .space-y-xl > * + * {
+    margin-top: var(--spacing-xl);
+  }
+
+  .space-y-2xl > * + * {
+    margin-top: var(--spacing-2xl);
+  }
+
+  /* Classes utilitaires d'espacement horizontal */
+  .space-x-xs > * + * {
+    margin-left: var(--spacing-xs);
+  }
+
+  .space-x-sm > * + * {
+    margin-left: var(--spacing-sm);
+  }
+
+  .space-x-md > * + * {
+    margin-left: var(--spacing-md);
+  }
+
+  .space-x-lg > * + * {
+    margin-left: var(--spacing-lg);
+  }
+
+  .space-x-xl > * + * {
+    margin-left: var(--spacing-xl);
+  }
+
+  /* Padding standardisé */
+  .p-section {
+    padding: var(--section-padding-y) var(--section-padding-x);
+  }
+
+  .p-container {
+    padding: var(--container-padding);
+  }
+
+  .p-card {
+    padding: var(--card-padding);
+  }
+
+  /* Margin bottom standardisé */
+  .mb-section {
+    margin-bottom: var(--section-padding-y);
+  }
+
+  .mb-lg {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .mb-xl {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .mb-2xl {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  /* Margin top standardisé */
+  .mt-lg {
+    margin-top: var(--spacing-lg);
+  }
+
+  .mt-xl {
+    margin-top: var(--spacing-xl);
+  }
+
+  .mt-2xl {
+    margin-top: var(--spacing-2xl);
   }
 }

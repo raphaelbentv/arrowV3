@@ -1,24 +1,19 @@
 # 🎨 Organisation des Styles Arrow
 
-## Structure
+## Structure Simplifiée
 
 ```
 src/
-├── styles/               # Styles globaux
-│   ├── theme.css        # Variables CSS (couleurs, espacements)
-│   ├── base.css         # Reset, body, backgrounds
-│   ├── effects.css      # Effets visuels réutilisables
-│   └── README.md        # Ce fichier
-│
-├── components/ui/        # Composants avec leurs styles
-│   ├── button.tsx
-│   ├── button.module.css
-│   ├── card.tsx
-│   ├── card.module.css
-│   └── ...
-│
-└── index.css            # Point d'entrée (imports uniquement)
+├── index.css                 # Point d'entrée UNIQUE - Tous les styles globaux centralisés
+└── components/ui/            # Composants avec leurs styles
+    ├── button.tsx
+    ├── button.module.css
+    ├── card.tsx
+    ├── card.module.css
+    └── ...
 ```
+
+**Tous les styles globaux sont centralisés dans `index.css` pour éviter les doublons et assurer la cohérence.**
 
 ## Philosophie
 
@@ -34,29 +29,35 @@ src/
 - Styles hover/focus élaborés
 - Bordures néon et effects vaporwave
 
-## Fichiers
+### ✅ Utiliser index.css pour :
+- Variables CSS globales (`:root`)
+- Reset CSS et styles de base (`body`)
+- Background vaporwave global
+- Classes utilitaires réutilisables (`.text-vaporwave`, `.text-glow`, etc.)
 
-### `theme.css`
-Variables CSS globales :
-- Couleurs (HSL et hex)
-- Espacements
+## Structure de index.css
+
+### Variables CSS (`:root`)
+- Couleurs de base et composants
+- Couleurs primaires Vaporwave
+- États (muted, accent, destructive)
+- Bordures et inputs
 - Border radius
 - Couleurs Vaporwave personnalisées
 
-### `base.css`
-Styles de base :
-- Reset CSS
-- Styles du body
+### Reset et Base
+- Reset CSS (`*`)
+- Styles du `body`
 - Background vaporwave (gradient + grille)
-- Animations globales
+- Animations globales (`@keyframes`)
 
-### `effects.css`
-Classes utilitaires pour effets :
+### Classes Utilitaires
 - `.text-vaporwave` - Texte avec gradient bleu
 - `.text-glow` - Effet glow néon
 - `.border-vaporwave` - Bordures avec gradient
 - `.box-glow` - Ombre lumineuse
 - `.content-wrapper` - Z-index pour contenu
+- `.animate-glow-pulse` - Animation pulsation
 
 ## Composants
 
@@ -71,45 +72,28 @@ Chaque composant UI a son fichier `.module.css` :
 ## Import dans les composants
 
 ```tsx
+// Import CSS Module pour styles spécifiques
 import styles from './ComponentName.module.css';
 
+// Les classes utilitaires de index.css sont disponibles globalement
 function Component() {
   return (
-    <div className={styles.componentClass}>
-      {/* Contenu */}
+    <div className={`flex flex-col gap-4 ${styles.customStyle} text-vaporwave`}>
+      {/* Tailwind pour layout, CSS Module pour styles spécifiques, classes globales pour effets */}
     </div>
   );
 }
 ```
-
-## Combinaison Tailwind + CSS Modules
-
-```tsx
-import styles from './card.module.css';
-
-function Card() {
-  return (
-    <div className={`flex flex-col gap-4 p-6 ${styles.card}`}>
-      {/* Tailwind pour layout, CSS Module pour effets */}
-    </div>
-  );
-}
-```
-
-## Performance
-
-- Tailwind purge activé → Classes inutilisées supprimées en production
-- CSS Modules → Scoped styles, pas de conflits
-- Imports organisés → Chargement optimisé
 
 ## Maintenance
 
-1. **Ajouter une nouvelle couleur** → `theme.css`
-2. **Modifier le background** → `base.css`
-3. **Nouvel effet réutilisable** → `effects.css`
+1. **Ajouter une nouvelle couleur** → `index.css` dans `:root`
+2. **Modifier le background** → `index.css` dans `body::before/after`
+3. **Nouvel effet réutilisable** → `index.css` dans `@layer utilities`
 4. **Style spécifique à un composant** → Créer `.module.css` associé
+5. **Style spécifique à un layout** → Créer `LayoutName.module.css` dans le dossier layouts
 
 ---
 
 *Design System: Vaporwave Sky Blue* 🌊✨
-
+*Structure simplifiée pour éviter les doublons et incohérences*
