@@ -8,6 +8,8 @@ import { CohorteCard } from '../../components/cohortes/CohorteCard';
 import { CohorteForm } from '../../components/cohortes/CohorteForm';
 import { Cohorte, CreateCohorteDto, UpdateCohorteDto, CohorteFilters, TypeFormation } from '../../types/cohorte';
 import { cohortesService } from '../../services/cohortes';
+import { cn } from '@/lib/utils';
+import styles from '@/components/admin/cards.module.css';
 
 export const CohortesPage: React.FC = () => {
   const [cohortes, setCohortes] = useState<Cohorte[]>([]);
@@ -110,10 +112,10 @@ export const CohortesPage: React.FC = () => {
   }
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 32px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+    <div className="mx-auto px-4 md:px-8" style={{ maxWidth: '1400px', paddingTop: '2rem', paddingBottom: '2rem' }}>
+      <div className="flex flex-col items-start mb-8">
         <h1 
-          className="text-3xl font-black tracking-[0.15em] uppercase"
+          className="text-3xl font-black tracking-[0.15em] uppercase mb-4"
           style={{
             background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
             WebkitBackgroundClip: 'text',
@@ -127,7 +129,7 @@ export const CohortesPage: React.FC = () => {
         <Button 
           onClick={() => setShowForm(true)}
           size="lg"
-          className="font-bold uppercase tracking-[0.08em]"
+          className="font-bold uppercase tracking-[0.08em] mb-4"
         >
           <Plus className="h-4 w-4" />
           Nouvelle cohorte
@@ -145,20 +147,17 @@ export const CohortesPage: React.FC = () => {
         }}>{error}</div>
       )}
 
-      {/* Filtres */}
-      <Card 
-        style={{
-          background: 'rgba(0,0,0,0.55)',
-          border: '2px solid rgba(61, 155, 255, 0.35)',
-          borderRadius: 12,
-          boxShadow: '0 12px 48px rgba(61, 155, 255, 0.12)',
-          marginBottom: '2rem'
-        }}
+      {/* Filtres (design cartes admin) */}
+      <div
+        className={cn(styles['base-card'], styles['card-spacing-normal'])}
+        style={{ borderTop: '4px solid #3d9bff', boxShadow: 'none', marginBottom: '2rem' }}
       >
-        <CardContent>
-          <h2 className="text-xl font-bold uppercase tracking-[0.1em]" style={{ color: '#87ceeb', marginBottom: '1.25rem' }}>Filtres</h2>
+        <div className={styles['card-header']}>
+          <h2 className={styles['card-title']} style={{ margin: 0 }}>Filtres</h2>
+        </div>
+        <div className={styles['card-section']}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.annee ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="annee">Année</Label>
               <Select open={openFilters.annee} onOpenChange={(o) => setOpenFilters(s => ({ ...s, annee: o }))} value={filters.anneeScolaire || 'all'} onValueChange={(v) => setFilters(prev => ({ ...prev, anneeScolaire: v === 'all' ? undefined : v }))}>
                 <SelectTrigger id="annee" className="uppercase tracking-[0.05em] w-full h-14"
@@ -178,7 +177,7 @@ export const CohortesPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.cursus ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="cursus">Cursus</Label>
               <Select open={openFilters.cursus} onOpenChange={(o) => setOpenFilters(s => ({ ...s, cursus: o }))} value={filters.typeFormation || 'all'} onValueChange={(v) => setFilters(prev => ({ ...prev, typeFormation: v === 'all' ? undefined : (v as TypeFormation) }))}>
                 <SelectTrigger id="cursus" className="uppercase tracking-[0.05em] w-full h-14"
@@ -199,7 +198,7 @@ export const CohortesPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="statut">Statut</Label>
               <Select open={openFilters.statut} onOpenChange={(o) => setOpenFilters(s => ({ ...s, statut: o }))} value={filters.actif === undefined ? 'all' : String(filters.actif)} onValueChange={(v) => setFilters(prev => ({ ...prev, actif: v === 'all' ? undefined : v === 'true' }))}>
                 <SelectTrigger id="statut" className="uppercase tracking-[0.05em] w-full h-14"
@@ -219,27 +218,24 @@ export const CohortesPage: React.FC = () => {
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Formulaire */}
-      {showForm && (
+      {/* Formulaire création seulement (édition s'affiche en place dans la grille) */}
+      {showForm && !editingCohorte && (
         <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
           <CohorteForm
-            cohorte={editingCohorte}
-            onSubmit={editingCohorte ? handleUpdateCohorte : handleCreateCohorte}
+            onSubmit={handleCreateCohorte}
             onCancel={handleCancelForm}
             isLoading={isSubmitting}
           />
         </div>
       )}
 
-      {/* Liste des cohortes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" style={{ marginTop: '2rem' }}>
+      {/* Liste des cohortes (responsive flex, gap vertical accru) */}
+      <div className={styles['cards-container-flex']} style={{ marginTop: '2rem', rowGap: '2rem' }}>
         {filteredCohortes.length === 0 ? (
-          <Card className="col-span-1 sm:col-span-2 lg:col-span-3" 
-            style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)' }}
-          >
+          <Card style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)', width: '100%' }}>
             <CardContent>
               <p className="text-lg font-bold uppercase tracking-[0.08em]" style={{ color: '#87ceeb' }}>Aucune cohorte trouvée</p>
               <p className="text-sm" style={{ color: '#a0aec0', marginTop: '0.5rem' }}>
@@ -251,12 +247,31 @@ export const CohortesPage: React.FC = () => {
           </Card>
         ) : (
           filteredCohortes.map((cohorte) => (
-            <CohorteCard
-              key={cohorte._id}
-              cohorte={cohorte}
-              onEdit={handleEditCohorte}
-              onDelete={handleDeleteCohorte}
-            />
+            editingCohorte && editingCohorte._id === cohorte._id ? (
+              <div key={cohorte._id} style={{ flex: '1 1 450px', minWidth: 350, maxWidth: 650 }}>
+                <CohorteForm
+                  cohorte={editingCohorte}
+                  onSubmit={handleUpdateCohorte}
+                  onCancel={handleCancelForm}
+                  isLoading={isSubmitting}
+                  onDeleteCohorte={async (id: string) => {
+                    try {
+                      await handleDeleteCohorte(id);
+                      setShowForm(false);
+                      setEditingCohorte(undefined);
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <CohorteCard
+                key={cohorte._id}
+                cohorte={cohorte}
+                onEdit={handleEditCohorte}
+              />
+            )
           ))
         )}
       </div>

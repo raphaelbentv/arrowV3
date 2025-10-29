@@ -6,8 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Chip } from '@/components/ui/chip';
-import { Plus, Loader2 } from 'lucide-react';
+import { Plus, Loader2, X } from 'lucide-react';
 import { CohorteFormData, CreateCohorteDto, Cohorte, TypeFormation, StatutCohorte, TypeFinancement } from '../../types/cohorte';
+import { cn } from '@/lib/utils';
+import styles from '../admin/cards.module.css';
 
 // Composant Textarea simple
 const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
@@ -28,6 +30,7 @@ interface CohorteFormProps {
   onSubmit: (data: CreateCohorteDto) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  onDeleteCohorte?: (id: string) => Promise<void> | void;
 }
 
 export const CohorteForm: React.FC<CohorteFormProps> = ({
@@ -35,6 +38,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
   onSubmit,
   onCancel,
   isLoading = false,
+  onDeleteCohorte,
 }) => {
   const [formData, setFormData] = useState<CohorteFormData>({
     // Informations générales
@@ -182,51 +186,40 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
     }
 
     try {
-      // Transformer les données du formulaire pour correspondre au DTO du backend
-      const createData: CreateCohorteDto = {
-        // Informations générales
+      // Construire le payload avec seulement les champs définis (éviter undefined)
+      const basePayload: any = {
         nom: formData.nom,
         anneeScolaire: formData.anneeScolaire,
         typeFormation: formData.typeFormation,
-        diplomeVise: formData.diplomeVise || undefined,
-        niveauRNCP: formData.niveauRNCP || undefined,
-        etablissement: formData.etablissement || undefined,
-        formationAssociee: formData.formationAssociee || undefined,
-
-        // Composition
-        nombreEtudiantsPrevu: formData.nombreEtudiantsPrevu || undefined,
-        nombreEtudiantsInscrits: formData.nombreEtudiantsInscrits || undefined,
-        responsablePedagogique: formData.responsablePedagogique || undefined,
-
-        // Organisation
         dateDebut: formData.dateDebut,
         dateFin: formData.dateFin,
-        volumeHoraireTotal: formData.volumeHoraireTotal || undefined,
-
-        // Structure pédagogique
-        matieres: formData.matieres.length > 0 ? formData.matieres : undefined,
-        modules: formData.modules.length > 0 ? formData.modules : undefined,
-        progressionPedagogique: formData.progressionPedagogique || undefined,
-
-        // Suivi administratif
         statut: formData.statut,
-        nombreEtudiantsFinances: formData.nombreEtudiantsFinances || undefined,
-        nombreEtudiantsAutofinances: formData.nombreEtudiantsAutofinances || undefined,
-        montantTotalFacture: formData.montantTotalFacture || undefined,
-        typeFinanceur: formData.typeFinanceur || undefined,
-        nomFinanceur: formData.nomFinanceur || undefined,
-
-        // Métadonnées
-        creePar: 'admin@dev.com', // En DEV_MODE, utiliser l'email de l'admin
-        commentairesInternes: formData.commentairesInternes || undefined,
-        tags: formData.tags.length > 0 ? formData.tags : undefined,
-
-        // Champs legacy
-        description: formData.description || undefined,
-        actif: true,
       };
 
-      await onSubmit(createData);
+      // Ajouter les champs optionnels seulement s'ils ont une valeur
+      if (formData.diplomeVise?.trim()) {
+        basePayload.diplome = formData.diplomeVise;
+      }
+      if (formData.volumeHoraireTotal !== undefined && formData.volumeHoraireTotal > 0) {
+        basePayload.volumeHoraireTotal = formData.volumeHoraireTotal;
+      }
+      if (formData.modules?.length) {
+        basePayload.modules = formData.modules;
+      }
+      if (formData.commentairesInternes?.trim()) {
+        basePayload.notesInternes = formData.commentairesInternes;
+      }
+      if (formData.tags?.length) {
+        basePayload.tags = formData.tags;
+      }
+
+      // Pour la création, ajouter creePar
+      if (!cohorte) {
+        basePayload.creePar = 'admin@dev.com';
+      }
+
+      console.log('Payload envoyé:', basePayload);
+      await onSubmit(basePayload);
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
     }
@@ -277,6 +270,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
     <Card 
       className="w-full max-w-4xl mx-auto"
       style={{
+        position: 'relative',
         background: 'rgba(0,0,0,0.55)',
         border: '2px solid rgba(61, 155, 255, 0.35)',
         borderRadius: 12,
@@ -284,6 +278,23 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
       }}
     >
       <CardHeader>
+        {/* Bouton fermeture (croix jaune) */}
+        <button
+          aria-label="Fermer"
+          onClick={onCancel}
+          className={cn(styles['card-button'])}
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            zIndex: 10,
+            borderColor: '#facc15',
+            color: '#facc15',
+            background: 'rgba(250,204,21,0.12)'
+          }}
+        >
+          <X size={18} />
+        </button>
         <CardTitle
           className="uppercase tracking-[0.12em] font-black"
           style={{
@@ -733,35 +744,45 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
                 </div>
 
-          <div className="flex justify-end gap-3 pt-6">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isLoading}
-              className="uppercase tracking-[0.08em]"
-              style={{
-                background: 'rgba(0,0,0,0.4)',
-                border: '2px solid rgba(61,155,255,0.35)',
-                color: '#87ceeb'
-              }}
-            >
-              Annuler
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="font-bold uppercase tracking-[0.1em]"
-              style={{
-                background: '#3d9bff',
-                color: '#000',
-                border: '2px solid #5dbaff',
-                boxShadow: '0 10px 30px rgba(61, 155, 255, 0.35)'
-              }}
-            >
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? 'Enregistrement...' : cohorte ? 'Modifier' : 'Créer'}
-            </Button>
+          <div className="flex items-center justify-between pt-6">
+            <div>
+              {cohorte && onDeleteCohorte && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => onDeleteCohorte(cohorte._id)}
+                  disabled={isLoading}
+                  className={cn(styles['card-button'])}
+                  style={{
+                    borderColor: '#ef4444',
+                    color: '#ef4444',
+                    background: 'rgba(239,68,68,0.12)'
+                  }}
+                >
+                  Supprimer la cohorte
+                </Button>
+              )}
+            </div>
+            <div className={cn(styles['card-button-group'])}>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onCancel}
+                disabled={isLoading}
+                className={cn(styles['card-button'], styles['card-button-primary'])}
+              >
+                Annuler
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                variant="ghost"
+                className={cn(styles['card-button'], styles['card-button-primary'])}
+              >
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading ? 'Enregistrement...' : cohorte ? 'Modifier' : 'Créer'}
+              </Button>
+            </div>
           </div>
         </form>
       </CardContent>

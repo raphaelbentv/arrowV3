@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, CardContent, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { School, Users, Clock, Euro } from 'lucide-react';
+import { Users, User, Calendar, TrendingUp } from 'lucide-react';
 import { Cohorte, StatutCohorte } from '../../types/cohorte';
+import { cn } from '@/lib/utils';
+import styles from '../admin/cards.module.css';
 
 interface CohorteCardProps {
   cohorte: Cohorte;
@@ -18,8 +19,28 @@ export const CohorteCard: React.FC<CohorteCardProps> = ({
   onDelete,
   onView,
 }) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR');
+  // Palette néon et couleur stable par cohorte (hash simple sur l'id/nom)
+  const neonPalette = [
+    '#3D9BFF', // bleu
+    '#FF5ACD', // rose
+    '#7CFF5A', // vert
+    '#FFC857', // jaune
+    '#9B5DFF', // violet
+    '#00E5FF', // cyan
+  ];
+
+  const computeStableIndex = (key: string) => {
+    let acc = 0;
+    for (let i = 0; i < key.length; i++) acc = (acc * 31 + key.charCodeAt(i)) >>> 0;
+    return acc % neonPalette.length;
+  };
+
+  const neon = neonPalette[computeStableIndex(cohorte._id || cohorte.nom || 'neon')];
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '—';
+    const d = new Date(dateString);
+    return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('fr-FR');
   };
 
   const getStatutLabel = (statut: StatutCohorte) => {
@@ -35,152 +56,165 @@ export const CohorteCard: React.FC<CohorteCardProps> = ({
     }
   };
 
-  const getStatutBadgeClass = (statut: StatutCohorte) => {
-    switch (statut) {
-      case StatutCohorte.EN_PREPARATION:
-        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case StatutCohorte.ACTIVE:
-        return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case StatutCohorte.CLOTUREE:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-      default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+  const montantFmt = (cohorte.montantTotalFacture ?? 0).toLocaleString('fr-FR');
+  const progression = Math.max(0, Math.min(100, cohorte.tauxProgression ?? 0));
+
+  const exportCohortePdf = async () => {
+    try {
+      const baseURL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:4000/api/v1';
+      const url = `${baseURL}/cohortes/${cohorte._id}/export/pdf`;
+      const resp = await fetch(url, { method: 'GET' });
+      if (!resp.ok) throw new Error('Export PDF échoué');
+      const blob = await resp.blob();
+      const link = document.createElement('a');
+      const href = URL.createObjectURL(blob);
+      link.href = href;
+      link.download = `${cohorte.nom.replace(/\s+/g, '_')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(href);
+    } catch (e) {
+      console.error(e);
+      alert('Impossible de générer le PDF pour cette cohorte.');
     }
   };
 
   return (
-    <Card className="bg-black/40 border border-vaporwave/30 hover:border-vaporwave hover:shadow-lg hover:shadow-vaporwave/20 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
-      <CardContent className="flex-1 p-6">
-        {/* En-tête */}
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <CardTitle className="text-xl font-bold text-white mb-2">
-              {cohorte.nom}
-            </CardTitle>
-            <p className="text-vaporwave-sky text-sm mb-1">
-              {cohorte.typeFormation} - {cohorte.anneeScolaire}
-            </p>
-            {cohorte.etablissement && (
-              <p className="text-gray-400 text-xs">
-                {cohorte.etablissement}
-              </p>
-            )}
-          </div>
-          <Badge className={getStatutBadgeClass(cohorte.statut)}>
-            {getStatutLabel(cohorte.statut)}
-          </Badge>
+    <div
+      className={cn(styles['base-card'], styles['card-clickable'], styles['cohorte-card'])}
+      style={{ borderTop: `4px solid ${neon}`, boxShadow: 'none' }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderTopWidth = '6px';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 48px ' + neon + '40';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderTopWidth = '4px';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
+      }}
+    >
+      {/* Header */}
+      <div className={styles['card-header']}>
+        <div className={styles['card-row']} style={{ marginBottom: 0 }}>
+          <span className="text-2xl">🎓</span>
+          <h4
+            className={styles['card-title']}
+            style={{ color: neon, margin: 0, fontSize: '1.25rem' }}
+          >
+            {cohorte.nom}
+          </h4>
         </div>
+        <span
+          className={styles['card-badge']}
+          style={{ background: neon + '20', color: neon, border: '1px solid ' + neon + '60' }}
+        >
+          {getStatutLabel(cohorte.statut).toLowerCase()}
+        </span>
+      </div>
 
-        <div className="border-t border-vaporwave/20 my-4" />
-
-        {/* Informations principales */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Users className="w-4 h-4 text-vaporwave-sky" />
-              <span className="text-sm font-medium text-gray-300">Étudiants</span>
+      {/* Grid d'infos */}
+      <div className={styles['card-section']}>
+        <div className={styles['card-grid']} style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <Users size={18} style={{ color: '#87ceeb' }} />
             </div>
-            <p className="text-sm text-gray-400">
-              {cohorte.nombreEtudiantsInscrits} / {cohorte.nombreEtudiantsPrevu}
-            </p>
+            <span className={styles['card-text-secondary']}>
+              {(cohorte.nombreEtudiantsInscrits ?? 0)} étudiants
+            </span>
           </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-4 h-4 text-vaporwave-sky" />
-              <span className="text-sm font-medium text-gray-300">Volume horaire</span>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <User size={18} style={{ color: '#87ceeb' }} />
             </div>
-            <p className="text-sm text-gray-400">
-              {cohorte.volumeHoraireTotal}h
-            </p>
+            <span className={styles['card-text-secondary']}>
+              {Array.isArray(cohorte.intervenants) && cohorte.intervenants.length > 0 ? `${cohorte.intervenants.length} intervenant(s)` : '—'}
+            </span>
           </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <School className="w-4 h-4 text-vaporwave-sky" />
-              <span className="text-sm font-medium text-gray-300">Intervenants</span>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <Calendar size={18} style={{ color: '#87ceeb' }} />
             </div>
-            <p className="text-sm text-gray-400">
-              {cohorte.intervenants.length}
-            </p>
+            <span className={styles['card-text-secondary']}>{formatDate(cohorte.dateDebut)}</span>
           </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Euro className="w-4 h-4 text-vaporwave-sky" />
-              <span className="text-sm font-medium text-gray-300">Montant</span>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <TrendingUp size={18} style={{ color: '#87ceeb' }} />
             </div>
-            <p className="text-sm text-gray-400">
-              {cohorte.montantTotalFacture.toLocaleString('fr-FR')}€
-            </p>
+            <span className={styles['card-text-secondary']}>
+              {getStatutLabel(cohorte.statut)}
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* Période */}
-        <div className="mb-4">
-          <p className="text-sm font-medium text-gray-300 mb-1">Période</p>
-          <p className="text-sm text-gray-400">
-            {formatDate(cohorte.dateDebut)} - {formatDate(cohorte.dateFin)}
-          </p>
-        </div>
-
-        {/* Tags */}
-        {cohorte.tags && cohorte.tags.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-1">
-            {cohorte.tags.slice(0, 3).map((tag, index) => (
-              <Badge key={index} className="text-xs bg-vaporwave-blue/20 text-vaporwave-blue border-vaporwave-blue/30">
-                {tag}
-              </Badge>
-            ))}
-            {cohorte.tags.length > 3 && (
-              <Badge className="text-xs bg-gray-500/20 text-gray-400 border-gray-500/30">
-                +{cohorte.tags.length - 3}
-              </Badge>
-            )}
+      {/* Progression */}
+      {typeof cohorte.tauxProgression === 'number' && (
+        <div className={styles['card-section']}>
+          <div className="w-full">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-semibold text-gray-400">Progression du programme</span>
+              <span className="text-sm font-bold" style={{ color: neon }}>{progression}%</span>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  background: `linear-gradient(90deg, ${neon}, ${neon}DD)`,
+                  width: `${progression}%`,
+                  transition: 'width 1s ease-out',
+                  boxShadow: `${neon}40 0px 0px 10px`
+                }}
+              />
+            </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Description */}
-        {cohorte.description && (
-          <p className="text-sm text-gray-400 mb-4 line-clamp-2">
-            {cohorte.description}
-          </p>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-2 mt-auto pt-4">
+      {/* Footer boutons */}
+      <div className={styles['card-footer']} style={{ justifyContent: 'space-between' }}>
+        {/* Gauche: Export PDF */}
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button
+            className={styles['card-button']}
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              color: '#87ceeb'
+            }}
+            onClick={exportCohortePdf}
+          >
+            Exporter PDF
+          </button>
+        </div>
+        {/* Droite: Voir + Modifier (modifier réduit et orange) */}
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
           {onView && (
-            <Button
-              size="sm"
-              variant="default"
-              className="flex-1 bg-vaporwave-blue hover:bg-vaporwave-light text-white"
+            <button
+              className={cn(styles['card-button'], styles['card-button-primary'])}
               onClick={() => onView(cohorte)}
             >
               Voir
-            </Button>
+            </button>
           )}
           {onEdit && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex-1 border-vaporwave-blue text-vaporwave-blue hover:bg-vaporwave-blue/10"
+            <button
+              className={styles['card-button']}
+              style={{
+                padding: '0.5rem 0.9rem',
+                fontSize: '0.7rem',
+                background: 'rgba(245, 158, 11, 0.15)',
+                borderColor: '#f59e0b',
+                color: '#f59e0b'
+              }}
               onClick={() => onEdit(cohorte)}
             >
               Modifier
-            </Button>
-          )}
-          {onDelete && (
-            <Button
-              size="sm"
-              variant="destructive"
-              className="flex-1"
-              onClick={() => onDelete(cohorte._id)}
-            >
-              Supprimer
-            </Button>
+            </button>
           )}
         </div>
-      </CardContent>
-    </Card>
+        {/* Bouton supprimer retiré ici pour éviter les erreurs; suppression via le formulaire d'édition */}
+      </div>
+    </div>
   );
 };

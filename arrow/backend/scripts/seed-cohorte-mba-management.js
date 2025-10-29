@@ -1,7 +1,7 @@
 /*
-  Seed deux cohortes dans la base MongoDB `arrow`, collection `cohortes`.
+  Seed une cohorte MBA Management dans la base MongoDB `arrow`, collection `cohortes`.
   Exécution:
-    node scripts/seed-cohortes.js
+    node scripts/seed-cohorte-mba-management.js
   Optionnel: définir MONGODB_URI, sinon défaut mongodb://localhost/arrow
 */
 
@@ -57,60 +57,32 @@ async function main() {
 
   const Cohorte = mongoose.model('Cohorte', CohorteSchema);
 
-  const now = new Date();
+  const doc = {
+    nom: 'MBA Management 2024',
+    anneeScolaire: '2024-2025',
+    typeFormation: 'Mastère',
+    diplome: 'MBA Management',
+    statut: 'En préparation',
+    dateDebut: new Date('2024-10-07'),
+    dateFin: new Date('2025-07-11'),
+    volumeHoraireTotal: 520,
+    etudiants: [],
+    intervenants: [],
+    modules: [],
+    cours: [],
+    dossiersCours: ['https://cdn.arrow/assets/mba-management/s1'],
+    tauxPresenceMoyen: 0,
+    tauxProgression: 0,
+    dernierAppel: null,
+    nbSessionsPrevues: 100,
+    nbSessionsEffectuees: 0,
+    createdBy: undefined,
+    notesInternes: 'MBA axé leadership, stratégie et finance. Recrutements en cours.',
+    tags: ['Mastère', 'Présentiel'],
+  };
 
-  const docs = [
-    {
-      nom: 'Bachelor Design UI 2024',
-      anneeScolaire: '2024-2025',
-      typeFormation: 'Bachelor',
-      diplome: 'Bachelor Design UI',
-      statut: 'Active',
-      dateDebut: new Date('2024-09-16'),
-      dateFin: new Date('2025-06-20'),
-      volumeHoraireTotal: 420,
-      etudiants: [],
-      intervenants: [],
-      modules: [],
-      cours: [],
-      dossiersCours: ['https://cdn.arrow/assets/design-ui/s1', 'drive://cohortes/design-ui-2024'],
-      tauxPresenceMoyen: 92,
-      tauxProgression: 48,
-      dernierAppel: now,
-      nbSessionsPrevues: 80,
-      nbSessionsEffectuees: 38,
-      createdBy: undefined,
-      notesInternes: 'Groupe motivé, progression conforme. Prévoir atelier Figma avancé.',
-      tags: ['Bachelor', 'Présentiel'],
-    },
-    {
-      nom: 'BTS Développement Web 2024',
-      anneeScolaire: '2024-2025',
-      typeFormation: 'BTS',
-      diplome: 'BTS SIO Option SLAM',
-      statut: 'En préparation',
-      dateDebut: new Date('2024-10-01'),
-      dateFin: new Date('2025-07-04'),
-      volumeHoraireTotal: 600,
-      etudiants: [],
-      intervenants: [],
-      modules: [],
-      cours: [],
-      dossiersCours: ['https://cdn.arrow/assets/bts-dev/s1'],
-      tauxPresenceMoyen: 0,
-      tauxProgression: 0,
-      dernierAppel: null,
-      nbSessionsPrevues: 120,
-      nbSessionsEffectuees: 0,
-      createdBy: undefined,
-      notesInternes: 'En phase de constitution. Recrutements intervenants back-end à finaliser.',
-      tags: ['BTS', 'En ligne'],
-    },
-  ];
-
-  const result = await Cohorte.insertMany(docs);
-  console.log(`Inserted ${result.length} cohortes:`);
-  result.forEach((d) => console.log(` - ${d.nom} (${d._id})`));
+  const result = await Cohorte.insertMany([doc]);
+  console.log(`Inserted ${result.length} cohorte: ${result[0].nom} (${result[0]._id})`);
 
   await mongoose.disconnect();
   console.log('Done.');
@@ -120,6 +92,5 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
 
 
