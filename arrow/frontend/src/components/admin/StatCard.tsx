@@ -3,6 +3,7 @@ import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import styles from './StatCard.module.css';
 
 interface StatCardProps {
   icon: LucideIcon;
@@ -64,10 +65,7 @@ export function StatCard({
   return (
     <div
       onClick={handleClick}
-      className={cn(
-        "cursor-pointer rounded-xl p-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl",
-        href && "cursor-pointer"
-      )}
+      className={cn(styles.card, !href && styles.disabled)}
       style={{
         background: `linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6))`,
         border: `2px solid ${color}40`,
@@ -83,9 +81,9 @@ export function StatCard({
       }}
     >
       {/* Header avec icon et trend */}
-      <div className="flex items-start justify-between mb-4">
+      <div className={styles['card-header']}>
         <div
-          className="p-3 rounded-lg"
+          className={styles['icon-container']}
           style={{
             background: `${color}20`,
           }}
@@ -93,14 +91,14 @@ export function StatCard({
           <Icon size={32} style={{ color }} />
         </div>
         {trend !== 0 && (
-          <div className="flex items-center gap-1">
+          <div className={styles['trend-container']}>
             {isPositive ? (
-              <TrendingUp size={16} style={{ color: '#10B981' }} />
+              <TrendingUp size={16} className={styles['trend-icon']} style={{ color: '#10B981' }} />
             ) : (
-              <TrendingDown size={16} style={{ color: '#EF4444' }} />
+              <TrendingDown size={16} className={styles['trend-icon']} style={{ color: '#EF4444' }} />
             )}
             <span
-              className="text-xs font-semibold"
+              className={styles['trend-text']}
               style={{ color: isPositive ? '#10B981' : '#EF4444' }}
             >
               {isPositive ? '+' : ''}{trend.toFixed(1)}%
@@ -110,15 +108,15 @@ export function StatCard({
       </div>
 
       {/* Chiffre principal */}
-      <div className="mb-2">
+      <div className={styles['content-container']}>
         <h3 
-          className="text-4xl font-black mb-1"
+          className={styles.value}
           style={{ color }}
         >
           {Math.round(animatedValue).toLocaleString()}{suffix}
         </h3>
         <p 
-          className="text-sm font-bold uppercase tracking-wide"
+          className={styles.title}
           style={{ color: '#87ceeb' }}
         >
           {title}
@@ -127,7 +125,7 @@ export function StatCard({
 
       {/* Sparkline */}
       {sparklineData.length > 0 && (
-        <div className="mt-4 h-10">
+        <div className={styles['sparkline-container']}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
               <defs>

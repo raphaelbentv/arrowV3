@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, Home, Users, GraduationCap, BookOpen, Calendar, FileText, Settings, BarChart3, Search } from 'lucide-react';
+import { Menu, X, Home, Users, GraduationCap, BookOpen, Calendar, FileText, Settings, BarChart3, Search, UserCog, Phone, ShieldPlus } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 import styles from './navbar.module.css';
 import { cn } from '@/lib/utils';
@@ -22,10 +22,12 @@ interface NavbarProps {
 // Configuration de navigation par rôle
 const navConfigs: Record<string, NavItem[]> = {
   admin: [
-    { label: 'Dashboard', href: '/admin/dashboard', icon: Home },
-    { label: 'Cohortes', href: '/admin/cohortes', icon: GraduationCap },
-    { label: 'Utilisateurs', href: '/admin/users', icon: Users },
-    { label: 'Intervenants', href: '/admin/intervenant-list', icon: BookOpen },
+    { label: 'Étudiants', href: '/admin/students', icon: GraduationCap },
+    { label: 'Intervenants', href: '/admin/intervenant-list', icon: UserCog },
+    { label: 'Administrateurs', href: '/admin/administrators', icon: ShieldPlus },
+    { label: 'Cohortes', href: '/admin/cohortes', icon: BookOpen },
+    { label: 'Cours / Matières', href: '/admin/courses', icon: BookOpen },
+    { label: 'Appels', href: '/admin/calls', icon: Phone },
   ],
   intervenant: [
     { label: 'Tableau de bord', href: '/intervenant/dashboard', icon: Home },

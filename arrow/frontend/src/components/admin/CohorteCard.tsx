@@ -3,6 +3,7 @@ import { Users, User, Calendar, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './ProgressBar';
 import { cn } from '@/lib/utils';
+import styles from './cards.module.css';
 
 interface CohorteCardProps {
   cohorte: {
@@ -27,7 +28,7 @@ export function CohorteCard({ cohorte, onViewDetails, onViewPlanning }: CohorteC
     if (onViewDetails) {
       onViewDetails(cohorte.id);
     } else {
-      navigate(`/admin/cohortes/${cohorte.id}`);
+      navigate('/admin/cohortes');
     }
   };
 
@@ -36,52 +37,46 @@ export function CohorteCard({ cohorte, onViewDetails, onViewPlanning }: CohorteC
     if (onViewPlanning) {
       onViewPlanning(cohorte.id);
     } else {
-      navigate(`/admin/cohortes/${cohorte.id}/planning`);
+      navigate('/admin/cohortes');
     }
   };
 
   const handleViewStats = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/admin/cohortes/${cohorte.id}/stats`);
+    navigate('/admin/cohortes');
   };
 
   return (
     <div
-      className={cn(
-        "rounded-xl p-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl cursor-pointer",
-      )}
+      className={cn(styles['base-card'], styles['card-clickable'], styles['cohorte-card'])}
       style={{
-        background: 'rgba(0, 0, 0, 0.6)',
-        border: '2px solid rgba(61, 155, 255, 0.3)',
         borderTop: `4px solid ${cohorte.color}`,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderTopColor = cohorte.color;
         e.currentTarget.style.borderTopWidth = '6px';
         e.currentTarget.style.boxShadow = `0 12px 48px ${cohorte.color}40`;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderTopColor = cohorte.color;
         e.currentTarget.style.borderTopWidth = '4px';
         e.currentTarget.style.boxShadow = 'none';
       }}
       onClick={handleViewDetails}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2">
+      <div className={styles['card-header']}>
+        <div className={styles['card-row']} style={{ marginBottom: 0 }}>
           <span className="text-2xl">🎓</span>
           <h4 
-            className="text-xl font-bold"
-            style={{ color: cohorte.color }}
+            className={styles['card-title']}
+            style={{ color: cohorte.color, margin: 0, fontSize: '1.25rem' }}
           >
             {cohorte.name}
           </h4>
         </div>
         <span 
-          className="px-3 py-1 rounded-full text-xs font-bold uppercase"
+          className={styles['card-badge']}
           style={{
-            background: cohorte.status === 'active' ? `${cohorte.color}20` : '#gray-50020',
+            background: cohorte.status === 'active' ? `${cohorte.color}20` : 'rgba(128, 128, 128, 0.2)',
             color: cohorte.color,
             border: `1px solid ${cohorte.color}60`,
           }}
@@ -91,27 +86,37 @@ export function CohorteCard({ cohorte, onViewDetails, onViewPlanning }: CohorteC
       </div>
 
       {/* Grid d'infos */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="flex items-center gap-2">
-          <Users size={18} style={{ color: '#87ceeb' }} />
-          <span className="text-sm text-gray-400">{cohorte.students} étudiants</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <User size={18} style={{ color: '#87ceeb' }} />
-          <span className="text-sm text-gray-400">{cohorte.intervenant}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Calendar size={18} style={{ color: '#87ceeb' }} />
-          <span className="text-sm text-gray-400">{cohorte.nextSession}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <TrendingUp size={18} style={{ color: '#87ceeb' }} />
-          <span className="text-sm text-gray-400">Active</span>
+      <div className={styles['card-section']}>
+        <div className={styles['card-grid']} style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <Users size={18} style={{ color: '#87ceeb' }} />
+            </div>
+            <span className={styles['card-text-secondary']}>{cohorte.students} étudiants</span>
+          </div>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <User size={18} style={{ color: '#87ceeb' }} />
+            </div>
+            <span className={styles['card-text-secondary']}>{cohorte.intervenant}</span>
+          </div>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <Calendar size={18} style={{ color: '#87ceeb' }} />
+            </div>
+            <span className={styles['card-text-secondary']}>{cohorte.nextSession}</span>
+          </div>
+          <div className={styles['card-row']}>
+            <div className={styles['card-icon-container']} style={{ padding: '0.5rem' }}>
+              <TrendingUp size={18} style={{ color: '#87ceeb' }} />
+            </div>
+            <span className={styles['card-text-secondary']}>Active</span>
+          </div>
         </div>
       </div>
 
       {/* Barre de progression */}
-      <div className="mb-4">
+      <div className={styles['card-section']}>
         <ProgressBar 
           value={cohorte.progress} 
           color={cohorte.color}
@@ -121,35 +126,27 @@ export function CohorteCard({ cohorte, onViewDetails, onViewPlanning }: CohorteC
       </div>
 
       {/* Footer avec boutons */}
-      <div className="flex gap-2 mt-4">
+      <div className={styles['card-footer']}>
         <button
           onClick={handleViewDetails}
-          className="flex-1 py-2 px-4 rounded-lg font-bold uppercase tracking-[0.1em] text-xs transition-all hover:scale-105"
-          style={{
-            background: `${cohorte.color}20`,
-            border: `2px solid ${cohorte.color}`,
-            color: cohorte.color,
-          }}
+          className={cn(styles['card-button'], styles['card-button-primary'])}
+          style={{ flex: 1, background: `${cohorte.color}20`, borderColor: cohorte.color, color: cohorte.color }}
         >
           Voir cohorte
         </button>
         <button
           onClick={handleViewPlanning}
-          className="flex-1 py-2 px-4 rounded-lg font-bold uppercase tracking-[0.1em] text-xs transition-all hover:scale-105"
-          style={{
-            background: 'rgba(61, 155, 255, 0.1)',
-            border: '2px solid rgba(61, 155, 255, 0.5)',
-            color: '#87ceeb',
-          }}
+          className={cn(styles['card-button'], styles['card-button-primary'])}
+          style={{ flex: 1 }}
         >
           Planning
         </button>
         <button
           onClick={handleViewStats}
-          className="px-4 py-2 rounded-lg font-bold uppercase tracking-[0.1em] text-xs transition-all hover:scale-105"
+          className={styles['card-button']}
           style={{
             background: 'rgba(255, 255, 255, 0.05)',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
+            borderColor: 'rgba(255, 255, 255, 0.2)',
             color: '#87ceeb',
           }}
         >

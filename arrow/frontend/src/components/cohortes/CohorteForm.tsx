@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Separator } from '@/components/ui/separator';
 import { Chip } from '@/components/ui/chip';
 import { Plus, Loader2 } from 'lucide-react';
 import { CohorteFormData, CreateCohorteDto, Cohorte, TypeFormation, StatutCohorte, TypeFinancement } from '../../types/cohorte';
@@ -82,6 +82,24 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
     tags: '',
   });
 
+  // Styles communs pour les champs (inspiré des inputs Admin)
+  const commonInputStyle: React.CSSProperties = {
+    background: 'rgba(0,0,0,0.5)',
+    border: '2px solid rgba(61,155,255,0.35)',
+    color: '#87ceeb',
+    height: '56px',
+    padding: '0.875rem 1rem',
+    fontSize: '1rem',
+  };
+
+  // Ouverture des selects pour créer de l'espace et éviter le chevauchement
+  const [openSelects, setOpenSelects] = useState({
+    annee: false,
+    typeFormation: false,
+    statut: false,
+    typeFinanceur: false,
+  });
+
   useEffect(() => {
     if (cohorte) {
       setFormData({
@@ -95,14 +113,14 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
         formationAssociee: cohorte.formationAssociee || '',
 
         // Composition
-        nombreEtudiantsPrevu: cohorte.nombreEtudiantsPrevu,
-        nombreEtudiantsInscrits: cohorte.nombreEtudiantsInscrits,
+        nombreEtudiantsPrevu: cohorte.nombreEtudiantsPrevu ?? 0,
+        nombreEtudiantsInscrits: cohorte.nombreEtudiantsInscrits ?? 0,
         responsablePedagogique: cohorte.responsablePedagogique || '',
 
         // Organisation
         dateDebut: cohorte.dateDebut.split('T')[0],
         dateFin: cohorte.dateFin.split('T')[0],
-        volumeHoraireTotal: cohorte.volumeHoraireTotal,
+        volumeHoraireTotal: cohorte.volumeHoraireTotal ?? 0,
 
         // Structure pédagogique
         matieres: cohorte.matieres || [],
@@ -111,9 +129,9 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
 
         // Suivi administratif
         statut: cohorte.statut,
-        nombreEtudiantsFinances: cohorte.nombreEtudiantsFinances,
-        nombreEtudiantsAutofinances: cohorte.nombreEtudiantsAutofinances,
-        montantTotalFacture: cohorte.montantTotalFacture,
+        nombreEtudiantsFinances: cohorte.nombreEtudiantsFinances ?? 0,
+        nombreEtudiantsAutofinances: cohorte.nombreEtudiantsAutofinances ?? 0,
+        montantTotalFacture: cohorte.montantTotalFacture ?? 0,
         typeFinanceur: cohorte.typeFinanceur || TypeFinancement.OPCO,
         nomFinanceur: cohorte.nomFinanceur || '',
 
@@ -256,22 +274,39 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card 
+      className="w-full max-w-4xl mx-auto"
+      style={{
+        background: 'rgba(0,0,0,0.55)',
+        border: '2px solid rgba(61, 155, 255, 0.35)',
+        borderRadius: 12,
+        boxShadow: '0 12px 48px rgba(61, 155, 255, 0.12)'
+      }}
+    >
       <CardHeader>
-        <CardTitle>
+        <CardTitle
+          className="uppercase tracking-[0.12em] font-black"
+          style={{
+            background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            filter: 'drop-shadow(0 0 18px rgba(61, 155, 255, 0.35))'
+          }}
+        >
           {cohorte ? 'Modifier la cohorte' : 'Créer une nouvelle cohorte'}
         </CardTitle>
+        <p className="mt-1 text-sm" style={{ color: '#87ceeb' }}>
+          Renseignez les informations ci-dessous. Les champs marqués d’un * sont requis.
+        </p>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* 🧱 Informations générales */}
-          <Accordion defaultValue="general">
-            <AccordionItem value="general">
-              <AccordionTrigger>🧱 Informations générales</AccordionTrigger>
-              <AccordionContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-xl font-black uppercase tracking-[0.1em]" style={{ color: '#87ceeb' }}>🧱 Informations générales</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <Label htmlFor="nom">Nom de la cohorte *</Label>
+                    <Label htmlFor="nom" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Nom de la cohorte *</Label>
                     <Input
                       id="nom"
                       name="nom"
@@ -279,30 +314,44 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       onChange={handleChange}
                       placeholder="Ex: BTS COM1 2024–2025"
                       className={errors.nom ? 'border-red-500' : ''}
+                      style={commonInputStyle}
                     />
                     {errors.nom && <p className="text-sm text-red-500 mt-1">{errors.nom}</p>}
                   </div>
 
-                  <div>
-                    <Label htmlFor="anneeScolaire">Année scolaire *</Label>
-                    <Input
-                      id="anneeScolaire"
-                      name="anneeScolaire"
+                  <div style={{ marginBottom: openSelects.annee ? 200 : 0 }}>
+                    <Label htmlFor="anneeScolaire" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Année scolaire *</Label>
+                    <Select 
+                      open={openSelects.annee}
+                      onOpenChange={(o) => setOpenSelects((s) => ({ ...s, annee: o }))}
                       value={formData.anneeScolaire}
-                      onChange={handleChange}
-                      placeholder="Ex: 2024-2025"
-                      className={errors.anneeScolaire ? 'border-red-500' : ''}
-                    />
+                      onValueChange={(value) => handleSelectChange('anneeScolaire', value)}
+                    >
+                      <SelectTrigger 
+                        id="anneeScolaire"
+                        className={`${errors.anneeScolaire ? 'border-red-500' : ''} h-14`}
+                        style={{ background: 'rgba(0,0,0,0.5)', border: '2px solid rgba(61,155,255,0.35)', color: '#87ceeb' }}
+                      >
+                        <SelectValue placeholder="Choisir l'année" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2023-2024">2023-2024</SelectItem>
+                        <SelectItem value="2024-2025">2024-2025</SelectItem>
+                        <SelectItem value="2025-2026">2025-2026</SelectItem>
+                      </SelectContent>
+                    </Select>
                     {errors.anneeScolaire && <p className="text-sm text-red-500 mt-1">{errors.anneeScolaire}</p>}
                   </div>
 
-                  <div>
-                    <Label htmlFor="typeFormation">Type de formation *</Label>
+                  <div style={{ marginBottom: openSelects.typeFormation ? 200 : 0 }}>
+                    <Label htmlFor="typeFormation" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Type de formation *</Label>
                     <Select 
+                      open={openSelects.typeFormation}
+                      onOpenChange={(o) => setOpenSelects((s) => ({ ...s, typeFormation: o }))}
                       value={formData.typeFormation} 
                       onValueChange={(value) => handleSelectChange('typeFormation', value)}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-14" style={{ background: 'rgba(0,0,0,0.5)', border: '2px solid rgba(61,155,255,0.35)', color: '#87ceeb' }}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -315,59 +364,63 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="diplomeVise">Diplôme visé</Label>
+                    <Label htmlFor="diplomeVise" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Diplôme visé</Label>
                     <Input
                       id="diplomeVise"
                       name="diplomeVise"
                       value={formData.diplomeVise}
                       onChange={handleChange}
                       placeholder="Ex: BTS Communication"
+                      className="w-full"
+                      style={commonInputStyle}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="niveauRNCP">Niveau RNCP</Label>
+                    <Label htmlFor="niveauRNCP" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Niveau RNCP</Label>
                     <Input
                       id="niveauRNCP"
                       name="niveauRNCP"
                       value={formData.niveauRNCP}
                       onChange={handleChange}
                       placeholder="Ex: Niveau 5"
+                      className="w-full"
+                      style={commonInputStyle}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="etablissement">Établissement</Label>
+                    <Label htmlFor="etablissement" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Établissement</Label>
                     <Input
                       id="etablissement"
                       name="etablissement"
                       value={formData.etablissement}
                       onChange={handleChange}
                       placeholder="Ex: École Supérieure de Commerce"
+                      className="w-full"
+                      style={commonInputStyle}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <Label htmlFor="formationAssociee">Formation associée</Label>
+                    <Label htmlFor="formationAssociee" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Formation associée</Label>
                     <Input
                       id="formationAssociee"
                       name="formationAssociee"
                       value={formData.formationAssociee}
                       onChange={handleChange}
                       placeholder="Ex: REF-FORM-001"
+                      className="w-full"
+                      style={commonInputStyle}
                     />
                   </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+          </div>
 
-            {/* 👥 Composition */}
-            <AccordionItem value="composition">
-              <AccordionTrigger>👥 Composition</AccordionTrigger>
-              <AccordionContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Separator className="my-6" style={{ height: 2, background: 'linear-gradient(90deg, transparent, #3d9bff, transparent)' }} />
+          <h3 className="text-xl font-black uppercase tracking-[0.1em]" style={{ color: '#87ceeb' }}>👥 Composition</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <Label htmlFor="nombreEtudiantsPrevu">Nombre d'étudiants prévu</Label>
+                    <Label htmlFor="nombreEtudiantsPrevu" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Nombre d'étudiants prévu</Label>
                     <Input
                       id="nombreEtudiantsPrevu"
                       name="nombreEtudiantsPrevu"
@@ -375,11 +428,12 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.nombreEtudiantsPrevu}
                       onChange={handleNumberChange}
                       min={0}
+                      style={commonInputStyle}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="nombreEtudiantsInscrits">Nombre d'étudiants inscrits</Label>
+                    <Label htmlFor="nombreEtudiantsInscrits" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Nombre d'étudiants inscrits</Label>
                     <Input
                       id="nombreEtudiantsInscrits"
                       name="nombreEtudiantsInscrits"
@@ -388,31 +442,29 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       onChange={handleNumberChange}
                       min={0}
                       className={errors.nombreEtudiantsInscrits ? 'border-red-500' : ''}
+                      style={commonInputStyle}
                     />
                     {errors.nombreEtudiantsInscrits && <p className="text-sm text-red-500 mt-1">{errors.nombreEtudiantsInscrits}</p>}
                   </div>
 
                   <div className="md:col-span-2">
-                    <Label htmlFor="responsablePedagogique">Responsable pédagogique</Label>
+                    <Label htmlFor="responsablePedagogique" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Responsable pédagogique</Label>
                     <Input
                       id="responsablePedagogique"
                       name="responsablePedagogique"
                       value={formData.responsablePedagogique}
                       onChange={handleChange}
                       placeholder="Ex: professeur@ecole.fr"
+                      style={commonInputStyle}
                     />
                   </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
 
-            {/* 📅 Organisation et planification */}
-            <AccordionItem value="organisation">
-              <AccordionTrigger>📅 Organisation et planification</AccordionTrigger>
-              <AccordionContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Separator className="my-6" style={{ height: 2, background: 'linear-gradient(90deg, transparent, #87ceeb, transparent)' }} />
+          <h3 className="text-xl font-black uppercase tracking-[0.1em]" style={{ color: '#87ceeb' }}>📅 Organisation et planification</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <Label htmlFor="dateDebut">Date de début *</Label>
+                    <Label htmlFor="dateDebut" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Date de début *</Label>
                     <Input
                       id="dateDebut"
                       name="dateDebut"
@@ -420,12 +472,13 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.dateDebut}
                       onChange={handleChange}
                       className={errors.dateDebut ? 'border-red-500' : ''}
+                      style={commonInputStyle}
                     />
                     {errors.dateDebut && <p className="text-sm text-red-500 mt-1">{errors.dateDebut}</p>}
                   </div>
 
                   <div>
-                    <Label htmlFor="dateFin">Date de fin *</Label>
+                    <Label htmlFor="dateFin" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Date de fin *</Label>
                     <Input
                       id="dateFin"
                       name="dateFin"
@@ -433,12 +486,13 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.dateFin}
                       onChange={handleChange}
                       className={errors.dateFin ? 'border-red-500' : ''}
+                      style={commonInputStyle}
                     />
                     {errors.dateFin && <p className="text-sm text-red-500 mt-1">{errors.dateFin}</p>}
                   </div>
 
                   <div>
-                    <Label htmlFor="volumeHoraireTotal">Volume horaire total</Label>
+                    <Label htmlFor="volumeHoraireTotal" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Volume horaire total</Label>
                     <Input
                       id="volumeHoraireTotal"
                       name="volumeHoraireTotal"
@@ -446,19 +500,16 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.volumeHoraireTotal}
                       onChange={handleNumberChange}
                       min={0}
+                      style={commonInputStyle}
                     />
                   </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
 
-            {/* 📂 Structure pédagogique */}
-            <AccordionItem value="pedagogie">
-              <AccordionTrigger>📂 Structure pédagogique</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
+          <Separator className="my-6" style={{ height: 2, background: 'linear-gradient(90deg, transparent, #5dbaff, transparent)' }} />
+          <h3 className="text-xl font-black uppercase tracking-[0.1em]" style={{ color: '#87ceeb' }}>📂 Structure pédagogique</h3>
+          <div className="space-y-4">
                   <div>
-                    <Label>Matières</Label>
+                    <Label className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Matières</Label>
                     <div className="flex gap-2 mt-2">
                       <Input
                         placeholder="Ajouter une matière"
@@ -470,6 +521,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                             addToList('matieres');
                           }
                         }}
+                        style={commonInputStyle}
                       />
                       <Button type="button" onClick={() => addToList('matieres')} size="icon">
                         <Plus className="h-4 w-4" />
@@ -490,7 +542,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label>Modules</Label>
+                    <Label className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Modules</Label>
                     <div className="flex gap-2 mt-2">
                       <Input
                         placeholder="Ajouter un module"
@@ -502,6 +554,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                             addToList('modules');
                           }
                         }}
+                        style={commonInputStyle}
                       />
                       <Button type="button" onClick={() => addToList('modules')} size="icon">
                         <Plus className="h-4 w-4" />
@@ -522,7 +575,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="progressionPedagogique">Progression pédagogique</Label>
+                    <Label htmlFor="progressionPedagogique" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Progression pédagogique</Label>
                     <Textarea
                       id="progressionPedagogique"
                       name="progressionPedagogique"
@@ -533,18 +586,14 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                     />
                   </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
 
-            {/* 🔍 Suivi administratif et financier */}
-            <AccordionItem value="admin">
-              <AccordionTrigger>🔍 Suivi administratif et financier</AccordionTrigger>
-              <AccordionContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="statut">Statut</Label>
-                    <Select value={formData.statut} onValueChange={(value) => handleSelectChange('statut', value)}>
-                      <SelectTrigger>
+          <Separator className="my-6" style={{ height: 2, background: 'linear-gradient(90deg, transparent, #ff6b6b, transparent)' }} />
+          <h3 className="text-xl font-black uppercase tracking-[0.1em]" style={{ color: '#87ceeb' }}>🔍 Suivi administratif et financier</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div style={{ marginBottom: openSelects.statut ? 200 : 0 }}>
+                    <Label htmlFor="statut" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Statut</Label>
+                    <Select open={openSelects.statut} onOpenChange={(o) => setOpenSelects((s) => ({ ...s, statut: o }))} value={formData.statut} onValueChange={(value) => handleSelectChange('statut', value)}>
+                      <SelectTrigger className="h-14" style={{ background: 'rgba(0,0,0,0.5)', border: '2px solid rgba(61,155,255,0.35)', color: '#87ceeb' }}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -556,7 +605,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="nombreEtudiantsFinances">Nombre d'étudiants financés</Label>
+                    <Label htmlFor="nombreEtudiantsFinances" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Nombre d'étudiants financés</Label>
                     <Input
                       id="nombreEtudiantsFinances"
                       name="nombreEtudiantsFinances"
@@ -564,11 +613,12 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.nombreEtudiantsFinances}
                       onChange={handleNumberChange}
                       min={0}
+                      style={commonInputStyle}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="nombreEtudiantsAutofinances">Nombre d'étudiants autofinancés</Label>
+                    <Label htmlFor="nombreEtudiantsAutofinances" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Nombre d'étudiants autofinancés</Label>
                     <Input
                       id="nombreEtudiantsAutofinances"
                       name="nombreEtudiantsAutofinances"
@@ -576,11 +626,12 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.nombreEtudiantsAutofinances}
                       onChange={handleNumberChange}
                       min={0}
+                      style={commonInputStyle}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="montantTotalFacture">Montant total facturé (€)</Label>
+                    <Label htmlFor="montantTotalFacture" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Montant total facturé (€)</Label>
                     <Input
                       id="montantTotalFacture"
                       name="montantTotalFacture"
@@ -588,13 +639,14 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                       value={formData.montantTotalFacture}
                       onChange={handleNumberChange}
                       min={0}
+                      style={commonInputStyle}
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="typeFinanceur">Type de financeur</Label>
-                    <Select value={formData.typeFinanceur} onValueChange={(value) => handleSelectChange('typeFinanceur', value)}>
-                      <SelectTrigger>
+                  <div style={{ marginBottom: openSelects.typeFinanceur ? 200 : 0 }}>
+                    <Label htmlFor="typeFinanceur" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Type de financeur</Label>
+                    <Select open={openSelects.typeFinanceur} onOpenChange={(o) => setOpenSelects((s) => ({ ...s, typeFinanceur: o }))} value={formData.typeFinanceur} onValueChange={(value) => handleSelectChange('typeFinanceur', value)}>
+                      <SelectTrigger className="h-14" style={{ background: 'rgba(0,0,0,0.5)', border: '2px solid rgba(61,155,255,0.35)', color: '#87ceeb' }}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -608,26 +660,23 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="nomFinanceur">Nom du financeur</Label>
+                    <Label htmlFor="nomFinanceur" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Nom du financeur</Label>
                     <Input
                       id="nomFinanceur"
                       name="nomFinanceur"
                       value={formData.nomFinanceur}
                       onChange={handleChange}
                       placeholder="Ex: OPCO EP"
+                      style={commonInputStyle}
                     />
                   </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
 
-            {/* 🧾 Métadonnées et traçabilité */}
-            <AccordionItem value="metadata">
-              <AccordionTrigger>🧾 Métadonnées et traçabilité</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
+          <Separator className="my-6" style={{ height: 2, background: 'linear-gradient(90deg, transparent, #a78bfa, transparent)' }} />
+          <h3 className="text-xl font-black uppercase tracking-[0.1em]" style={{ color: '#87ceeb' }}>🧾 Métadonnées et traçabilité</h3>
+          <div className="space-y-4">
                   <div>
-                    <Label htmlFor="commentairesInternes">Commentaires internes</Label>
+                    <Label htmlFor="commentairesInternes" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Commentaires internes</Label>
                     <Textarea
                       id="commentairesInternes"
                       name="commentairesInternes"
@@ -639,7 +688,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label>Tags</Label>
+                    <Label className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Tags</Label>
                     <div className="flex gap-2 mt-2">
                       <Input
                         placeholder="Ajouter un tag"
@@ -651,6 +700,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                             addToList('tags');
                           }
                         }}
+                        style={commonInputStyle}
                       />
                       <Button type="button" onClick={() => addToList('tags')} size="icon">
                         <Plus className="h-4 w-4" />
@@ -671,7 +721,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description" className="font-semibold tracking-wide" style={{ color: '#87ceeb' }}>Description</Label>
                     <Textarea
                       id="description"
                       name="description"
@@ -682,22 +732,32 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                     />
                   </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex justify-end gap-3 pt-6">
             <Button
               type="button"
               variant="outline"
               onClick={onCancel}
               disabled={isLoading}
+              className="uppercase tracking-[0.08em]"
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                border: '2px solid rgba(61,155,255,0.35)',
+                color: '#87ceeb'
+              }}
             >
               Annuler
             </Button>
             <Button
               type="submit"
               disabled={isLoading}
+              className="font-bold uppercase tracking-[0.1em]"
+              style={{
+                background: '#3d9bff',
+                color: '#000',
+                border: '2px solid #5dbaff',
+                boxShadow: '0 10px 30px rgba(61, 155, 255, 0.35)'
+              }}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isLoading ? 'Enregistrement...' : cohorte ? 'Modifier' : 'Créer'}

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type CohorteDocument = Cohorte & Document;
 
@@ -13,9 +13,9 @@ export enum TypeFormation {
 
 // Enum pour les statuts de cohorte
 export enum StatutCohorte {
-  EN_PREPARATION = 'en_preparation',
-  ACTIVE = 'active',
-  CLOTUREE = 'cloturee'
+  EN_PREPARATION = 'En préparation',
+  ACTIVE = 'Active',
+  CLOTUREE = 'Clôturée'
 }
 
 // Enum pour les types de financement
@@ -27,126 +27,82 @@ export enum TypeFinancement {
   AUTRE = 'Autre'
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'cohortes' })
 export class Cohorte {
-  // 🧱 Informations générales
+  // --- Identification ---
   @Prop({ required: true })
   nom: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: ['2023-2024', '2024-2025', '2025-2026'] })
   anneeScolaire: string;
 
   @Prop({ required: true, enum: TypeFormation })
   typeFormation: TypeFormation;
 
   @Prop()
-  diplomeVise?: string;
+  diplome?: string;
 
-  @Prop()
-  niveauRNCP?: string;
-
-  @Prop()
-  etablissement?: string;
-
-  @Prop()
-  formationAssociee?: string;
-
-  // 👥 Composition
-  @Prop({ default: 0 })
-  nombreEtudiantsPrevu: number;
-
-  @Prop({ default: 0 })
-  nombreEtudiantsInscrits: number;
-
-  @Prop({ type: [String], default: [] })
-  etudiants: string[];
-
-  @Prop({ type: [String], default: [] })
-  intervenants: string[];
-
-  @Prop()
-  responsablePedagogique?: string;
-
-  // 📅 Organisation et planification
-  @Prop({ required: true, type: Date })
-  dateDebut: Date;
-
-  @Prop({ required: true, type: Date })
-  dateFin: Date;
-
-  @Prop({ default: 0 })
-  volumeHoraireTotal: number;
-
-  @Prop({
-    type: [{
-      module: String,
-      matiere: String,
-      volumeHoraire: Number,
-      intervenant: String
-    }],
-    default: []
-  })
-  repartitionHeures: {
-    module: string;
-    matiere: string;
-    volumeHoraire: number;
-    intervenant: string;
-  }[];
-
-  // 📂 Structure pédagogique
-  @Prop({ type: [String], default: [] })
-  matieres: string[];
-
-  @Prop({ type: [String], default: [] })
-  modules: string[];
-
-  @Prop()
-  progressionPedagogique?: string;
-
-  @Prop({ type: [String], default: [] })
-  supportsCours: string[];
-
-  // 🔍 Suivi administratif et financier
   @Prop({ required: true, enum: StatutCohorte, default: StatutCohorte.EN_PREPARATION })
   statut: StatutCohorte;
 
-  @Prop({ default: 0 })
-  nombreEtudiantsFinances: number;
+  // --- Organisation ---
+  @Prop({ type: Date })
+  dateDebut: Date;
 
-  @Prop({ default: 0 })
-  nombreEtudiantsAutofinances: number;
+  @Prop({ type: Date })
+  dateFin: Date;
 
-  @Prop({ default: 0 })
-  montantTotalFacture: number;
+  @Prop({ type: Number, default: 0 })
+  volumeHoraireTotal: number;
 
-  @Prop({ enum: TypeFinancement })
-  typeFinanceur?: TypeFinancement;
+  // --- Composition ---
+  @Prop({ type: [Types.ObjectId], ref: 'Apprenants', default: [] })
+  etudiants: Types.ObjectId[];
 
-  @Prop()
-  nomFinanceur?: string;
+  @Prop({ type: [Types.ObjectId], ref: 'Intervenants', default: [] })
+  intervenants: Types.ObjectId[];
 
-  // 🧾 Métadonnées et traçabilité
-  @Prop({ required: true })
-  creePar: string;
+  // --- Structure pédagogique ---
+  @Prop({ type: [Types.ObjectId], ref: 'Modules', default: [] })
+  modules: Types.ObjectId[];
 
-  @Prop({ type: Date, default: Date.now })
-  dateCreation: Date;
-
-  @Prop({ type: Date, default: Date.now })
-  dateDerniereModification: Date;
-
-  @Prop()
-  commentairesInternes?: string;
+  @Prop({ type: [Types.ObjectId], ref: 'Cours', default: [] })
+  cours: Types.ObjectId[];
 
   @Prop({ type: [String], default: [] })
-  tags: string[];
+  dossiersCours: string[];
 
-  // Champs legacy pour compatibilité
+  // --- Suivi pédagogique ---
+  @Prop({ type: Number, default: 0 })
+  tauxPresenceMoyen: number;
+
+  @Prop({ type: Number, default: 0 })
+  tauxProgression: number;
+
+  @Prop({ type: Date })
+  dernierAppel: Date;
+
+  @Prop({ type: Number, default: 0 })
+  nbSessionsPrevues: number;
+
+  @Prop({ type: Number, default: 0 })
+  nbSessionsEffectuees: number;
+
+  // --- Traçabilité & gestion ---
+  @Prop({ type: Types.ObjectId, ref: 'Admin' })
+  createdBy: Types.ObjectId;
+
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+
+  @Prop({ type: Date })
+  updatedAt: Date;
+
   @Prop()
-  description?: string;
+  notesInternes?: string;
 
-  @Prop({ default: true })
-  actif: boolean;
+  @Prop({ type: [String], enum: ['BTS', 'Bachelor', 'Mastère', 'En ligne', 'Présentiel'], default: [] })
+  tags: string[];
 }
 
 export const CohorteSchema = SchemaFactory.createForClass(Cohorte);

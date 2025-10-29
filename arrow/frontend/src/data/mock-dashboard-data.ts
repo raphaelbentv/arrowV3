@@ -26,6 +26,31 @@ export const mockDashboardData = {
       value: 87.5, 
       trend: -2.3, 
       sparkline: [89, 88.5, 88, 87.8, 87.6, 87.5, 87.5] 
+    },
+    successRate: { 
+      value: 92.3, 
+      trend: +3.5, 
+      sparkline: [88, 89, 90, 90.5, 91, 91.5, 92.3] 
+    },
+    satisfaction: { 
+      value: 4.7, 
+      trend: +0.2, 
+      sparkline: [4.5, 4.5, 4.6, 4.6, 4.65, 4.7, 4.7] 
+    },
+    completionRate: { 
+      value: 78.5, 
+      trend: +5.2, 
+      sparkline: [73, 74, 75, 76, 77, 77.5, 78.5] 
+    },
+    scheduledSessions: { 
+      value: 42, 
+      trend: +8, 
+      sparkline: [34, 35, 36, 38, 39, 40, 42] 
+    },
+    retentionRate: { 
+      value: 85.2, 
+      trend: +2.1, 
+      sparkline: [83, 83.5, 84, 84.5, 84.8, 85, 85.2] 
     }
   },
   attendanceChart: Array.from({ length: 30 }, (_, i) => ({

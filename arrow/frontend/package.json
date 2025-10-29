@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "create:cohorte": "node create-cohorte-test.js",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertTriangle, AlertCircle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import styles from './cards.module.css';
 
 interface AlertBadgeProps {
   type: 'risk' | 'conflict' | 'evaluation';
@@ -36,31 +37,37 @@ export function AlertBadge({ type, count, severity, onClick, items = [] }: Alert
   };
 
   return (
-    <div className={cn("rounded-lg border-l-4 p-4 transition-all cursor-pointer", colors.bg, colors.border)}>
+    <div className={cn(styles['base-card'], styles['card-small'], styles['alert-badge'], colors.bg, colors.border)} style={{ borderLeftWidth: '4px', borderLeftStyle: 'solid' }}>
       <div 
         onClick={handleClick}
-        className="flex items-center gap-3"
+        className={styles['card-row']}
       >
-        <Icon size={24} style={{ color: colors.icon }} />
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <span className={cn("font-bold text-lg", colors.text)}>{count}</span>
-            <span className="text-sm text-gray-400 capitalize">{type === 'risk' ? 'Étudiants à risque' : type === 'conflict' ? 'Conflits planning' : 'Évaluations en attente'}</span>
+        <div className={styles['card-icon']}>
+          <Icon size={24} style={{ color: colors.icon }} />
+        </div>
+        <div className={styles['card-content']} style={{ flex: 1 }}>
+          <div className={styles['card-row']} style={{ marginBottom: 0 }}>
+            <span className={cn(styles['card-value'], styles['card-value-small'], colors.text)} style={{ margin: 0 }}>{count}</span>
+            <span className={styles['card-text-secondary']} style={{ textTransform: 'capitalize' }}>
+              {type === 'risk' ? 'Étudiants à risque' : type === 'conflict' ? 'Conflits planning' : 'Évaluations en attente'}
+            </span>
           </div>
           {count > 0 && severity === 'high' && (
-            <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse ml-6 mt-1" />
+            <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse" style={{ marginLeft: '1.5rem', marginTop: '0.25rem' }} />
           )}
         </div>
       </div>
       {expanded && items.length > 0 && (
-        <div className="mt-3 space-y-2 pl-7">
-          {items.slice(0, 3).map((item, index) => (
-            <div key={index} className="text-sm text-gray-400 p-2 rounded bg-black/20">
-              {type === 'risk' && `${item.name} (${item.presence}%)`}
-              {type === 'conflict' && `${item.cohorte} - ${item.conflict}`}
-              {type === 'evaluation' && `${item.student} - ${item.course}`}
-            </div>
-          ))}
+        <div className={styles['card-section']} style={{ paddingLeft: '1.75rem', marginTop: '0.75rem' }}>
+          <div className={styles['card-list']}>
+            {items.slice(0, 3).map((item, index) => (
+              <div key={index} className={styles['card-text-secondary']} style={{ padding: '0.5rem', borderRadius: '6px', background: 'rgba(0, 0, 0, 0.2)' }}>
+                {type === 'risk' && `${item.name} (${item.presence}%)`}
+                {type === 'conflict' && `${item.cohorte} - ${item.conflict}`}
+                {type === 'evaluation' && `${item.student} - ${item.course}`}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

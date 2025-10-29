@@ -8,9 +8,9 @@ export enum TypeFormation {
 
 // Enum pour les statuts de cohorte
 export enum StatutCohorte {
-  EN_PREPARATION = 'en_preparation',
-  ACTIVE = 'active',
-  CLOTUREE = 'cloturee'
+  EN_PREPARATION = 'En préparation',
+  ACTIVE = 'Active',
+  CLOTUREE = 'Clôturée'
 }
 
 // Enum pour les types de financement
@@ -29,55 +29,55 @@ export interface Cohorte {
   nom: string;
   anneeScolaire: string;
   typeFormation: TypeFormation;
-  diplomeVise?: string;
+  diplome?: string;
+  diplomeVise?: string; // alias front éventuel
   niveauRNCP?: string;
   etablissement?: string;
   formationAssociee?: string;
 
-  // 👥 Composition
-  nombreEtudiantsPrevu: number;
-  nombreEtudiantsInscrits: number;
-  etudiants: string[];
-  intervenants: string[];
-  responsablePedagogique?: string;
-
-  // 📅 Organisation et planification
+  // 📅 Organisation
   dateDebut: string;
   dateFin: string;
   volumeHoraireTotal: number;
-  repartitionHeures: {
-    module: string;
-    matiere: string;
-    volumeHoraire: number;
-    intervenant: string;
-  }[];
+
+  // 👥 Composition
+  etudiants: string[];
+  intervenants: string[];
+  nombreEtudiantsPrevu?: number;
+  nombreEtudiantsInscrits?: number;
+  responsablePedagogique?: string;
 
   // 📂 Structure pédagogique
-  matieres: string[];
   modules: string[];
+  cours: string[];
+  dossiersCours: string[];
+  matieres?: string[];
   progressionPedagogique?: string;
-  supportsCours: string[];
 
-  // 🔍 Suivi administratif et financier
+  // 🔍 Suivi pédagogique
   statut: StatutCohorte;
-  nombreEtudiantsFinances: number;
-  nombreEtudiantsAutofinances: number;
-  montantTotalFacture: number;
+  tauxPresenceMoyen: number;
+  tauxProgression: number;
+  dernierAppel: string;
+  nbSessionsPrevues: number;
+  nbSessionsEffectuees: number;
+
+  // 🔍 Suivi administratif et financier (front)
+  nombreEtudiantsFinances?: number;
+  nombreEtudiantsAutofinances?: number;
+  montantTotalFacture?: number;
   typeFinanceur?: TypeFinancement;
   nomFinanceur?: string;
 
   // 🧾 Métadonnées et traçabilité
-  creePar: string;
-  dateCreation: string;
-  dateDerniereModification: string;
-  commentairesInternes?: string;
-  tags: string[];
-
-  // Champs legacy pour compatibilité
-  description?: string;
-  actif: boolean;
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
+  notesInternes?: string;
+  tags: string[];
+  commentairesInternes?: string;
+  description?: string;
+  actif?: boolean;
 }
 
 export interface CreateCohorteDto {

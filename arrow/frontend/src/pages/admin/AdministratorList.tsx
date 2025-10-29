@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit2, Trash2, Search, UserPlus, Loader2, Eye, EyeOff } from 'lucide-react';
-import { Navbar } from '@/components/ui/Navbar';
 import { administratorsService, Administrator } from '../../services/administrators';
 
 // Utilisation de l'interface Administrator du service
@@ -143,18 +142,14 @@ const AdministratorList: React.FC = () => {
 
   if (loading) {
     return (
-      <>
-        <Navbar role="admin" activeLink="/admin/administrators" />
-        <div className="min-h-screen relative overflow-hidden flex items-center justify-center" style={{ background: '#0a0a0a' }}>
-          <Loader2 className="w-12 h-12 animate-spin" style={{ color: '#3d9bff' }} />
-        </div>
-      </>
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center" style={{ background: '#0a0a0a' }}>
+        <Loader2 className="w-12 h-12 animate-spin" style={{ color: '#3d9bff' }} />
+      </div>
     );
   }
 
   return (
     <>
-      <Navbar role="admin" activeLink="/admin/administrators" />
       <div className="min-h-screen relative overflow-hidden" style={{ background: '#0a0a0a' }}>
         <div 
           className="fixed inset-0 opacity-30 pointer-events-none"

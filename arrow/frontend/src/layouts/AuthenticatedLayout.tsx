@@ -19,8 +19,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   };
 
   const role = getRole();
-  // Désactiver la recherche dans la Navbar pour le dashboard admin (elle est dans le dashboard)
-  const showSearch = role === 'admin' && location.pathname !== '/admin/dashboard';
+  // Désactiver la recherche dans la Navbar pour toutes les pages admin
+  const showSearch = role !== 'admin';
 
   const handleSearch = (query: string) => {
     // Ici vous pouvez implémenter la logique de recherche globale
@@ -29,7 +29,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Navbar avec barre de recherche */}
+      {/* Navbar sans barre de recherche pour les admins */}
       <Navbar 
         role={role}
         logoHref={`/${role}/dashboard`}

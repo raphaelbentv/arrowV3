@@ -114,11 +114,13 @@
   /* Règles de marges pour les éléments de structure */
   section {
     margin-bottom: var(--spacing-3xl);
-    margin-left: var(--spacing-xl);
-    margin-right: var(--spacing-xl);
+    margin-left: 0;
+    margin-right: 0;
     margin-top: var(--spacing-2xl);
-    padding-top: var(--spacing-lg);
-    padding-bottom: var(--spacing-lg);
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   article {
@@ -170,8 +172,11 @@
 
   /* Espacement pour les layouts - marges supprimées pour permettre un contrôle précis */
   main {
-    margin: 0;
-    padding: 0;
+    margin: 0 auto;
+    padding: 2rem 32px;
+    max-width: 1400px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   /* Espacement pour les titres */
@@ -186,12 +191,16 @@
     font-size: clamp(2rem, 5vw, 3.5rem);
     margin-bottom: var(--spacing-2xl);
     margin-top: var(--spacing-xl);
+    margin-left: 0;
+    margin-right: 0;
   }
 
   h2 {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     margin-bottom: var(--spacing-xl);
     margin-top: var(--spacing-lg);
+    margin-left: 0;
+    margin-right: 0;
   }
 
   h3 {
@@ -210,10 +219,10 @@
   p {
     margin-top: 0;
     margin-bottom: var(--paragraph-margin-bottom);
-    margin-left: var(--spacing-lg);
-    margin-right: var(--spacing-lg);
-    padding-left: var(--spacing-sm);
-    padding-right: var(--spacing-sm);
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   /* Espacement pour les listes */

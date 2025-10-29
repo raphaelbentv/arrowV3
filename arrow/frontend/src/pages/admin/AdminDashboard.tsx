@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   GraduationCap, 
   UserCog, 
   BookOpen, 
   TrendingUp,
   Layers,
-  RefreshCw,
-  Filter,
-  Search
+  Award,
+  Heart,
+  Target,
+  Calendar,
+  UsersRound
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
-  LineChart, 
-  Line, 
   PieChart, 
   Pie, 
   Cell, 
@@ -26,6 +26,8 @@ import {
 } from 'recharts';
 import { StatCard, AlertBadge, CohorteCard, ActivityItem, ChartCard } from '@/components/admin';
 import { mockDashboardData } from '@/data/mock-dashboard-data';
+import styles from '@/components/admin/StatCard.module.css';
+import cardStyles from '@/components/admin/cards.module.css';
 
 const COLORS = {
   primary: '#3B82F6',
@@ -34,125 +36,32 @@ const COLORS = {
   error: '#EF4444',
   info: '#06B6D4',
   purple: '#8B5CF6',
+  pink: '#EC4899',
 };
 
 // Header du dashboard
-function DashboardHeader({ 
-  lastUpdate, 
-  onRefresh 
-}: { 
-  lastUpdate: Date;
-  onRefresh: () => void;
-}) {
-  const [dateFilter, setDateFilter] = useState('30days');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    // Ici vous pouvez implémenter la logique de recherche
-    console.log('Recherche dashboard:', query);
-  };
-
+function DashboardHeader({ style }: { style?: React.CSSProperties }) {
   return (
-    <div className="mb-8">
-      {/* Titre et date de dernière mise à jour */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 
-            className="text-4xl font-black uppercase tracking-[0.15em] mb-2"
-            style={{
-              background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            Dashboard Admin
-          </h1>
-          <p 
-            className="text-sm font-bold uppercase tracking-[0.2em]"
-            style={{ color: '#87ceeb' }}
-          >
-            Vue d'ensemble en temps réel • Dernière mise à jour : {lastUpdate.toLocaleTimeString()}
-          </p>
-        </div>
-        <button
-          onClick={onRefresh}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold uppercase tracking-[0.1em] text-xs transition-all hover:scale-105"
-          style={{
-            background: 'rgba(61, 155, 255, 0.2)',
-            border: '2px solid #3d9bff',
-            color: '#3d9bff',
-          }}
-        >
-          <RefreshCw size={16} />
-          Actualiser
-        </button>
-      </div>
-
-      {/* Barre de recherche */}
-      <div className="mb-6">
-        <div className="relative max-w-2xl">
-          <Search 
-            size={20} 
-            className="absolute left-4 top-1/2 transform -translate-y-1/2"
-            style={{ color: '#87ceeb' }}
-          />
-          <input
-            type="text"
-            placeholder="Rechercher des cohortes, étudiants, intervenants..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-lg text-sm font-bold uppercase tracking-[0.1em] transition-all focus:outline-none focus:ring-2"
-            style={{
-              background: 'rgba(15, 23, 42, 0.8)',
-              border: '2px solid rgba(61, 155, 255, 0.3)',
-              color: '#87ceeb',
-              boxShadow: '0 0 0 0 rgba(61, 155, 255, 0)',
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = '#3d9bff';
-              e.target.style.boxShadow = '0 0 0 2px rgba(61, 155, 255, 0.2)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'rgba(61, 155, 255, 0.3)';
-              e.target.style.boxShadow = '0 0 0 0 rgba(61, 155, 255, 0)';
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Filtres de date */}
-      <div className="flex items-center gap-2">
-        <Filter size={20} style={{ color: '#87ceeb' }} />
-        <div className="flex gap-2 flex-wrap">
-          {['Aujourd\'hui', '7 jours', '30 jours', 'Personnalisé'].map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setDateFilter(filter.toLowerCase())}
-              className={`px-3 py-1 rounded-lg text-xs font-bold uppercase transition-all ${
-                dateFilter === filter.toLowerCase() 
-                  ? 'bg-[#3d9bff] text-white' 
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div style={{ margin: 0, padding: 0, ...style }}>
+      <h1 
+        className="text-4xl font-black uppercase tracking-[0.15em]"
+        style={{
+          background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          margin: 0,
+          padding: 0,
+        }}
+      >
+        Dashboard Admin
+      </h1>
     </div>
   );
 }
 
 const AdminDashboard: React.FC = () => {
-  const [lastUpdate, setLastUpdate] = useState(new Date());
   const data = mockDashboardData;
-
-  const handleRefresh = () => {
-    setLastUpdate(new Date());
-    // Ici, vous feriez un appel API pour rafraîchir les données
-  };
 
   // Préparer les données pour le graphique de présence
   const attendanceChartData = data.attendanceChart.map(item => ({
@@ -162,19 +71,19 @@ const AdminDashboard: React.FC = () => {
   }));
 
   return (
-    <div className="space-y-8 animate-fade-in" style={{ padding: '2rem' }}>
+    <div className="animate-fade-in" style={{ padding: 0, margin: 0 }}>
         {/* Header */}
-        <DashboardHeader lastUpdate={lastUpdate} onRefresh={handleRefresh} />
+        <DashboardHeader style={{ marginBottom: '4rem' }} />
 
-        {/* Section KPIs - 5 cards */}
-        <section>
+        {/* Section KPIs - Statistiques principales */}
+        <section style={{ margin: 0, padding: 0, marginBottom: '4rem' }}>
           <h2 
             className="text-2xl font-black uppercase tracking-[0.1em] mb-6"
-            style={{ color: '#3d9bff' }}
+            style={{ color: '#3d9bff', margin: 0, padding: 0, marginBottom: '1.5rem' }}
           >
             Résumé Général
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className={styles['cards-container']}>
             <StatCard
               icon={GraduationCap}
               title="Étudiants"
@@ -221,15 +130,57 @@ const AdminDashboard: React.FC = () => {
               href="/admin/calls"
               suffix="%"
             />
+            <StatCard
+              icon={Award}
+              title="Taux de Réussite"
+              value={data.stats.successRate.value}
+              trend={data.stats.successRate.trend}
+              sparklineData={data.stats.successRate.sparkline}
+              color={COLORS.success}
+              suffix="%"
+            />
+            <StatCard
+              icon={Heart}
+              title="Satisfaction"
+              value={data.stats.satisfaction.value}
+              trend={data.stats.satisfaction.trend}
+              sparklineData={data.stats.satisfaction.sparkline}
+              color={COLORS.pink}
+              suffix="/5"
+            />
+            <StatCard
+              icon={Target}
+              title="Taux d'Achèvement"
+              value={data.stats.completionRate.value}
+              trend={data.stats.completionRate.trend}
+              sparklineData={data.stats.completionRate.sparkline}
+              color={COLORS.info}
+              suffix="%"
+            />
+            <StatCard
+              icon={Calendar}
+              title="Sessions Planifiées"
+              value={data.stats.scheduledSessions.value}
+              trend={data.stats.scheduledSessions.trend}
+              sparklineData={data.stats.scheduledSessions.sparkline}
+              color={COLORS.warning}
+            />
+            <StatCard
+              icon={UsersRound}
+              title="Taux de Rétention"
+              value={data.stats.retentionRate.value}
+              trend={data.stats.retentionRate.trend}
+              sparklineData={data.stats.retentionRate.sparkline}
+              color={COLORS.primary}
+              suffix="%"
+            />
           </div>
         </section>
 
         {/* Section Graphiques */}
-        <section>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Graphique principal - LineChart */}
-            <div className="lg:col-span-8">
-              <ChartCard title="Évolution des Présences (30 jours)" height={300}>
+        <section style={{ margin: 0, padding: 0, marginBottom: '4rem' }}>
+          <div className={cardStyles['cards-container-flex']}>
+            <ChartCard title="Évolution des Présences (30 jours)" height={300}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={attendanceChartData}>
                     <defs>
@@ -279,12 +230,9 @@ const AdminDashboard: React.FC = () => {
                   </AreaChart>
                 </ResponsiveContainer>
               </ChartCard>
-            </div>
 
-            {/* Colonne droite - PieChart et Top 3 */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* PieChart Donut */}
-              <ChartCard title="Répartition Présences" height={200}>
+            {/* PieChart Donut */}
+            <ChartCard title="Répartition Présences" height={200}>
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -318,8 +266,8 @@ const AdminDashboard: React.FC = () => {
                 </div>
               </ChartCard>
 
-              {/* Top 3 Cohortes */}
-              <ChartCard title="Top 3 Cohortes" height={150}>
+            {/* Top 3 Cohortes */}
+            <ChartCard title="Top 3 Cohortes" height={150}>
                 <div className="space-y-3">
                   {data.topCohortes.map((cohorte, index) => (
                     <div key={index} className="flex items-center justify-between">
@@ -348,17 +296,14 @@ const AdminDashboard: React.FC = () => {
                   ))}
                 </div>
               </ChartCard>
-            </div>
           </div>
         </section>
 
         {/* Section Suivi Temps Réel */}
-        <section>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Dernières Sessions */}
-            <div className="lg:col-span-7">
-              <ChartCard title="Dernières Sessions" height={400}>
-                <div className="space-y-3 max-h-[340px] overflow-y-auto pr-2">
+        <section style={{ margin: 0, padding: 0, marginBottom: '4rem' }}>
+          <div className={cardStyles['cards-container-flex']}>
+            <ChartCard title="Dernières Sessions" height={400}>
+                <div className={cardStyles['card-list']} style={{ maxHeight: '340px', overflowY: 'auto', paddingRight: '0.5rem' }}>
                   {data.recentSessions.map((session) => {
                     const presenceColor = 
                       session.presence >= 90 ? COLORS.success :
@@ -370,34 +315,54 @@ const AdminDashboard: React.FC = () => {
                     return (
                       <div
                         key={session.id}
-                        className="flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-all hover:scale-[1.01]"
+                        className={cardStyles['card-row']}
+                        style={{
+                          padding: '1rem',
+                          borderRadius: '8px',
+                          background: 'rgba(31, 41, 55, 0.5)',
+                          transition: 'all 0.2s',
+                          cursor: 'pointer',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(31, 41, 55, 0.8)';
+                          e.currentTarget.style.transform = 'scale(1.01)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(31, 41, 55, 0.5)';
+                          e.currentTarget.style.transform = 'scale(1)';
+                        }}
                       >
                         {/* Avatar */}
                         <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm"
+                          className={cardStyles['card-icon-container']}
                           style={{
+                            width: '3rem',
+                            height: '3rem',
+                            borderRadius: '50%',
                             background: `${COLORS.primary}20`,
                             color: COLORS.primary,
                             border: `2px solid ${COLORS.primary}40`,
+                            fontSize: '0.875rem',
+                            fontWeight: 700,
                           }}
                         >
                           {session.intervenantAvatar}
                         </div>
 
                         {/* Info */}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-bold text-sm" style={{ color: '#3d9bff' }}>
+                        <div className={cardStyles['card-content']} style={{ flex: 1, minWidth: 0 }}>
+                          <p className={cardStyles['card-text-primary']} style={{ marginBottom: '0.25rem', fontSize: '0.875rem' }}>
                             {session.cohorte}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className={cardStyles['card-text-secondary']} style={{ fontSize: '0.75rem' }}>
                             {session.intervenant} • {session.date} à {session.time}
                           </p>
                         </div>
 
                         {/* Badge présence */}
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="px-3 py-1 rounded-full text-xs font-bold"
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <span
+                            className={cardStyles['card-badge']}
                             style={{
                               background: `${presenceColor}20`,
                               color: presenceColor,
@@ -405,10 +370,14 @@ const AdminDashboard: React.FC = () => {
                             }}
                           >
                             {session.presence}%
-                          </div>
+                          </span>
                           <div
-                            className="w-2 h-2 rounded-full"
-                            style={{ background: statusColor }}
+                            style={{
+                              width: '0.5rem',
+                              height: '0.5rem',
+                              borderRadius: '50%',
+                              background: statusColor,
+                            }}
                           />
                         </div>
                       </div>
@@ -416,12 +385,9 @@ const AdminDashboard: React.FC = () => {
                   })}
                 </div>
               </ChartCard>
-            </div>
 
-            {/* Activité Récente */}
-            <div className="lg:col-span-5">
-              <ChartCard title="Activité Récente" height={400}>
-                <div className="space-y-2 max-h-[340px] overflow-y-auto">
+            <ChartCard title="Activité Récente" height={400}>
+                <div className={cardStyles['card-list']} style={{ maxHeight: '340px', overflowY: 'auto' }}>
                   {data.activities.map((activity, index) => (
                     <React.Fragment key={index}>
                       <ActivityItem
@@ -432,34 +398,30 @@ const AdminDashboard: React.FC = () => {
                         color={activity.color}
                       />
                       {index < data.activities.length - 1 && (
-                        <div 
-                          className="h-px my-2"
-                          style={{
-                            background: `linear-gradient(90deg, transparent, ${activity.color}40, transparent)`,
-                          }}
-                        />
+                        <hr className={cardStyles['card-divider']} />
                       )}
                     </React.Fragment>
                   ))}
                 </div>
               </ChartCard>
-            </div>
           </div>
         </section>
 
         {/* Section Alertes */}
-        <section>
+        <section style={{ margin: 0, padding: 0, marginBottom: '4rem' }}>
           <h2 
             className="text-2xl font-black uppercase tracking-[0.1em] mb-6"
-            style={{ color: '#3d9bff' }}
+            style={{ color: '#3d9bff', margin: 0, padding: 0, marginBottom: '1.5rem' }}
           >
             Alertes & Actions Requises
           </h2>
           <div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 rounded-xl"
+            className={cardStyles['cards-container-flex']}
             style={{
               background: 'rgba(239, 68, 68, 0.1)',
               border: '2px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '12px',
+              padding: '1.5rem',
             }}
           >
             <AlertBadge
@@ -484,14 +446,14 @@ const AdminDashboard: React.FC = () => {
         </section>
 
         {/* Section Cohortes Actives */}
-        <section>
+        <section style={{ margin: 0, padding: 0, marginBottom: '4rem' }}>
           <h2 
             className="text-2xl font-black uppercase tracking-[0.1em] mb-6"
-            style={{ color: '#3d9bff' }}
+            style={{ color: '#3d9bff', margin: 0, padding: 0, marginBottom: '1.5rem' }}
           >
             Cohortes Actives
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className={cardStyles['cards-container-flex']}>
             {data.cohorts.map((cohorte) => (
               <CohorteCard
                 key={cohorte.id}

@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { CohorteCard } from '../../components/cohortes/CohorteCard';
 import { CohorteForm } from '../../components/cohortes/CohorteForm';
-import { Cohorte, CreateCohorteDto, UpdateCohorteDto, CohorteFilters } from '../../types/cohorte';
+import { Cohorte, CreateCohorteDto, UpdateCohorteDto, CohorteFilters, TypeFormation } from '../../types/cohorte';
 import { cohortesService } from '../../services/cohortes';
 
 export const CohortesPage: React.FC = () => {
@@ -12,6 +17,7 @@ export const CohortesPage: React.FC = () => {
   const [editingCohorte, setEditingCohorte] = useState<Cohorte | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filters, setFilters] = useState<CohorteFilters>({});
+  const [openFilters, setOpenFilters] = useState({ annee: false, cursus: false, statut: false });
 
   useEffect(() => {
     loadCohortes();
@@ -87,148 +93,173 @@ export const CohortesPage: React.FC = () => {
   };
 
   const filteredCohortes = cohortes.filter(cohorte => {
-    if (filters.annee && cohorte.annee !== filters.annee) return false;
-    if (filters.cursus && cohorte.cursus !== filters.cursus) return false;
-    if (filters.actif !== undefined && cohorte.actif !== filters.actif) return false;
+    if (filters.anneeScolaire && cohorte.anneeScolaire !== filters.anneeScolaire) return false;
+    if (filters.typeFormation && cohorte.typeFormation !== filters.typeFormation) return false;
+    // filtre actif non applicable avec le nouveau schéma
     return true;
   });
 
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-          <CircularProgress />
-          <Typography variant="h6" sx={{ ml: 2 }}>
-            Chargement des cohortes...
-          </Typography>
-        </Box>
-      </Container>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', color: '#87ceeb', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 800, filter: 'drop-shadow(0 0 20px rgba(61, 155, 255, 0.5))' }}>
+          Chargement des cohortes...
+        </div>
+      </div>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Gestion des Cohortes
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setShowForm(true)}
+    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 32px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 
+          className="text-3xl font-black tracking-[0.15em] uppercase"
+          style={{
+            background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            filter: 'drop-shadow(0 0 25px rgba(61, 155, 255, 0.45))',
+          }}
         >
-          Nouvelle Cohorte
+          Gestion des Cohortes
+        </h1>
+        <Button 
+          onClick={() => setShowForm(true)}
+          size="lg"
+          className="font-bold uppercase tracking-[0.08em]"
+        >
+          <Plus className="h-4 w-4" />
+          Nouvelle cohorte
         </Button>
-      </Box>
+      </div>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
+        <div style={{
+          padding: '1rem',
+          background: 'rgba(220, 38, 38, 0.2)',
+          border: '2px solid rgba(220, 38, 38, 0.5)',
+          borderRadius: '12px',
+          color: '#ff6b6b',
+          marginBottom: '1.5rem',
+        }}>{error}</div>
       )}
 
       {/* Filtres */}
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Filtres
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Année</InputLabel>
-              <Select
-                value={filters.annee || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, annee: e.target.value || undefined }))}
-                label="Année"
-              >
-                <MenuItem value="">Toutes les années</MenuItem>
-                <MenuItem value="2024-2025">2024-2025</MenuItem>
-                <MenuItem value="2023-2024">2023-2024</MenuItem>
-                <MenuItem value="2022-2023">2022-2023</MenuItem>
+      <Card 
+        style={{
+          background: 'rgba(0,0,0,0.55)',
+          border: '2px solid rgba(61, 155, 255, 0.35)',
+          borderRadius: 12,
+          boxShadow: '0 12px 48px rgba(61, 155, 255, 0.12)',
+          marginBottom: '2rem'
+        }}
+      >
+        <CardContent>
+          <h2 className="text-xl font-bold uppercase tracking-[0.1em]" style={{ color: '#87ceeb', marginBottom: '1.25rem' }}>Filtres</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-2">
+              <Label className="mb-2 block" htmlFor="annee">Année</Label>
+              <Select open={openFilters.annee} onOpenChange={(o) => setOpenFilters(s => ({ ...s, annee: o }))} value={filters.anneeScolaire || 'all'} onValueChange={(v) => setFilters(prev => ({ ...prev, anneeScolaire: v === 'all' ? undefined : v }))}>
+                <SelectTrigger id="annee" className="uppercase tracking-[0.05em] w-full h-14"
+                  style={{
+                    background: 'rgba(0,0,0,0.5)',
+                    border: '2px solid rgba(61,155,255,0.35)',
+                    color: '#87ceeb'
+                  }}
+                >
+                  <SelectValue placeholder="Toutes les années" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toutes les années</SelectItem>
+                  <SelectItem value="2024-2025">2024-2025</SelectItem>
+                  <SelectItem value="2023-2024">2023-2024</SelectItem>
+                  <SelectItem value="2022-2023">2022-2023</SelectItem>
+                </SelectContent>
               </Select>
-            </FormControl>
-          </Grid>
-          
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Cursus</InputLabel>
-              <Select
-                value={filters.cursus || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, cursus: e.target.value || undefined }))}
-                label="Cursus"
-              >
-                <MenuItem value="">Tous les cursus</MenuItem>
-                <MenuItem value="Développement Web">Développement Web</MenuItem>
-                <MenuItem value="Data Science">Data Science</MenuItem>
-                <MenuItem value="Cybersécurité">Cybersécurité</MenuItem>
-                <MenuItem value="DevOps">DevOps</MenuItem>
-                <MenuItem value="Mobile">Mobile</MenuItem>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="mb-2 block" htmlFor="cursus">Cursus</Label>
+              <Select open={openFilters.cursus} onOpenChange={(o) => setOpenFilters(s => ({ ...s, cursus: o }))} value={filters.typeFormation || 'all'} onValueChange={(v) => setFilters(prev => ({ ...prev, typeFormation: v === 'all' ? undefined : (v as TypeFormation) }))}>
+                <SelectTrigger id="cursus" className="uppercase tracking-[0.05em] w-full h-14"
+                  style={{
+                    background: 'rgba(0,0,0,0.5)',
+                    border: '2px solid rgba(61,155,255,0.35)',
+                    color: '#87ceeb'
+                  }}
+                >
+                  <SelectValue placeholder="Tous les cursus" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les cursus</SelectItem>
+                  <SelectItem value="BTS">BTS</SelectItem>
+                  <SelectItem value="Bachelor">Bachelor</SelectItem>
+                  <SelectItem value="Mastère">Mastère</SelectItem>
+                  <SelectItem value="Autre">Autre</SelectItem>
+                </SelectContent>
               </Select>
-            </FormControl>
-          </Grid>
-          
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Statut</InputLabel>
-              <Select
-                value={filters.actif === undefined ? '' : filters.actif.toString()}
-                onChange={(e) => setFilters(prev => ({ 
-                  ...prev, 
-                  actif: e.target.value === '' ? undefined : e.target.value === 'true' 
-                }))}
-                label="Statut"
-              >
-                <MenuItem value="">Tous les statuts</MenuItem>
-                <MenuItem value="true">Actif</MenuItem>
-                <MenuItem value="false">Inactif</MenuItem>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="mb-2 block" htmlFor="statut">Statut</Label>
+              <Select open={openFilters.statut} onOpenChange={(o) => setOpenFilters(s => ({ ...s, statut: o }))} value={filters.actif === undefined ? 'all' : String(filters.actif)} onValueChange={(v) => setFilters(prev => ({ ...prev, actif: v === 'all' ? undefined : v === 'true' }))}>
+                <SelectTrigger id="statut" className="uppercase tracking-[0.05em] w-full h-14"
+                  style={{
+                    background: 'rgba(0,0,0,0.5)',
+                    border: '2px solid rgba(61,155,255,0.35)',
+                    color: '#87ceeb'
+                  }}
+                >
+                  <SelectValue placeholder="Tous les statuts" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les statuts</SelectItem>
+                  <SelectItem value="true">Actif</SelectItem>
+                  <SelectItem value="false">Inactif</SelectItem>
+                </SelectContent>
               </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Paper>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Formulaire */}
       {showForm && (
-        <Box sx={{ mb: 3 }}>
+        <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
           <CohorteForm
             cohorte={editingCohorte}
             onSubmit={editingCohorte ? handleUpdateCohorte : handleCreateCohorte}
             onCancel={handleCancelForm}
             isLoading={isSubmitting}
           />
-        </Box>
+        </div>
       )}
 
       {/* Liste des cohortes */}
-      <Grid container spacing={3}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" style={{ marginTop: '2rem' }}>
         {filteredCohortes.length === 0 ? (
-          <Grid item xs={12}>
-            <Card>
-              <CardContent sx={{ textAlign: 'center', py: 6 }}>
-                <Typography variant="h6" color="text.secondary">
-                  Aucune cohorte trouvée
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  {Object.keys(filters).some(key => filters[key as keyof CohorteFilters] !== undefined)
-                    ? 'Essayez de modifier vos filtres'
-                    : 'Commencez par créer votre première cohorte'
-                  }
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+          <Card className="col-span-1 sm:col-span-2 lg:col-span-3" 
+            style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)' }}
+          >
+            <CardContent>
+              <p className="text-lg font-bold uppercase tracking-[0.08em]" style={{ color: '#87ceeb' }}>Aucune cohorte trouvée</p>
+              <p className="text-sm" style={{ color: '#a0aec0', marginTop: '0.5rem' }}>
+                {Object.keys(filters).some(key => (filters as any)[key] !== undefined)
+                  ? 'Essayez de modifier vos filtres'
+                  : 'Commencez par créer votre première cohorte'}
+              </p>
+            </CardContent>
+          </Card>
         ) : (
           filteredCohortes.map((cohorte) => (
-            <Grid item xs={12} sm={6} lg={4} key={cohorte._id}>
-              <CohorteCard
-                cohorte={cohorte}
-                onEdit={handleEditCohorte}
-                onDelete={handleDeleteCohorte}
-              />
-            </Grid>
+            <CohorteCard
+              key={cohorte._id}
+              cohorte={cohorte}
+              onEdit={handleEditCohorte}
+              onDelete={handleDeleteCohorte}
+            />
           ))
         )}
-      </Grid>
-    </Container>
+      </div>
+    </div>
   );
 };

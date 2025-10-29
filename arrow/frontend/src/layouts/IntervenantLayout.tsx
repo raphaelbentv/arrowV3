@@ -192,10 +192,7 @@ const IntervenantLayout: React.FC<IntervenantLayoutProps> = ({ children }) => {
         )}
 
         {/* Contenu principal */}
-        <main 
-          className="flex-1 min-h-screen"
-          style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
-        >
+        <main className="flex-1 min-h-screen">
           {children}
         </main>
       </div>
