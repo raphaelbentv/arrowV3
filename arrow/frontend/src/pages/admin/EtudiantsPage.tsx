@@ -193,25 +193,26 @@ export const EtudiantsPage: React.FC = () => {
           <h2 className={styles['card-title']} style={{ margin: 0 }}>Recherche et Filtres</h2>
         </div>
         <div className={styles['card-section']}>
-          {/* Barre de recherche */}
-          <div className="mb-4">
-            <Label className="mb-2 block" htmlFor="search">Recherche</Label>
-            <Input
-              id="search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Rechercher par nom, email, numéro étudiant..."
-              className="uppercase tracking-[0.05em] w-full h-14"
-              style={{
-                background: 'rgba(0,0,0,0.5)',
-                border: '2px solid rgba(61,155,255,0.35)',
-                color: '#87ceeb'
-              }}
-            />
-          </div>
+          {/* Recherche + Filtres (même grille, alignés à gauche) */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+            {/* Recherche */}
+            <div className="flex flex-col gap-2">
+              <Label className="mb-2 block" htmlFor="search">Recherche</Label>
+              <Input
+                id="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Rechercher par nom, email, numéro étudiant..."
+                className="uppercase tracking-[0.05em] w-full h-14"
+                style={{
+                  background: 'rgba(0,0,0,0.5)',
+                  border: '2px solid rgba(61,155,255,0.35)',
+                  color: '#87ceeb'
+                }}
+              />
+            </div>
 
-          {/* Filtres */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {/* Statut */}
             <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="statut">Statut</Label>
               <Select
@@ -237,6 +238,8 @@ export const EtudiantsPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Cohorte */}
             <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.cohorte ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="cohorte">Cohorte</Label>
               <Select
@@ -262,9 +265,12 @@ export const EtudiantsPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Total */}
             <div className="flex flex-col gap-2">
               <Label className="mb-2 block">Total</Label>
-              <div className="uppercase tracking-[0.05em] w-full h-14 flex items-center justify-center"
+              <div
+                className="uppercase tracking-[0.05em] w-full h-14 flex items-center"
                 style={{
                   background: 'rgba(0,0,0,0.5)',
                   border: '2px solid rgba(61,155,255,0.35)',
@@ -272,6 +278,8 @@ export const EtudiantsPage: React.FC = () => {
                   borderRadius: '8px',
                   fontWeight: 'bold',
                   fontSize: '1.125rem',
+                  paddingLeft: '0.75rem',
+                  paddingRight: '0.75rem',
                 }}
               >
                 {filteredEtudiants.length} étudiant{filteredEtudiants.length > 1 ? 's' : ''}
@@ -298,7 +306,7 @@ export const EtudiantsPage: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
           gap: '1.5rem',
           marginTop: '2rem',
         }}

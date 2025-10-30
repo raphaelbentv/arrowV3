@@ -74,12 +74,11 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
       style={{
         borderTop: `4px solid ${neon}`,
         boxShadow: 'none',
-        aspectRatio: '1',
         display: 'flex',
         flexDirection: 'column',
         padding: '0.75rem',
-        minWidth: '240px',
-        minHeight: '240px',
+        minWidth: '320px',
+        minHeight: '320px',
         overflow: 'hidden',
       }}
       onMouseEnter={(e) => {
@@ -140,7 +139,7 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
           style={{
             color: neon,
             margin: 0,
-            fontSize: '0.875rem',
+            fontSize: 'clamp(1rem, 3.5vw, 1.1rem)',
             textAlign: 'center',
             lineHeight: '1.2',
             marginBottom: '0.125rem',
@@ -154,8 +153,13 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
           {etudiant.prenom} {etudiant.nom}
         </h4>
         {etudiant.numeroEtudiant && (
-          <p className={styles['card-text-secondary']} style={{ fontSize: '0.65rem', textAlign: 'center' }}>
+          <p className={styles['card-text-secondary']} style={{ fontSize: 'clamp(0.8rem, 2.8vw, 0.9rem)', textAlign: 'center' }}>
             {etudiant.numeroEtudiant}
+          </p>
+        )}
+        {etudiant.email && (
+          <p className={`${styles['card-text-secondary']} ${styles['mobile-only']}`} style={{ fontSize: 'clamp(0.8rem, 2.8vw, 0.9rem)', textAlign: 'center' }}>
+            {etudiant.email}
           </p>
         )}
       </div>
@@ -168,8 +172,8 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
             background: `${getStatutColor(etudiant.statutInscription)}20`,
             color: getStatutColor(etudiant.statutInscription),
             border: `1px solid ${getStatutColor(etudiant.statutInscription)}60`,
-            fontSize: '0.75rem',
-            padding: '0.3rem 0.5rem',
+            fontSize: 'clamp(0.85rem, 2.8vw, 0.95rem)',
+            padding: '0.4rem 0.6rem',
             display: 'inline-block',
             width: '100%',
             textAlign: 'center',
@@ -184,8 +188,8 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
         {moyenne > 0 && (
           <div>
             <div className="flex justify-between items-center mb-1">
-              <span className="text-xs font-semibold" style={{ color: '#87ceeb', fontSize: '0.7rem' }}>Moyenne</span>
-              <span className="text-xs font-bold" style={{ color: neon, fontSize: '0.7rem' }}>
+              <span className="text-xs font-semibold" style={{ color: '#87ceeb', fontSize: 'clamp(0.8rem, 2.5vw, 0.9rem)' }}>Moyenne</span>
+              <span className="text-xs font-bold" style={{ color: neon, fontSize: 'clamp(0.9rem, 2.8vw, 1rem)' }}>
                 {moyenne.toFixed(1)}/20
               </span>
             </div>
@@ -203,8 +207,8 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
         {presence > 0 && (
           <div>
             <div className="flex justify-between items-center mb-1">
-              <span className="text-xs font-semibold" style={{ color: '#87ceeb', fontSize: '0.7rem' }}>Présence</span>
-              <span className="text-xs font-bold" style={{ color: neon, fontSize: '0.7rem' }}>
+              <span className="text-xs font-semibold" style={{ color: '#87ceeb', fontSize: 'clamp(0.8rem, 2.5vw, 0.9rem)' }}>Présence</span>
+              <span className="text-xs font-bold" style={{ color: neon, fontSize: 'clamp(0.9rem, 2.8vw, 1rem)' }}>
                 {presence.toFixed(0)}%
               </span>
             </div>
@@ -230,7 +234,7 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
             style={{
               flex: 1,
               padding: '0.4rem 0.5rem',
-              fontSize: '0.75rem',
+              fontSize: 'clamp(0.85rem, 2.8vw, 0.95rem)',
               background: `${neon}20`,
               borderColor: neon,
               color: neon,
@@ -250,7 +254,7 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
             style={{
               flex: 1,
               padding: '0.4rem 0.5rem',
-              fontSize: '0.75rem',
+              fontSize: 'clamp(0.85rem, 2.8vw, 0.95rem)',
               background: 'rgba(245, 158, 11, 0.15)',
               borderColor: '#f59e0b',
               color: '#f59e0b',

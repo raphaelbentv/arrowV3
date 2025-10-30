@@ -463,3 +463,53 @@
   margin-top: var(--card-gap-large);
 }
 
+/* Afficher seulement sur mobile */
+.mobile-only {
+  display: none;
+}
+
+/* Améliorations de lisibilité pour les cartes étudiants en mobile */
+@media (max-width: 480px) {
+  .mobile-only {
+    display: block;
+  }
+
+  /* Désactive le ratio forcé et autorise la carte à grandir pour éviter tout chevauchement */
+  .etudiant-card {
+    aspect-ratio: auto;
+    min-height: 280px;
+  }
+
+  /* Enroulement agressif pour éviter le chevauchement des textes longs */
+  .etudiant-card * {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .etudiant-card .card-title {
+    font-size: 1.05rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .etudiant-card .card-text-secondary {
+    font-size: 0.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .etudiant-card .card-badge {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    white-space: normal;
+  }
+
+  .etudiant-card .card-button {
+    font-size: 0.85rem;
+  }
+}
+
