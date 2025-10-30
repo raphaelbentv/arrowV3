@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,17 +27,24 @@ export const EtudiantsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [openFilters, setOpenFilters] = useState({ statut: false, cohorte: false, financement: false });
   const [showAdvancedMobile, setShowAdvancedMobile] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
-    loadData();
-  }, []);
+    const params = new URLSearchParams(location.search);
+    const cohorteId = params.get('cohorte') || undefined;
+    loadData(cohorteId);
+    if (cohorteId) {
+      setFilters((prev) => ({ ...prev, cohorte: cohorteId } as any));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
-  const loadData = async () => {
+  const loadData = async (cohorteId?: string) => {
     try {
       setLoading(true);
       setError(null);
       const [etudiantsData, cohortesData] = await Promise.all([
-        etudiantsService.getAll(),
+        etudiantsService.getAll(cohorteId),
         cohortesService.getAll(),
       ]);
       setEtudiants(etudiantsData);
@@ -53,7 +61,9 @@ export const EtudiantsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await etudiantsService.getAll();
+      const params = new URLSearchParams(location.search);
+      const cohorteId = params.get('cohorte') || undefined;
+      const data = await etudiantsService.getAll(cohorteId);
       setEtudiants(data);
     } catch (err) {
       setError('Erreur lors du chargement des étudiants');

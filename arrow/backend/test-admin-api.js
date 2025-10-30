@@ -1,7 +1,6 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api/v1';
-
 async function testAdminAPI() {
   try {
     console.log('🧪 Test de l\'API Admin...');

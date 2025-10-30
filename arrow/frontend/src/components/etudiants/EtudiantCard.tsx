@@ -89,7 +89,11 @@ export const EtudiantCard: React.FC<EtudiantCardProps> = ({
         (e.currentTarget as HTMLDivElement).style.borderTopWidth = '4px';
         (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
       }}
+      onClick={() => {
+        if (onView) onView(etudiant);
+      }}
     >
+
       {/* Header avec photo centrée */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '0.375rem', flex: '0 0 auto' }}>
         {etudiant.photo ? (

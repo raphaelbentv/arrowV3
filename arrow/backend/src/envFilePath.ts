@@ -11,4 +11,4 @@ if (result.error) {
   throw new Error(`Erreur lors du chargement du fichier .env: ${result.error.message}`);
 }
 
-console.log('MONGO_URI chargée:', process.env.MONGO_URI);
+console.log('MONGODB_URI chargée:', process.env.MONGODB_URI || '(non définie)');

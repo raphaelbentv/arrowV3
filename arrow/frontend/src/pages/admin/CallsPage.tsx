@@ -163,18 +163,22 @@ export const CallsPage: React.FC = () => {
 
   return (
     <div className="mx-auto px-4 md:px-8" style={{ maxWidth: '1400px', paddingTop: '2rem', paddingBottom: '2rem' }}>
-      <h1
-        className="text-3xl font-black tracking-[0.15em] uppercase mb-8"
-        style={{
+      {/* Header - Centre de contrôle */}
+      <div className="flex items-center justify-between mb-6" style={{
+        background: 'rgba(0,0,0,0.5)',
+        border: '2px solid rgba(61,155,255,0.25)',
+        borderRadius: '12px',
+        padding: '1rem 1.25rem'
+      }}>
+        <h1 className="text-2xl md:text-3xl font-black tracking-[0.12em] uppercase" style={{
           background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          filter: 'drop-shadow(0 0 25px rgba(61, 155, 255, 0.45))',
-        }}
-      >
-        Gestion des Présences
-      </h1>
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
+        }}>Centre de contrôle présences</h1>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" style={{ color: '#87ceeb', borderColor: 'rgba(61,155,255,0.35)' }}>{new Date().toLocaleDateString('fr-FR')}</Button>
+          <Button size="sm" style={{ background: 'rgba(61,155,255,0.2)', border: '2px solid rgba(61,155,255,0.45)', color: '#cfeaff' }}>Exporter</Button>
+        </div>
+      </div>
 
       {/* Filtres */}
       <div className={cn(styles['base-card'], styles['card-spacing-normal'])} style={{ borderTop: '4px solid #3d9bff', marginBottom: '2rem' }}>
@@ -224,31 +228,49 @@ export const CallsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Statistiques */}
+      {/* Widgets principaux */}
       {selectedSession && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Live maintenant */}
           <Card style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)' }}>
-            <CardContent className="pt-6">
-              <div className="text-sm font-semibold text-gray-400 mb-1">Taux de présence</div>
-              <div className="text-2xl font-bold" style={{ color: '#10B981' }}>{stats.taux}%</div>
+            <CardHeader>
+              <CardTitle>Live maintenant</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-2 w-full rounded-full mb-3" style={{ background: 'rgba(255,255,255,0.12)' }}>
+                <div className="h-2 rounded-full animate-pulse" style={{ width: `${stats.taux}%`, background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)' }} />
+              </div>
+              <div style={{ color: '#87ceeb' }}>{stats.present}/{stats.total} présents</div>
+              <div className="mt-2">
+                <Button size="sm" style={{ background: 'rgba(61,155,255,0.2)', border: '2px solid rgba(61,155,255,0.45)', color: '#cfeaff' }}>
+                  Ouvrir l'appel
+                </Button>
+              </div>
             </CardContent>
           </Card>
+
+          {/* Stats jour */}
           <Card style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)' }}>
-            <CardContent className="pt-6">
-              <div className="text-sm font-semibold text-gray-400 mb-1">Présents</div>
-              <div className="text-2xl font-bold" style={{ color: '#10B981' }}>{stats.present}</div>
+            <CardHeader>
+              <CardTitle>Stats jour</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-extrabold" style={{ color: stats.taux >= 80 ? '#10B981' : stats.taux >= 60 ? '#F59E0B' : '#EF4444' }}>{stats.taux}%</div>
+              <div className="h-10 mt-3" style={{ background: 'linear-gradient(90deg, rgba(61,155,255,0.15) 25%, rgba(61,155,255,0.35) 50%, rgba(61,155,255,0.15) 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
             </CardContent>
           </Card>
+
+          {/* Actions rapides */}
           <Card style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)' }}>
-            <CardContent className="pt-6">
-              <div className="text-sm font-semibold text-gray-400 mb-1">Absents</div>
-              <div className="text-2xl font-bold" style={{ color: '#EF4444' }}>{stats.absent}</div>
-            </CardContent>
-          </Card>
-          <Card style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)' }}>
-            <CardContent className="pt-6">
-              <div className="text-sm font-semibold text-gray-400 mb-1">Retards</div>
-              <div className="text-2xl font-bold" style={{ color: '#F59E0B' }}>{stats.retard}</div>
+            <CardHeader>
+              <CardTitle>Actions rapides</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm">SMS groupé</Button>
+              <Button variant="outline" size="sm">Feuille</Button>
+              <Button variant="outline" size="sm">Rappels</Button>
+              <Button variant="outline" size="sm">QR Code</Button>
+              <Button variant="outline" size="sm">Justifs</Button>
             </CardContent>
           </Card>
         </div>
@@ -275,6 +297,39 @@ export const CallsPage: React.FC = () => {
                 onChange={(e) => handleFileUpload(e.target.files, 'emargement')}
                 disabled={uploading}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Appel rapide (grille interactive) */}
+      {selectedSession && etudiants.length > 0 && (
+        <div className={cn(styles['base-card'])} style={{ borderTop: '4px solid #3d9bff', marginBottom: '2rem' }}>
+          <div className={styles['card-header']}>
+            <h3 className={styles['card-title']} style={{ margin: 0 }}>Appel rapide</h3>
+          </div>
+          <div className={styles['card-section']}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {etudiants.map((etudiant) => {
+                const attendance = attendances.find((a) => a.etudiantId === etudiant._id);
+                const status = attendance?.status || AttendanceStatus.ABSENT;
+                const border = status === AttendanceStatus.PRESENT ? '#10B981' : status === AttendanceStatus.RETARD ? '#F59E0B' : '#EF4444';
+                return (
+                  <button
+                    key={etudiant._id}
+                    onClick={() => updateAttendance(etudiant._id, status === AttendanceStatus.PRESENT ? AttendanceStatus.ABSENT : AttendanceStatus.PRESENT)}
+                    className="rounded-lg p-3 text-left transition-transform"
+                    style={{ border: `2px solid ${border}`, background: 'rgba(0,0,0,0.35)' }}
+                  >
+                    <div className="font-semibold" style={{ color: '#cfeaff' }}>{etudiant.prenom} {etudiant.nom}</div>
+                    <div className="text-xs" style={{ color: '#9ca3af' }}>{status}</div>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Button size="sm" onClick={() => attendances.forEach(a => updateAttendance(a.etudiantId, AttendanceStatus.PRESENT))}>Tous présents</Button>
+              <Button size="sm" variant="outline" onClick={() => attendances.forEach(a => updateAttendance(a.etudiantId, AttendanceStatus.ABSENT))}>Tous absents</Button>
             </div>
           </div>
         </div>
