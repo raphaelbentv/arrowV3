@@ -8,6 +8,9 @@ import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { CohortesModule } from './cohortes/cohortes.module';
 import { IntervenantsModule } from './intervenants/intervenants.module';
+import { EtudiantsModule } from './etudiants/etudiants.module';
+import { DocumentsModule } from './documents/documents.module';
+import { AttendanceModule } from './attendance/attendance.module';
 // Importez vos autres modules ici
 
 @Module({
@@ -23,6 +26,9 @@ import { IntervenantsModule } from './intervenants/intervenants.module';
     AdminModule,
     CohortesModule,
     IntervenantsModule,
+    EtudiantsModule,
+    DocumentsModule,
+    AttendanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -30,7 +30,7 @@ const SidebarNew: React.FC = () => {
   const menuItems: MenuItem[] = [
     { title: 'Dashboard', icon: <LayoutDashboard />, path: '/admin/dashboard', role: ['admin'] },
     { title: 'Cohortes', icon: <GraduationCap />, path: '/admin/cohortes', role: ['admin'] },
-    { title: 'Étudiants', icon: <Users />, path: '/admin/etudiants', role: ['admin'] },
+    { title: 'Étudiants', icon: <Users />, path: '/admin/students', role: ['admin'] },
     { title: 'Intervenants', icon: <Users />, path: '/admin/intervenant-list', role: ['admin'] },
     { title: 'Planning', icon: <Calendar />, path: '/admin/planning', role: ['admin', 'intervenant'] },
     { title: 'Présences', icon: <ClipboardCheck />, path: '/admin/presences', role: ['admin', 'intervenant'] },

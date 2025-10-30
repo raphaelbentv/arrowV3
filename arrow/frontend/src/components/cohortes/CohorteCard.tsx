@@ -191,14 +191,16 @@ export const CohorteCard: React.FC<CohorteCardProps> = ({
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           {onView && (
             <button
+              type="button"
               className={cn(styles['card-button'], styles['card-button-primary'])}
-              onClick={() => onView(cohorte)}
+              onClick={(e) => { e.stopPropagation(); onView(cohorte); }}
             >
               Voir
             </button>
           )}
           {onEdit && (
             <button
+              type="button"
               className={styles['card-button']}
               style={{
                 padding: '0.5rem 0.9rem',
@@ -207,7 +209,7 @@ export const CohorteCard: React.FC<CohorteCardProps> = ({
                 borderColor: '#f59e0b',
                 color: '#f59e0b'
               }}
-              onClick={() => onEdit(cohorte)}
+              onClick={(e) => { e.stopPropagation(); onEdit(cohorte); }}
             >
               Modifier
             </button>

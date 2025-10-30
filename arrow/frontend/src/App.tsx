@@ -7,7 +7,11 @@ import AdminLogin from './pages/admin/AdminLogin';
 import HomePage from './pages/public/HomePage';
 import IntervenantList from './pages/admin/intervenantList';
 import { CohortesPage } from './pages/cohortes/CohortesPage';
+import { CohorteDetailPage } from './pages/cohortes/CohorteDetailPage';
 import AdministratorList from './pages/admin/AdministratorList';
+import { EtudiantDetailPage } from './pages/admin/EtudiantDetailPage';
+import { EtudiantsPage } from './pages/admin/EtudiantsPage';
+import { CallsPage } from './pages/admin/CallsPage';
 
 function App() {
   return (
@@ -25,6 +29,10 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="intervenant-list" element={<IntervenantList />} />
               <Route path="cohortes" element={<CohortesPage />} />
+              <Route path="cohortes/:id" element={<CohorteDetailPage />} />
+              <Route path="students" element={<EtudiantsPage />} />
+              <Route path="students/:id" element={<EtudiantDetailPage />} />
+              <Route path="calls" element={<CallsPage />} />
               <Route path="administrators" element={<AdministratorList />} />
               <Route index element={<Navigate to="dashboard" replace />} />
             </Routes>

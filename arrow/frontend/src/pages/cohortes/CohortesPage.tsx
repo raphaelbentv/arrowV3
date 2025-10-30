@@ -270,6 +270,9 @@ export const CohortesPage: React.FC = () => {
                 key={cohorte._id}
                 cohorte={cohorte}
                 onEdit={handleEditCohorte}
+                onView={(c) => {
+                  window.location.href = `/admin/cohortes/${c._id}`;
+                }}
               />
             )
           ))
