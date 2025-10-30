@@ -1,150 +1,137 @@
-import { IsString, IsNotEmpty, IsDateString, IsBoolean, IsOptional, IsArray, IsNumber, IsEnum, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, IsDateString, IsOptional, IsArray, IsEnum, IsMongoId, ValidateNested, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { TypeFormation, StatutCohorte, TypeFinancement } from '../cohortes.schema';
+import { StatutCohorte } from '../cohortes.schema';
+import { Type } from 'class-transformer';
+
+class CompositionEtudiantDto {
+  @ApiProperty({ description: "ID de l'étudiant", example: '665f2f3a9a0f1a2b3c4d5e6f' })
+  @IsMongoId()
+  etudiantId: string;
+
+  @ApiProperty({ description: "Date d'inscription", example: '2024-09-01' })
+  @IsDateString()
+  dateInscription: string;
+
+  @ApiProperty({ enum: ['Actif', 'Abandon'], example: 'Actif' })
+  @IsString()
+  @IsOptional()
+  statut?: 'Actif' | 'Abandon';
+}
+
+class PlanningModuleDto {
+  @ApiProperty({ example: 'Lundi' })
+  @IsString()
+  jourSemaine: string;
+
+  @ApiProperty({ example: '09:00' })
+  @IsString()
+  heureDebut: string;
+
+  @ApiProperty({ example: '12:00' })
+  @IsString()
+  heureFin: string;
+
+  @ApiProperty({ example: 'Salle B12' })
+  @IsString()
+  salle: string;
+}
+
+class ModuleCohorteDto {
+  @ApiProperty({ description: 'ID du module', example: '665f2f3a9a0f1a2b3c4d5e6f' })
+  @IsMongoId()
+  moduleId: string;
+
+  @ApiProperty({ description: "ID de l'intervenant assigné", example: '665f2f3a9a0f1a2b3c4d5e6f' })
+  @IsMongoId()
+  intervenantId: string;
+
+  @ApiProperty({ type: PlanningModuleDto })
+  @ValidateNested()
+  @Type(() => PlanningModuleDto)
+  planning: PlanningModuleDto;
+}
 
 export class CreateCohorteDto {
-  // 🧱 Informations générales
-  @ApiProperty({ example: 'BTS COM1 2024–2025' })
+  // Identification
+  @ApiProperty({ example: 'BTS Commerce 2024' })
   @IsString()
   @IsNotEmpty()
   nom: string;
 
-  @ApiProperty({ example: '2024-2025' })
+  @ApiProperty({ example: 'BTS-COM-24' })
   @IsString()
   @IsNotEmpty()
-  anneeScolaire: string;
+  code: string;
 
-  @ApiProperty({ enum: TypeFormation, example: TypeFormation.BTS })
-  @IsEnum(TypeFormation)
-  @IsNotEmpty()
-  typeFormation: TypeFormation;
-
-  @ApiProperty({ example: 'BTS Communication', required: false })
-  @IsString()
-  @IsOptional()
-  diplomeVise?: string;
-
-  @ApiProperty({ example: 'Niveau 5', required: false })
-  @IsString()
-  @IsOptional()
-  niveauRNCP?: string;
-
-  @ApiProperty({ example: 'École Supérieure de Commerce', required: false })
-  @IsString()
-  @IsOptional()
-  etablissement?: string;
-
-  @ApiProperty({ example: 'REF-FORM-001', required: false })
-  @IsString()
-  @IsOptional()
-  formationAssociee?: string;
-
-  // 👥 Composition
-  @ApiProperty({ example: 25, default: 0 })
-  @IsNumber()
-  @IsOptional()
-  nombreEtudiantsPrevu?: number;
-
-  @ApiProperty({ example: 20, default: 0 })
-  @IsNumber()
-  @IsOptional()
-  nombreEtudiantsInscrits?: number;
-
-  @ApiProperty({ example: 'professeur@ecole.fr', required: false })
-  @IsEmail()
-  @IsOptional()
-  responsablePedagogique?: string;
-
-  // 📅 Organisation et planification
   @ApiProperty({ example: '2024-09-01' })
   @IsDateString()
-  @IsNotEmpty()
-  dateDebut: Date;
+  dateDebut: string;
 
   @ApiProperty({ example: '2025-06-30' })
   @IsDateString()
-  @IsNotEmpty()
-  dateFin: Date;
+  dateFinPrevue: string;
 
-  @ApiProperty({ example: 1200, default: 0 })
-  @IsNumber()
-  @IsOptional()
-  volumeHoraireTotal?: number;
-
-  // 📂 Structure pédagogique
-  @ApiProperty({ example: ['Communication', 'Marketing', 'Gestion'], required: false })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  matieres?: string[];
-
-  @ApiProperty({ example: ['Module 1', 'Module 2'], required: false })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  modules?: string[];
-
-  @ApiProperty({ example: 'Progression standard BTS COM', required: false })
-  @IsString()
-  @IsOptional()
-  progressionPedagogique?: string;
-
-  // 🔍 Suivi administratif et financier
-  @ApiProperty({ enum: StatutCohorte, example: StatutCohorte.EN_PREPARATION })
+  @ApiProperty({ enum: StatutCohorte, example: StatutCohorte.ACTIVE, required: false })
   @IsEnum(StatutCohorte)
   @IsOptional()
   statut?: StatutCohorte;
 
-  @ApiProperty({ example: 15, default: 0 })
-  @IsNumber()
+  // Références externes
+  @ApiProperty({ description: 'ID du responsable pédagogique', required: false })
+  @IsMongoId()
   @IsOptional()
-  nombreEtudiantsFinances?: number;
+  responsablePedagogiqueId?: string;
 
-  @ApiProperty({ example: 5, default: 0 })
-  @IsNumber()
-  @IsOptional()
-  nombreEtudiantsAutofinances?: number;
-
-  @ApiProperty({ example: 50000, default: 0 })
-  @IsNumber()
-  @IsOptional()
-  montantTotalFacture?: number;
-
-  @ApiProperty({ enum: TypeFinancement, example: TypeFinancement.OPCO, required: false })
-  @IsEnum(TypeFinancement)
-  @IsOptional()
-  typeFinanceur?: TypeFinancement;
-
-  @ApiProperty({ example: 'OPCO EP', required: false })
-  @IsString()
-  @IsOptional()
-  nomFinanceur?: string;
-
-  // 🧾 Métadonnées et traçabilité
-  @ApiProperty({ example: 'admin@ecole.fr' })
-  @IsEmail()
-  @IsNotEmpty()
-  creePar: string;
-
-  @ApiProperty({ example: 'Formation intensive, groupe motivé', required: false })
-  @IsString()
-  @IsOptional()
-  commentairesInternes?: string;
-
-  @ApiProperty({ example: ['prioritaire', 'nouvelle-promo'], required: false })
+  // Composition
+  @ApiProperty({ type: [CompositionEtudiantDto], required: false })
   @IsArray()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => CompositionEtudiantDto)
   @IsOptional()
-  tags?: string[];
+  composition?: CompositionEtudiantDto[];
 
-  // Champs legacy pour compatibilité
-  @ApiProperty({ example: 'Description de la cohorte', required: false })
-  @IsString()
+  // Modules
+  @ApiProperty({ type: [ModuleCohorteDto], required: false })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ModuleCohorteDto)
   @IsOptional()
-  description?: string;
+  modulesCohorte?: ModuleCohorteDto[];
 
-  @ApiProperty({ default: true })
-  @IsBoolean()
+  // Statistiques (calculées, non requises à la création)
+  @ApiProperty({ example: 0, required: false })
+  @IsNumber()
   @IsOptional()
-  actif?: boolean;
+  nombreTotalEtudiants?: number;
+
+  @ApiProperty({ example: 0, required: false })
+  @IsNumber()
+  @IsOptional()
+  nombreEtudiantsActifs?: number;
+
+  @ApiProperty({ example: 0, required: false })
+  @IsNumber()
+  @IsOptional()
+  tauxPresenceGlobal?: number;
+
+  @ApiProperty({ example: 0, required: false })
+  @IsNumber()
+  @IsOptional()
+  moyenneGenerale?: number;
+
+  @ApiProperty({ example: 0, required: false })
+  @IsNumber()
+  @IsOptional()
+  tauxAbandon?: number;
+
+  // Métadonnées
+  @ApiProperty({ description: 'ID user créateur', required: false })
+  @IsMongoId()
+  @IsOptional()
+  createdBy?: string;
+
+  @ApiProperty({ description: 'ID user dernier modificateur', required: false })
+  @IsMongoId()
+  @IsOptional()
+  updatedBy?: string;
 }

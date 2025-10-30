@@ -4,28 +4,59 @@ import { Document, Types } from 'mongoose';
 export type CohorteDocument = Cohorte & Document;
 
 // Enum pour les types de formation
-export enum TypeFormation {
-  BTS = 'BTS',
-  BACHELOR = 'Bachelor',
-  MASTERE = 'Mastère',
-  AUTRE = 'Autre'
-}
-
-// Enum pour les statuts de cohorte
+// Statut MVP: Active ou Terminée
 export enum StatutCohorte {
-  EN_PREPARATION = 'En préparation',
   ACTIVE = 'Active',
-  CLOTUREE = 'Clôturée'
+  TERMINEE = 'Terminée'
 }
 
-// Enum pour les types de financement
-export enum TypeFinancement {
-  OPCO = 'OPCO',
-  ECOLE = 'École',
-  ENTREPRISE = 'Entreprise',
-  AUTO_FINANCE = 'Autofinancé',
-  AUTRE = 'Autre'
+// Sous-doc: inscription d'un étudiant dans une cohorte
+@Schema({ _id: false })
+export class CohorteEtudiant {
+  @Prop({ type: Types.ObjectId, ref: 'Etudiants', required: true })
+  etudiantId: Types.ObjectId;
+
+  @Prop({ type: Date, required: true })
+  dateInscription: Date;
+
+  @Prop({ type: String, enum: ['Actif', 'Abandon'], default: 'Actif' })
+  statut: string;
 }
+
+export const CohorteEtudiantSchema = SchemaFactory.createForClass(CohorteEtudiant);
+
+// Sous-doc: planning spécifique du module dans la cohorte
+@Schema({ _id: false })
+export class PlanningModule {
+  @Prop({ type: String, required: true })
+  jourSemaine: string; // ex: Lundi
+
+  @Prop({ type: String, required: true })
+  heureDebut: string; // ex: 09:00
+
+  @Prop({ type: String, required: true })
+  heureFin: string; // ex: 12:00
+
+  @Prop({ type: String, required: true })
+  salle: string;
+}
+
+export const PlanningModuleSchema = SchemaFactory.createForClass(PlanningModule);
+
+// Sous-doc: module assigné à la cohorte avec intervenant
+@Schema({ _id: false })
+export class ModuleCohorte {
+  @Prop({ type: Types.ObjectId, ref: 'Modules', required: true })
+  moduleId: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Intervenants', required: true })
+  intervenantId: Types.ObjectId;
+
+  @Prop({ type: PlanningModuleSchema, required: true })
+  planning: PlanningModule;
+}
+
+export const ModuleCohorteSchema = SchemaFactory.createForClass(ModuleCohorte);
 
 @Schema({ timestamps: true, collection: 'cohortes' })
 export class Cohorte {
@@ -33,76 +64,52 @@ export class Cohorte {
   @Prop({ required: true })
   nom: string;
 
-  @Prop({ required: true, enum: ['2023-2024', '2024-2025', '2025-2026'] })
-  anneeScolaire: string;
+  @Prop({ required: true, unique: true })
+  code: string; // code unique ex: BTS-COM-24
 
-  @Prop({ required: true, enum: TypeFormation })
-  typeFormation: TypeFormation;
-
-  @Prop()
-  diplome?: string;
-
-  @Prop({ required: true, enum: StatutCohorte, default: StatutCohorte.EN_PREPARATION })
-  statut: StatutCohorte;
-
-  // --- Organisation ---
-  @Prop({ type: Date })
+  @Prop({ type: Date, required: true })
   dateDebut: Date;
 
-  @Prop({ type: Date })
-  dateFin: Date;
+  @Prop({ type: Date, required: true })
+  dateFinPrevue: Date;
 
-  @Prop({ type: Number, default: 0 })
-  volumeHoraireTotal: number;
+  @Prop({ required: true, enum: StatutCohorte, default: StatutCohorte.ACTIVE })
+  statut: StatutCohorte;
+
+  // --- Références externes ---
+  @Prop({ type: Types.ObjectId, ref: 'Intervenants' })
+  responsablePedagogiqueId?: Types.ObjectId;
 
   // --- Composition ---
-  @Prop({ type: [Types.ObjectId], ref: 'Apprenants', default: [] })
-  etudiants: Types.ObjectId[];
+  @Prop({ type: [CohorteEtudiantSchema], default: [] })
+  composition: CohorteEtudiant[];
 
-  @Prop({ type: [Types.ObjectId], ref: 'Intervenants', default: [] })
-  intervenants: Types.ObjectId[];
+  // --- Modules de la cohorte ---
+  @Prop({ type: [ModuleCohorteSchema], default: [] })
+  modulesCohorte: ModuleCohorte[];
 
-  // --- Structure pédagogique ---
-  @Prop({ type: [Types.ObjectId], ref: 'Modules', default: [] })
-  modules: Types.ObjectId[];
-
-  @Prop({ type: [Types.ObjectId], ref: 'Cours', default: [] })
-  cours: Types.ObjectId[];
-
-  @Prop({ type: [String], default: [] })
-  dossiersCours: string[];
-
-  // --- Suivi pédagogique ---
+  // --- Statistiques calculées (agrégées périodiquement) ---
   @Prop({ type: Number, default: 0 })
-  tauxPresenceMoyen: number;
+  nombreTotalEtudiants: number;
 
   @Prop({ type: Number, default: 0 })
-  tauxProgression: number;
-
-  @Prop({ type: Date })
-  dernierAppel: Date;
+  nombreEtudiantsActifs: number;
 
   @Prop({ type: Number, default: 0 })
-  nbSessionsPrevues: number;
+  tauxPresenceGlobal: number; // 0..100
 
   @Prop({ type: Number, default: 0 })
-  nbSessionsEffectuees: number;
+  moyenneGenerale: number; // 0..20 ou 0..100 selon usage
 
-  // --- Traçabilité & gestion ---
-  @Prop({ type: Types.ObjectId, ref: 'Admin' })
-  createdBy: Types.ObjectId;
+  @Prop({ type: Number, default: 0 })
+  tauxAbandon: number; // 0..100
 
-  @Prop({ type: Date, default: Date.now })
-  createdAt: Date;
+  // --- Métadonnées ---
+  @Prop({ type: Types.ObjectId, ref: 'Users' })
+  createdBy?: Types.ObjectId;
 
-  @Prop({ type: Date })
-  updatedAt: Date;
-
-  @Prop()
-  notesInternes?: string;
-
-  @Prop({ type: [String], enum: ['BTS', 'Bachelor', 'Mastère', 'En ligne', 'Présentiel'], default: [] })
-  tags: string[];
+  @Prop({ type: Types.ObjectId, ref: 'Users' })
+  updatedBy?: Types.ObjectId;
 }
 
 export const CohorteSchema = SchemaFactory.createForClass(Cohorte);

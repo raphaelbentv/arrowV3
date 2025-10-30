@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { intervenantsService } from '../../services/intervenants';
 import { Intervenant } from '../../types/intervenant';
 import MainLayout from '../../components/layout/MainLayout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Typography } from '@/components/ui/typography';
+import SearchBar from '../../components/common/SearchBar';
+import IntervenantCard from '../../components/intervenantCard';
+import styles from '@/components/admin/cards.module.css';
+import { cn } from '@/lib/utils';
 
 const IntervenantList: React.FC = () => {
   // États pour gérer les données et l'UI
@@ -29,17 +36,8 @@ const IntervenantList: React.FC = () => {
     try {
       setLoading(true);
       setConnectionInfo('Tentative de connexion à la base de données...');
-      
-      // Vérifier si le token est présent
       const token = localStorage.getItem('token');
-      if (!token) {
-        setConnectionInfo('Aucun token d\'authentification trouvé. Veuillez vous reconnecter.');
-        setError('Authentification requise. Veuillez vous connecter pour accéder aux données.');
-        setLoading(false);
-        return;
-      }
-      
-      setConnectionInfo('Token trouvé, envoi de la requête à l\'API...');
+      setConnectionInfo(token ? 'Token trouvé, envoi de la requête à l\'API...' : 'Mode dev: pas de token, envoi de la requête...');
       const data = await intervenantsService.getAll();
       
       if (data && data.length > 0) {
@@ -62,28 +60,27 @@ const IntervenantList: React.FC = () => {
   };
 
   // Fonction de recherche
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    
-    if (!query) {
+  const handleSearch = (query: string | React.ChangeEvent<HTMLInputElement>) => {
+    const q = typeof query === 'string' ? query : query.target.value;
+    const normalized = q.toLowerCase();
+    setSearchQuery(normalized);
+    if (!normalized) {
       setFilteredIntervenants(intervenants);
       return;
     }
-    
     const filtered = intervenants.filter(intervenant => 
-      intervenant.nom?.toLowerCase().includes(query) ||
-      intervenant.prenom?.toLowerCase().includes(query) ||
-      intervenant.email?.toLowerCase().includes(query) ||
-      intervenant.telephone?.toLowerCase().includes(query) ||
-      intervenant.poste?.toLowerCase().includes(query) ||
+      intervenant.nom?.toLowerCase().includes(normalized) ||
+      intervenant.prenom?.toLowerCase().includes(normalized) ||
+      intervenant.email?.toLowerCase().includes(normalized) ||
+      intervenant.telephone?.toLowerCase().includes(normalized) ||
+      intervenant.poste?.toLowerCase().includes(normalized) ||
       (intervenant.domainesExpertise && 
         intervenant.domainesExpertise.some(domaine => 
-          domaine.toLowerCase().includes(query)
+          domaine.toLowerCase().includes(normalized)
         )) ||
       (intervenant.modulesEnseignes && 
         intervenant.modulesEnseignes.some(module => 
-          module.toLowerCase().includes(query)
+          module.toLowerCase().includes(normalized)
         ))
     );
     
@@ -145,246 +142,163 @@ const IntervenantList: React.FC = () => {
 
   // Afficher un message spécifique si aucun intervenant n'est trouvé
   if (!loading && intervenants.length === 0 && !error) {
-    return (
-      <MainLayout>
-        <Container>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h4" gutterBottom>
-              Gestion des Intervenants
-            </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
-              Liste et gestion des intervenants de la plateforme
-            </Typography>
-          </Box>
-          
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add />}
-            onClick={() => {
-              setSnackbar({
-                open: true,
-                message: 'Fonctionnalité d\'ajout à implémenter',
-                severity: 'info'
-              });
-            }}
-            sx={{ mb: 3 }}
-          >
-            Ajouter un intervenant
-          </Button>
-          
-          <Paper sx={{ p: 4, textAlign: 'center' }}>
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              Aucun intervenant trouvé dans la base de données
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Utilisez le bouton "Ajouter un intervenant" ci-dessus pour commencer à créer des profils d'intervenants.
-            </Typography>
-          </Paper>
-        </Container>
-      </MainLayout>
-    );
+      return (
+        <MainLayout>
+          <div className="p-4">
+            <div className="mb-4">
+              <Typography variant="h4" className="m-0">Gestion des Intervenants</Typography>
+              <Typography variant="muted" className="mt-1">Liste et gestion des intervenants de la plateforme</Typography>
+            </div>
+
+            <Button
+              onClick={() => {
+                setSnackbar({ open: true, message: 'Fonctionnalité d\'ajout à implémenter', severity: 'info' });
+              }}
+              className="mb-3"
+            >
+              Ajouter un intervenant
+            </Button>
+
+            <Card>
+              <CardContent>
+                <Typography variant="h6" className="text-muted-foreground mt-0">Aucun intervenant trouvé dans la base de données</Typography>
+                <Typography>Utilisez le bouton "Ajouter un intervenant" ci-dessus pour commencer à créer des profils d'intervenants.</Typography>
+              </CardContent>
+            </Card>
+          </div>
+        </MainLayout>
+      );
   }
 
   // Afficher un indicateur de chargement pendant le chargement des données
   if (loading) {
-    return (
-      <MainLayout>
-        <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="80vh">
-          <CircularProgress />
-          <Typography variant="body1" sx={{ mt: 2 }}>
-            {connectionInfo}
-          </Typography>
-        </Box>
-      </MainLayout>
-    );
+      return (
+        <MainLayout>
+          <div className="flex flex-col items-center justify-center min-h-[80vh]">
+            <div className="w-8 h-8 border-[3px] border-muted border-t-primary rounded-full animate-spin" />
+            <p className="mt-2">{connectionInfo}</p>
+          </div>
+        </MainLayout>
+      );
   }
 
   // Afficher un message d'erreur si le chargement a échoué
   if (error) {
-    return (
-      <MainLayout>
-        <Container>
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
-            {connectionInfo}
-          </Typography>
-          <Box mt={2} display="flex" justifyContent="center">
-            <Button variant="contained" onClick={fetchIntervenants}>
-              Réessayer
-            </Button>
-          </Box>
-        </Container>
-      </MainLayout>
-    );
+      return (
+        <MainLayout>
+          <div className="p-4">
+            <div role="alert" className="bg-red-50 text-red-900 border border-red-200 rounded-md px-4 py-3 mt-2">
+              {error}
+            </div>
+            <p className="text-muted-foreground mt-2 mb-4">{connectionInfo}</p>
+            <div className="flex justify-center mt-2">
+              <Button onClick={fetchIntervenants}>Réessayer</Button>
+            </div>
+          </div>
+        </MainLayout>
+      );
   }
 
   return (
     <MainLayout>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        {/* En-tête de la page */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            Gestion des Intervenants
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Liste et gestion des intervenants de la plateforme
-          </Typography>
-        </Box>
-
-        {/* Barre d'outils avec recherche et bouton d'ajout */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          mb: 3,
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: 2
-        }}>
-          <TextField
-            placeholder="Rechercher un intervenant..."
-            variant="outlined"
-            value={searchQuery}
-            onChange={handleSearch}
-            sx={{ flexGrow: 1, maxWidth: { xs: '100%', sm: '60%' } }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add />}
-            onClick={() => {
-              // Navigation vers la page d'ajout d'intervenant
-              // navigate('/admin/intervenants/ajouter');
-              setSnackbar({
-                open: true,
-                message: 'Fonctionnalité d\'ajout à implémenter',
-                severity: 'info'
-              });
-            }}
-          >
-            Ajouter un intervenant
-          </Button>
-        </Box>
-
-        {/* Tableau des intervenants */}
-        <TableContainer component={Paper} sx={{ mb: 4 }}>
-          <Table sx={{ minWidth: 650 }} aria-label="tableau des intervenants">
-            <TableHead sx={{ backgroundColor: 'primary.main' }}>
-              <TableRow>
-                <TableCell sx={{ color: 'white' }}>Nom</TableCell>
-                <TableCell sx={{ color: 'white' }}>Email</TableCell>
-                <TableCell sx={{ color: 'white' }}>Téléphone</TableCell>
-                <TableCell sx={{ color: 'white' }}>Poste</TableCell>
-                <TableCell sx={{ color: 'white' }}>Statut</TableCell>
-                <TableCell sx={{ color: 'white' }} align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredIntervenants.length > 0 ? (
-                filteredIntervenants.map((intervenant) => (
-                  <TableRow key={intervenant._id} hover>
-                    <TableCell component="th" scope="row">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {intervenant.prenom} {intervenant.nom}
-                      </Box>
-                    </TableCell>
-                    <TableCell>{intervenant.email}</TableCell>
-                    <TableCell>{intervenant.telephone}</TableCell>
-                    <TableCell>{intervenant.poste}</TableCell>
-                    <TableCell>{intervenant.statut}</TableCell>
-                    <TableCell align="right">
-                      <IconButton 
-                        aria-label="voir"
-                        onClick={() => {
-                          // navigate(`/admin/intervenants/${intervenant._id}`);
-                          setSnackbar({
-                            open: true,
-                            message: 'Fonctionnalité de visualisation à implémenter',
-                            severity: 'info'
-                          });
-                        }}
-                      >
-                        <Visibility />
-                      </IconButton>
-                      <IconButton 
-                        aria-label="modifier"
-                        onClick={() => {
-                          // navigate(`/admin/intervenants/${intervenant._id}/edit`);
-                          setSnackbar({
-                            open: true,
-                            message: 'Fonctionnalité de modification à implémenter',
-                            severity: 'info'
-                          });
-                        }}
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton 
-                        aria-label="supprimer" 
-                        color="error"
-                        onClick={() => handleOpenDeleteDialog(intervenant)}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    {searchQuery ? 'Aucun intervenant ne correspond à votre recherche.' : 'Aucun intervenant disponible.'}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        {/* Boîte de dialogue de confirmation de suppression */}
-        <Dialog
-          open={deleteDialogOpen}
-          onClose={handleCloseDeleteDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            Confirmer la suppression
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Êtes-vous sûr de vouloir supprimer l'intervenant {selectedIntervenant?.prenom} {selectedIntervenant?.nom} ?
-              Cette action est irréversible.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDeleteDialog}>Annuler</Button>
-            <Button onClick={handleDeleteIntervenant} color="error" autoFocus>
-              Supprimer
+      <div className="mx-auto px-4 md:px-8" style={{ maxWidth: '1400px', paddingTop: '2rem', paddingBottom: '2rem' }}>
+        <div className="flex flex-col gap-3 mb-8">
+          <div className="text-xs tracking-[0.15em] uppercase text-muted-foreground">Administration • Intervenants</div>
+          <div className="flex items-end gap-4 flex-wrap">
+            <h1 
+              className="text-3xl font-black tracking-[0.15em] uppercase m-0"
+              style={{
+                background: 'linear-gradient(180deg, #3d9bff, #87ceeb, #5dbaff)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 25px rgba(61, 155, 255, 0.45))',
+              }}
+            >
+              Gestion des Intervenants
+            </h1>
+            <span className="inline-flex items-center rounded-full border text-xs font-semibold px-3 py-1" style={{
+              background: 'rgba(61,155,255,0.10)',
+              borderColor: 'rgba(61,155,255,0.35)',
+              color: '#87ceeb'
+            }}>
+              {filteredIntervenants.length} au total
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">Liste, recherche et gestion des intervenants de la plateforme.</p>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => setSnackbar({ open: true, message: 'Fonctionnalité d\'ajout à implémenter', severity: 'info' })} size="lg" className="Add-button">
+              Nouvel intervenant
             </Button>
-          </DialogActions>
-        </Dialog>
+          </div>
+        </div>
 
-        {/* Snackbar pour les notifications */}
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <div className={cn(styles['base-card'], styles['card-spacing-normal'])} style={{ borderTop: '4px solid #3d9bff', boxShadow: 'none', marginBottom: '2rem' }}>
+          <div className={styles['card-header']} style={{
+            background: 'rgba(61,155,255,0.06)',
+            padding: '0.75rem 1rem',
+            borderLeft: '4px solid #3d9bff',
+            borderRadius: '8px'
+          }}>
+            <h2 className={styles['card-title']} style={{ margin: 0, color: '#cbe7ff', textShadow: '0 0 10px rgba(61,155,255,0.4)' }}>
+              Recherche ({filteredIntervenants.length} intervenant{filteredIntervenants.length > 1 ? 's' : ''})
+            </h2>
+          </div>
+          <div className={styles['card-section']}>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+              <div className="flex flex-col gap-3 md:col-span-2">
+                <SearchBar
+                  data={intervenants}
+                  onSearch={(q) => handleSearch(q)}
+                  loading={loading}
+                  placeholder="Nom, email, domaine, module"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6 mt-8" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+          {filteredIntervenants.length === 0 ? (
+            <Card style={{ background: 'rgba(0,0,0,0.55)', border: '2px solid rgba(61, 155, 255, 0.25)', gridColumn: '1 / -1' }}>
+              <CardContent>
+                <p className="text-lg font-bold uppercase tracking-[0.08em]" style={{ color: '#87ceeb' }}>Aucun intervenant trouvé</p>
+                <p className="text-sm" style={{ color: '#a0aec0', marginTop: '0.5rem' }}>
+                  {searchQuery ? 'Essayez de modifier votre recherche' : 'Commencez par créer votre premier intervenant'}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredIntervenants.map((intervenant) => (
+              <IntervenantCard key={intervenant._id} intervenant={intervenant} />
+            ))
+          )}
+        </div>
+
+        {deleteDialogOpen && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
+            <div className="bg-background rounded-lg p-4 w-full max-w-[480px] shadow-xl border">
+              <Typography variant="h3" className="mt-0">Confirmer la suppression</Typography>
+              <Typography className="mt-2">
+                Êtes-vous sûr de vouloir supprimer l'intervenant {selectedIntervenant?.prenom} {selectedIntervenant?.nom} ? Cette action est irréversible.
+              </Typography>
+              <div className="flex justify-end gap-2 mt-4">
+                <Button variant="outline" onClick={handleCloseDeleteDialog}>Annuler</Button>
+                <Button variant="destructive" onClick={handleDeleteIntervenant}>Supprimer</Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {snackbar.open && (
+          <div
+            onClick={handleCloseSnackbar}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 rounded-md cursor-pointer shadow-lg"
+          >
             {snackbar.message}
-          </Alert>
-        </Snackbar>
-      </Container>
+          </div>
+        )}
+      </div>
     </MainLayout>
   );
 };
