@@ -129,7 +129,7 @@ export const CohortesPage: React.FC = () => {
         <Button 
           onClick={() => setShowForm(true)}
           size="lg"
-          className="font-bold uppercase tracking-[0.08em] mb-4"
+          className="Add-button mb-4"
         >
           <Plus className="h-4 w-4" />
           Nouvelle cohorte
@@ -156,8 +156,8 @@ export const CohortesPage: React.FC = () => {
           <h2 className={styles['card-title']} style={{ margin: 0 }}>Filtres</h2>
         </div>
         <div className={styles['card-section']}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.annee ? 220 : 0 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
+            <div className={cn("flex flex-col gap-2", styles['card-field-block'])} style={{ marginBottom: openFilters.annee ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="annee">Année</Label>
               <Select open={openFilters.annee} onOpenChange={(o) => setOpenFilters(s => ({ ...s, annee: o }))} value={filters.anneeScolaire || 'all'} onValueChange={(v) => setFilters(prev => ({ ...prev, anneeScolaire: v === 'all' ? undefined : v }))}>
                 <SelectTrigger id="annee" className="uppercase tracking-[0.05em] w-full h-14"
@@ -177,7 +177,7 @@ export const CohortesPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.cursus ? 220 : 0 }}>
+            <div className={cn("flex flex-col gap-2", styles['card-field-block'])} style={{ marginBottom: openFilters.cursus ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="cursus">Cursus</Label>
               <Select open={openFilters.cursus} onOpenChange={(o) => setOpenFilters(s => ({ ...s, cursus: o }))} value={filters.typeFormation || 'all'} onValueChange={(v) => setFilters(prev => ({ ...prev, typeFormation: v === 'all' ? undefined : (v as TypeFormation) }))}>
                 <SelectTrigger id="cursus" className="uppercase tracking-[0.05em] w-full h-14"
@@ -198,7 +198,7 @@ export const CohortesPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
+            <div className={cn("flex flex-col gap-2", styles['card-field-block'])} style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
               <Label className="mb-2 block" htmlFor="statut">Statut</Label>
               <Select open={openFilters.statut} onOpenChange={(o) => setOpenFilters(s => ({ ...s, statut: o }))} value={filters.actif === undefined ? 'all' : String(filters.actif)} onValueChange={(v) => setFilters(prev => ({ ...prev, actif: v === 'all' ? undefined : v === 'true' }))}>
                 <SelectTrigger id="statut" className="uppercase tracking-[0.05em] w-full h-14"

@@ -5,6 +5,8 @@ import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Loader2 } from 'lucide-react';
 import { Etudiant, CreateEtudiantDto, StatutInscription, TypeFinancement } from '../../types/etudiant';
+import { cohortesService } from '../../services/cohortes';
+import { Cohorte } from '../../types/cohorte';
 import { cn } from '@/lib/utils';
 import styles from '../admin/cards.module.css';
 
@@ -67,6 +69,9 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
     genre: false,
     financement: false,
   });
+  const [cohortes, setCohortes] = useState<Cohorte[]>([]);
+  const [loadingCohortes, setLoadingCohortes] = useState(false);
+  const [tagInput, setTagInput] = useState('');
 
   const commonInputStyle: React.CSSProperties = {
     background: 'rgba(0,0,0,0.5)',
@@ -75,6 +80,8 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
     height: '56px',
     padding: '0.875rem 1rem',
     fontSize: '1rem',
+    textAlign: 'left',
+    width: '100%',
   };
 
   useEffect(() => {
@@ -105,6 +112,21 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
       });
     }
   }, [etudiant]);
+
+  useEffect(() => {
+    const loadCohortes = async () => {
+      try {
+        setLoadingCohortes(true);
+        const data = await cohortesService.getAll();
+        setCohortes(data);
+      } catch (e) {
+        console.error('Erreur chargement cohortes', e);
+      } finally {
+        setLoadingCohortes(false);
+      }
+    };
+    loadCohortes();
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -146,13 +168,13 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
         {etudiant ? 'Modifier l\'étudiant' : 'Nouvel étudiant'}
       </h3>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 text-left">
         {/* Informations personnelles */}
         <div className={styles['card-section']}>
           <h4 className={styles['card-title']} style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
             Informations personnelles
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start justify-start">
             <div>
               <Label htmlFor="nom" className="mb-2 block">
                 Nom <span style={{ color: '#ef4444' }}>*</span>
@@ -229,12 +251,51 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
           </div>
         </div>
 
+        {/* Coordonnées & identité */}
+        <div className={styles['card-section']}>
+          <h4 className={styles['card-title']} style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
+            Coordonnées & identité
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start justify-start">
+            <div className="md:col-span-2">
+              <Label htmlFor="adresse" className="mb-2 block">Adresse</Label>
+              <Input id="adresse" value={formData.adresse || ''} onChange={(e) => setFormData({ ...formData, adresse: e.target.value })} style={commonInputStyle} placeholder="Adresse complète" />
+            </div>
+            <div>
+              <Label htmlFor="lieuNaissance" className="mb-2 block">Lieu de naissance</Label>
+              <Input id="lieuNaissance" value={formData.lieuNaissance || ''} onChange={(e) => setFormData({ ...formData, lieuNaissance: e.target.value })} style={commonInputStyle} placeholder="Ville, pays" />
+            </div>
+            <div>
+              <Label htmlFor="nationalite" className="mb-2 block">Nationalité</Label>
+              <Input id="nationalite" value={formData.nationalite || ''} onChange={(e) => setFormData({ ...formData, nationalite: e.target.value })} style={commonInputStyle} placeholder="Nationalité" />
+            </div>
+            <div style={{ marginBottom: openSelects.genre ? 220 : 0 }}>
+              <Label htmlFor="genre" className="mb-2 block">Genre</Label>
+              <Select open={openSelects.genre} onOpenChange={(o) => setOpenSelects({ ...openSelects, genre: o })} value={formData.genre || 'none'} onValueChange={(v) => setFormData({ ...formData, genre: v === 'none' ? undefined : (v as any) })}>
+                <SelectTrigger id="genre" style={commonInputStyle}>
+                  <SelectValue placeholder="Sélectionner..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Non renseigné</SelectItem>
+                  <SelectItem value="M">Masculin</SelectItem>
+                  <SelectItem value="F">Féminin</SelectItem>
+                  <SelectItem value="Autre">Autre</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="photo" className="mb-2 block">Photo (URL)</Label>
+              <Input id="photo" value={(formData as any).photo || ''} onChange={(e) => setFormData({ ...formData, photo: e.target.value } as any)} style={commonInputStyle} placeholder="https://..." />
+            </div>
+          </div>
+        </div>
+
         {/* Informations scolaires */}
         <div className={styles['card-section']}>
           <h4 className={styles['card-title']} style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
             Informations scolaires
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start justify-start">
             <div style={{ marginBottom: openSelects.statut ? 220 : 0 }}>
               <Label htmlFor="statut" className="mb-2 block">
                 Statut d'inscription <span style={{ color: '#ef4444' }}>*</span>
@@ -287,6 +348,25 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
                 placeholder="Bac+2"
               />
             </div>
+            <div className="md:col-span-2" style={{ marginBottom: openSelects.statut ? 220 : 0 }}>
+              <Label htmlFor="cohorteActuelle" className="mb-2 block">Cohorte actuelle</Label>
+              <Select
+                value={(formData as any).cohorteActuelle || 'none'}
+                onValueChange={(v) => setFormData({ ...formData, cohorteActuelle: v === 'none' ? undefined : v } as any)}
+                open={openSelects.statut}
+                onOpenChange={(o) => setOpenSelects({ ...openSelects, statut: o })}
+              >
+                <SelectTrigger id="cohorteActuelle" style={commonInputStyle}>
+                  <SelectValue placeholder={loadingCohortes ? 'Chargement...' : 'Sélectionner...'} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Non assigné</SelectItem>
+                  {cohortes.map((c) => (
+                    <SelectItem key={c._id} value={c._id}>{c.nom}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -295,7 +375,7 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
           <h4 className={styles['card-title']} style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
             Informations financières
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start justify-start">
             <div style={{ marginBottom: openSelects.financement ? 220 : 0 }}>
               <Label htmlFor="typeFinancement" className="mb-2 block">Type de financement</Label>
               <Select
@@ -328,6 +408,14 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
                 placeholder="5000"
               />
             </div>
+            <div>
+              <Label htmlFor="dateDebutFinancement" className="mb-2 block">Début financement</Label>
+              <Input id="dateDebutFinancement" type="date" value={(formData as any).dateDebutFinancement || ''} onChange={(e) => setFormData({ ...formData, dateDebutFinancement: e.target.value } as any)} style={commonInputStyle} />
+            </div>
+            <div>
+              <Label htmlFor="dateFinFinancement" className="mb-2 block">Fin financement</Label>
+              <Input id="dateFinFinancement" type="date" value={(formData as any).dateFinFinancement || ''} onChange={(e) => setFormData({ ...formData, dateFinFinancement: e.target.value } as any)} style={commonInputStyle} />
+            </div>
             <div className="md:col-span-2">
               <Label htmlFor="organismeFinanceur" className="mb-2 block">Organisme financeur</Label>
               <Input
@@ -341,20 +429,92 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
           </div>
         </div>
 
-        {/* Commentaires */}
+        {/* Parcours & commentaires */}
         <div className={styles['card-section']}>
-          <Label htmlFor="commentaires" className="mb-2 block">Commentaires</Label>
-          <Textarea
-            id="commentaires"
-            value={formData.commentaires || ''}
-            onChange={(e) => setFormData({ ...formData, commentaires: e.target.value })}
-            style={{
-              ...commonInputStyle,
-              height: 'auto',
-              minHeight: '100px',
-            }}
-            placeholder="Commentaires sur l'étudiant..."
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="situationActuelle" className="mb-2 block">Situation actuelle</Label>
+              <Input id="situationActuelle" value={formData.situationActuelle || ''} onChange={(e) => setFormData({ ...formData, situationActuelle: e.target.value })} style={commonInputStyle} placeholder="Alternant, en stage, ..." />
+            </div>
+            <div>
+              <Label htmlFor="objectifs" className="mb-2 block">Objectifs</Label>
+              <Input id="objectifs" value={formData.objectifs || ''} onChange={(e) => setFormData({ ...formData, objectifs: e.target.value })} style={commonInputStyle} placeholder="Objectifs de formation" />
+            </div>
+            <div className="md:col-span-2">
+              <Label htmlFor="tags" className="mb-2 block">Tags</Label>
+              <Input
+                id="tags"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const newTag = tagInput.trim();
+                    if (!newTag) return;
+                    const current = formData.tags || [];
+                    if (current.includes(newTag)) {
+                      setTagInput('');
+                      return;
+                    }
+                    setFormData({ ...formData, tags: [...current, newTag] });
+                    setTagInput('');
+                  }
+                }}
+                style={commonInputStyle}
+                placeholder="Saisir un tag puis Entrée"
+              />
+              {/* Aperçu des tags avec wrap pour éviter le manque de place */}
+              <div
+                aria-label="Tags actuels"
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '0.5rem',
+                  marginTop: '0.5rem',
+                }}
+              >
+                {(formData.tags || []).map((tag, idx) => (
+                  <span
+                    key={`${tag}-${idx}`}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '9999px',
+                      background: 'rgba(61,155,255,0.15)',
+                      border: '1px solid rgba(61,155,255,0.35)',
+                      color: '#cfeaff',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      aria-label={`Retirer ${tag}`}
+                      onClick={() => {
+                        const newTags = (formData.tags || []).filter((_, i) => i !== idx)
+                        setFormData({ ...formData, tags: newTags })
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#9ccfff',
+                        cursor: 'pointer',
+                        padding: 0,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <Label htmlFor="commentaires" className="mb-2 block mt-4">Commentaires</Label>
+          <Textarea id="commentaires" value={formData.commentaires || ''} onChange={(e) => setFormData({ ...formData, commentaires: e.target.value })} className="particle-input" style={{ height: 'auto', minHeight: '120px' }} placeholder="Commentaires sur l'étudiant..." />
         </div>
 
         {/* Actions */}

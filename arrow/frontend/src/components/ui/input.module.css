@@ -9,8 +9,10 @@ select {
   background: hsl(var(--input));
   border: 2px solid rgba(61, 155, 255, 0.3);
   color: hsl(var(--foreground));
-  padding: 0.75rem 1rem;
-  font-weight: 600;
+  padding: 0.875rem 1rem;  /* champs plus hauts */
+  font-weight: 700;        /* plus gras pour lisibilité */
+  font-size: 0.95rem;      /* taille légèrement plus grande */
+  border-radius: 10px;     /* arrondi plus généreux */
   transition: all 0.3s;
 }
 

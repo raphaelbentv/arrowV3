@@ -32,11 +32,11 @@
   position: relative;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 1.8vw, 1.5rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: clamp(0.5rem, 1.2vw, 1rem);
 }
 
 /* Logo avec hover effect */
@@ -102,7 +102,7 @@
   position: relative;
   flex: 1;
   max-width: 28rem;
-  margin: 0 1.5rem;
+  margin: 0 clamp(0.5rem, 1.6vw, 1.5rem);
 }
 
 .searchIcon {
@@ -141,7 +141,7 @@
 .desktopMenu {
   display: flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: clamp(1rem, 2.2vw, 2rem);
 }
 
 .navLink {
@@ -154,8 +154,9 @@
   text-transform: uppercase;
   letter-spacing: 0.15em;
   transition: all 0.3s;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem clamp(0.5rem, 1.2vw, 0.9rem);
   cursor: pointer;
+  text-decoration: none;
 }
 
 .navLinkActive {
@@ -291,6 +292,15 @@
 
 .mobileBurger:hover .burgerGlow {
   opacity: 1;
+}
+
+/* Helpers d’affichage */
+.desktopOnly {
+  display: none;
+}
+
+.mobileOnly {
+  display: flex;
 }
 
 /* Mobile drawer */
@@ -478,9 +488,15 @@
 }
 
 /* Responsive - Media queries */
-@media (min-width: 1024px) {
+@media (min-width: 1248px) {
   .desktopMenu {
     display: flex !important;
+  }
+  .desktopOnly {
+    display: block !important;
+  }
+  .mobileOnly {
+    display: none !important;
   }
   
   .mobileBurger {
@@ -492,9 +508,15 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1247px) {
   .desktopMenu {
     display: none !important;
+  }
+  .desktopOnly {
+    display: none !important;
+  }
+  .mobileOnly {
+    display: flex !important;
   }
   
   .searchContainer {

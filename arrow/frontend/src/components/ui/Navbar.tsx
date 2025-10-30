@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { Menu, X, Home, Users, GraduationCap, BookOpen, Calendar, FileText, Settings, BarChart3, Search, UserCog, Phone, ShieldPlus } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Menu, X, Home, Users, GraduationCap, BookOpen, Calendar, FileText, Settings, BarChart3, Search, UserCog, Phone, ShieldPlus, ClipboardCheck, User as UserIcon } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 import styles from './navbar.module.css';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/authContext';
 
 interface NavItem {
   label: string;
@@ -22,12 +23,15 @@ interface NavbarProps {
 // Configuration de navigation par rôle
 const navConfigs: Record<string, NavItem[]> = {
   admin: [
+    // Bloc Opérationnel
+    { label: 'Présences', href: '/admin/calls', icon: ClipboardCheck },
     { label: 'Étudiants', href: '/admin/students', icon: GraduationCap },
-    { label: 'Intervenants', href: '/admin/intervenant-list', icon: UserCog },
-    { label: 'Administrateurs', href: '/admin/administrators', icon: ShieldPlus },
     { label: 'Cohortes', href: '/admin/cohortes', icon: BookOpen },
-    { label: 'Cours / Matières', href: '/admin/courses', icon: BookOpen },
-    { label: 'Appels', href: '/admin/calls', icon: Phone },
+    // Bloc Pédagogique
+    { label: 'Cours', href: '/admin/courses', icon: BookOpen },
+    { label: 'Intervenants', href: '/admin/intervenant-list', icon: UserCog },
+    // Bloc Structurel
+    { label: 'Administrateurs', href: '/admin/administrators', icon: ShieldPlus },
   ],
   intervenant: [
     { label: 'Tableau de bord', href: '/intervenant/dashboard', icon: Home },
@@ -48,6 +52,18 @@ const navConfigs: Record<string, NavItem[]> = {
 export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = false, searchPlaceholder = 'Rechercher...', onSearch }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  // Palette néon et couleur active stable par section
+  const neonPalette = useMemo(() => ['#00FFD1', '#FF1CF7', '#3B82F6', '#A3FF12', '#C084FC'], []);
+  const [neonColor, setNeonColor] = useState(neonPalette[0]);
+  const { user, isAuthenticated, logout } = useAuth();
+  const [showProfile, setShowProfile] = useState(false);
+
+  useEffect(() => {
+    // Choisir une couleur aléatoire à chaque changement d'onglet actif
+    if (!activeLink) return;
+    const random = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+    setNeonColor(random);
+  }, [activeLink, neonPalette]);
 
   // Sélectionner les items de navigation selon le rôle
   const navItems = navConfigs[role] || navConfigs.admin;
@@ -98,50 +114,260 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
 
         {/* Desktop menu - Visible sur écrans desktop uniquement */}
         <div className={styles.desktopMenu}>
-          {navItems.map((item) => {
-            const IconComponent = item.icon;
-            const isActive = activeLink === item.href;
-            return (
-              <a
-                key={item.href}
-                href={item.href}
-                className={cn('group', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
-              >
-                {/* Icon with glow */}
-                <div className={styles.iconContainer}>
-                  <IconComponent className={styles.icon} />
-                  <div className={styles.iconGlow} />
-                </div>
+          {role === 'admin' ? (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {/* Bloc Opérationnel: 0..2 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {navItems.slice(0, 3).map((item) => {
+                  const IconComponent = item.icon;
+                  const isActive = activeLink === item.href;
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
+                      style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(229 231 235)' }}
+                    >
+                      <div className={styles.iconContainer}>
+                        <IconComponent className={styles.icon} />
+                        <div className={styles.iconGlow} />
+                      </div>
+                      <span className={styles.navLabel}>{item.label}</span>
+                      <span className={styles.underline} />
+                      <div className={styles.particle} />
+                    </a>
+                  );
+                })}
+              </div>
 
-                {/* Label with gradient hover */}
-                <span className={styles.navLabel}>
-                  {item.label}
-                </span>
-                
-                {/* Underline animée avec glow */}
-                <span className={styles.underline} />
+              {/* Séparateur entre groupes */}
+              <div className="h-4 w-px bg-white/10 mx-6" />
 
-                {/* Particles on hover */}
-                <div className={styles.particle} />
-              </a>
-            );
-          })}
+              {/* Bloc Pédagogique: 3..4 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {navItems.slice(3, 5).map((item) => {
+                  const IconComponent = item.icon;
+                  const isActive = activeLink === item.href;
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
+                      style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(209 213 219)' }}
+                    >
+                      <div className={styles.iconContainer}>
+                        <IconComponent className={styles.icon} />
+                        <div className={styles.iconGlow} />
+                      </div>
+                      <span className={styles.navLabel}>{item.label}</span>
+                      <span className={styles.underline} />
+                      <div className={styles.particle} />
+                    </a>
+                  );
+                })}
+              </div>
+
+              {/* Séparateur entre groupes */}
+              <div className="h-4 w-px bg-white/10 mx-6" />
+
+              {/* Bloc Structurel: 5 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {navItems.slice(5).map((item) => {
+                  const IconComponent = item.icon;
+                  const isActive = activeLink === item.href;
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
+                      style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(156 163 175)' }}
+                    >
+                      <div className={styles.iconContainer}>
+                        <IconComponent className={styles.icon} />
+                        <div className={styles.iconGlow} />
+                      </div>
+                      <span className={styles.navLabel}>{item.label}</span>
+                      <span className={styles.underline} />
+                      <div className={styles.particle} />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            // Rendu par défaut pour autres rôles
+            navItems.map((item) => {
+              const IconComponent = item.icon;
+              const isActive = activeLink === item.href;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
+                >
+                  <div className={styles.iconContainer}>
+                    <IconComponent className={styles.icon} />
+                    <div className={styles.iconGlow} />
+                  </div>
+                  <span className={styles.navLabel}>{item.label}</span>
+                  <span className={styles.underline} />
+                  <div className={styles.particle} />
+                </a>
+              );
+            })
+          )}
         </div>
 
-
-        {/* Mobile burger button - Visible sur mobile uniquement */}
-        <button
-          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-          className={styles.mobileBurger}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? (
-            <X className={cn(styles.burgerIcon, styles.burgerIconRotated)} />
-          ) : (
-            <Menu className={styles.burgerIcon} />
+        {/* Indicateur de connexion (desktop) */}
+        <div className={styles.desktopOnly} style={{ position: 'relative', marginLeft: '0.75rem' }}>
+          <button
+            aria-label="Statut de connexion"
+            onClick={() => setShowProfile(!showProfile)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              border: '2px solid rgba(61, 155, 255, 0.4)',
+              background: 'rgba(61, 155, 255, 0.08)',
+              boxShadow: `0 0 18px ${neonColor}55`,
+              transition: 'transform 0.2s ease',
+            }}
+          >
+            <UserIcon size={18} style={{ color: neonColor, filter: 'drop-shadow(0 0 8px currentColor)' }} />
+          </button>
+          {showProfile && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '48px',
+                right: 0,
+                minWidth: '220px',
+                padding: '12px 14px',
+                borderRadius: '12px',
+                background: 'rgba(0,0,0,0.9)',
+                border: '1px solid rgba(61,155,255,0.35)',
+                boxShadow: `0 10px 30px ${neonColor}44, inset 0 0 20px ${neonColor}22`,
+                color: '#d1d5db',
+                zIndex: 60,
+              }}
+            >
+              <div style={{ fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#87ceeb' }}>Profil</div>
+              <div style={{ marginTop: '6px', fontWeight: 700, color: '#e5e7eb' }}>
+                {[user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.email || 'Utilisateur'}
+              </div>
+              {user?.email && (
+                <div style={{ marginTop: '2px', fontSize: '12px', color: '#9ca3af' }}>{user.email}</div>
+              )}
+              <div style={{ marginTop: '10px', fontSize: '12px', color: '#9ca3af' }}>
+                Statut: <span style={{ color: isAuthenticated ? '#22c55e' : '#ef4444' }}>{isAuthenticated ? 'Connecté' : 'Déconnecté'}</span>
+              </div>
+              <button
+                onClick={() => { logout(); setShowProfile(false); }}
+                style={{
+                  marginTop: '12px',
+                  width: '100%',
+                  padding: '8px 10px',
+                  borderRadius: '10px',
+                  border: '2px solid rgba(220,38,38,0.4)',
+                  background: 'rgba(220,38,38,0.08)',
+                  color: '#ff6b6b',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  boxShadow: '0 0 12px rgba(220,38,38,0.35)',
+                }}
+              >
+                Se déconnecter
+              </button>
+            </div>
           )}
-          <div className={styles.burgerGlow} />
-        </button>
+        </div>
+
+        {/* Zone mobile: statut + burger côte à côte */}
+        <div className={styles.mobileOnly} style={{ alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
+          <button
+            aria-label="Statut de connexion"
+            onClick={() => setShowProfile(!showProfile)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              border: '2px solid rgba(61, 155, 255, 0.4)',
+              background: 'rgba(61, 155, 255, 0.08)',
+              boxShadow: `0 0 16px ${neonColor}55`,
+            }}
+          >
+            <UserIcon size={16} style={{ color: neonColor, filter: 'drop-shadow(0 0 8px currentColor)' }} />
+          </button>
+
+          {showProfile && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '44px',
+                right: '48px',
+                minWidth: '200px',
+                padding: '10px 12px',
+                borderRadius: '12px',
+                background: 'rgba(0,0,0,0.9)',
+                border: '1px solid rgba(61,155,255,0.35)',
+                boxShadow: `0 10px 30px ${neonColor}44, inset 0 0 20px ${neonColor}22`,
+                color: '#d1d5db',
+                zIndex: 60,
+              }}
+            >
+              <div style={{ fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#87ceeb' }}>Profil</div>
+              <div style={{ marginTop: '6px', fontWeight: 700, color: '#e5e7eb' }}>
+                {[user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.email || 'Utilisateur'}
+              </div>
+              {user?.email && (
+                <div style={{ marginTop: '2px', fontSize: '12px', color: '#9ca3af' }}>{user.email}</div>
+              )}
+              <div style={{ marginTop: '10px', fontSize: '12px', color: '#9ca3af' }}>
+                Statut: <span style={{ color: isAuthenticated ? '#22c55e' : '#ef4444' }}>{isAuthenticated ? 'Connecté' : 'Déconnecté'}</span>
+              </div>
+              <button
+                onClick={() => { logout(); setShowProfile(false); }}
+                style={{
+                  marginTop: '12px',
+                  width: '100%',
+                  padding: '8px 10px',
+                  borderRadius: '10px',
+                  border: '2px solid rgba(220,38,38,0.4)',
+                  background: 'rgba(220,38,38,0.08)',
+                  color: '#ff6b6b',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  boxShadow: '0 0 12px rgba(220,38,38,0.35)',
+                }}
+              >
+                Se déconnecter
+              </button>
+            </div>
+          )}
+
+          <button
+            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+            className={styles.mobileBurger}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? (
+              <X className={cn(styles.burgerIcon, styles.burgerIconRotated)} />
+            ) : (
+              <Menu className={styles.burgerIcon} />
+            )}
+            <div className={styles.burgerGlow} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer - Visible sur mobile uniquement */}

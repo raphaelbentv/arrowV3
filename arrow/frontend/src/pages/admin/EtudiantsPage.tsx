@@ -25,6 +25,7 @@ export const EtudiantsPage: React.FC = () => {
   const [filters, setFilters] = useState<EtudiantFilters>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [openFilters, setOpenFilters] = useState({ statut: false, cohorte: false, financement: false });
+  const [showAdvancedMobile, setShowAdvancedMobile] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -166,7 +167,7 @@ export const EtudiantsPage: React.FC = () => {
         <Button 
           onClick={() => setShowForm(true)}
           size="lg"
-          className="font-bold uppercase tracking-[0.08em] mb-4"
+          className="Add-button mb-4"
         >
           <Plus className="h-4 w-4" />
           Nouvel étudiant
@@ -189,50 +190,97 @@ export const EtudiantsPage: React.FC = () => {
         className={cn(styles['base-card'], styles['card-spacing-normal'])}
         style={{ borderTop: '4px solid #3d9bff', boxShadow: 'none', marginBottom: '2rem' }}
       >
-        <div className={styles['card-header']}>
-          <h2 className={styles['card-title']} style={{ margin: 0 }}>Recherche et Filtres</h2>
+        <div className={styles['card-header']} style={{
+          background: 'rgba(61,155,255,0.06)',
+          padding: '0.75rem 1rem',
+          borderLeft: '4px solid #3d9bff',
+          borderRadius: '8px'
+        }}>
+          <h2 className={styles['card-title']} style={{ margin: 0, color: '#cbe7ff', textShadow: '0 0 10px rgba(61,155,255,0.4)' }}>
+            Recherche et filtres ({filteredEtudiants.length} étudiant{filteredEtudiants.length > 1 ? 's' : ''})
+          </h2>
+          {/* Badge filtres actifs */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span aria-label="Nombre de filtres actifs"
+              style={{
+                background: 'rgba(61,155,255,0.18)',
+                border: '1px solid rgba(61,155,255,0.35)',
+                color: '#87ceeb',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '9999px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+              }}
+            >
+              {['statutInscription','cohorte','typeFinancement'].filter(k => (filters as any)[k] !== undefined).length} filtre(s)
+            </span>
+            <button
+              className="md:hidden"
+              aria-label={showAdvancedMobile ? 'Masquer les filtres' : 'Afficher les filtres'}
+              onClick={() => setShowAdvancedMobile(v => !v)}
+              style={{
+                padding: '0.25rem 0.5rem',
+                borderRadius: '8px',
+                border: '1px solid rgba(61,155,255,0.35)',
+                color: '#87ceeb',
+                background: 'rgba(61,155,255,0.08)'
+              }}
+            >
+              {showAdvancedMobile ? 'Masquer' : 'Afficher'}
+            </button>
+          </div>
         </div>
         <div className={styles['card-section']}>
           {/* Recherche + Filtres (même grille, alignés à gauche) */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
             {/* Recherche */}
-            <div className="flex flex-col gap-2">
-              <Label className="mb-2 block" htmlFor="search">Recherche</Label>
+            <div className={cn("flex flex-col gap-3")}> 
+              <Label className="mb-1 block text-xs md:text-sm uppercase text-gray-300 font-semibold" htmlFor="search">Recherche</Label>
               <Input
                 id="search"
+                aria-label="Rechercher étudiant"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Rechercher par nom, email, numéro étudiant..."
-                className="uppercase tracking-[0.05em] w-full h-14"
+                placeholder="Nom, email, n° étudiant"
+                className="tracking-[0.02em] w-full h-14"
                 style={{
-                  background: 'rgba(0,0,0,0.5)',
+                  background: 'rgba(17,24,39,0.6)',
                   border: '2px solid rgba(61,155,255,0.35)',
-                  color: '#87ceeb'
+                  color: '#cfeaff'
                 }}
               />
             </div>
 
             {/* Statut */}
-            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
-              <Label className="mb-2 block" htmlFor="statut">Statut</Label>
+            <div className={cn("flex flex-col gap-3", !showAdvancedMobile && 'hidden md:flex')} style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
+              <Label className="mb-1 block text-xs md:text-sm uppercase text-gray-300 font-semibold" htmlFor="statut">Statut</Label>
               <Select
                 open={openFilters.statut}
                 onOpenChange={(o) => setOpenFilters(s => ({ ...s, statut: o }))}
                 value={filters.statutInscription || 'all'}
                 onValueChange={(v) => setFilters(prev => ({ ...prev, statutInscription: v === 'all' ? undefined : v as StatutInscription }))}
               >
-                <SelectTrigger id="statut" className="uppercase tracking-[0.05em] w-full h-14"
+                <SelectTrigger id="statut" aria-label="Filtrer par statut" className="w-full h-14 hover:ring-2 hover:ring-sky-400 hover:border-sky-400"
                   style={{
-                    background: 'rgba(0,0,0,0.5)',
+                    background: 'rgba(17,24,39,0.6)',
                     border: '2px solid rgba(61,155,255,0.35)',
-                    color: '#87ceeb'
+                    color: '#cfeaff'
                   }}
                 >
                   <SelectValue placeholder="Tous les statuts" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Tous les statuts</SelectItem>
-                  {Object.values(StatutInscription).map((statut) => (
+                  {[
+                    StatutInscription.EN_ATTENTE,
+                    StatutInscription.INSCRIT,
+                    StatutInscription.ADMIS,
+                    StatutInscription.NON_ADMIS,
+                    StatutInscription.DIPLOME,
+                    StatutInscription.ABANDON,
+                    StatutInscription.EXCLUS,
+                  ].map((statut) => (
                     <SelectItem key={statut} value={statut}>{statut}</SelectItem>
                   ))}
                 </SelectContent>
@@ -240,19 +288,19 @@ export const EtudiantsPage: React.FC = () => {
             </div>
 
             {/* Cohorte */}
-            <div className="flex flex-col gap-2" style={{ marginBottom: openFilters.cohorte ? 220 : 0 }}>
-              <Label className="mb-2 block" htmlFor="cohorte">Cohorte</Label>
+            <div className={cn("flex flex-col gap-3", !showAdvancedMobile && 'hidden md:flex')} style={{ marginBottom: openFilters.cohorte ? 220 : 0 }}>
+              <Label className="mb-1 block text-xs md:text-sm uppercase text-gray-300 font-semibold" htmlFor="cohorte">Cohorte</Label>
               <Select
                 open={openFilters.cohorte}
                 onOpenChange={(o) => setOpenFilters(s => ({ ...s, cohorte: o }))}
                 value={filters.cohorte || 'all'}
                 onValueChange={(v) => setFilters(prev => ({ ...prev, cohorte: v === 'all' ? undefined : v }))}
               >
-                <SelectTrigger id="cohorte" className="uppercase tracking-[0.05em] w-full h-14"
+                <SelectTrigger id="cohorte" aria-label="Filtrer par cohorte" className="w-full h-14 hover:ring-2 hover:ring-sky-400 hover:border-sky-400"
                   style={{
-                    background: 'rgba(0,0,0,0.5)',
+                    background: 'rgba(17,24,39,0.6)',
                     border: '2px solid rgba(61,155,255,0.35)',
-                    color: '#87ceeb'
+                    color: '#cfeaff'
                   }}
                 >
                   <SelectValue placeholder="Toutes les cohortes" />
@@ -266,25 +314,7 @@ export const EtudiantsPage: React.FC = () => {
               </Select>
             </div>
 
-            {/* Total */}
-            <div className="flex flex-col gap-2">
-              <Label className="mb-2 block">Total</Label>
-              <div
-                className="uppercase tracking-[0.05em] w-full h-14 flex items-center"
-                style={{
-                  background: 'rgba(0,0,0,0.5)',
-                  border: '2px solid rgba(61,155,255,0.35)',
-                  color: '#87ceeb',
-                  borderRadius: '8px',
-                  fontWeight: 'bold',
-                  fontSize: '1.125rem',
-                  paddingLeft: '0.75rem',
-                  paddingRight: '0.75rem',
-                }}
-              >
-                {filteredEtudiants.length} étudiant{filteredEtudiants.length > 1 ? 's' : ''}
-              </div>
-            </div>
+            {/* Total retiré: le nombre est inclus dans le titre de la carte */}
           </div>
         </div>
       </div>

@@ -4,12 +4,12 @@
 
 /* Variables CSS pour espacement cohérent */
 :root {
-  --card-padding: 1.5rem;        /* 24px - Padding principal */
-  --card-padding-small: 1rem;   /* 16px - Padding réduit */
-  --card-padding-large: 2rem;   /* 32px - Padding augmenté */
-  --card-gap: 1.25rem;          /* 20px - Espacement entre éléments */
-  --card-gap-small: 0.75rem;    /* 12px - Espacement réduit */
-  --card-gap-large: 1.5rem;     /* 24px - Espacement augmenté */
+  --card-padding: 2rem;         /* 32px - Padding principal augmenté */
+  --card-padding-small: 1.25rem;/* 20px - Padding réduit augmenté */
+  --card-padding-large: 2.5rem; /* 40px - Padding augmenté */
+  --card-gap: 1.5rem;           /* 24px - Espacement entre éléments augmenté */
+  --card-gap-small: 1rem;       /* 16px - Espacement réduit augmenté */
+  --card-gap-large: 2rem;       /* 32px - Espacement augmenté */
   --card-border-radius: 12px;
   --card-border-width: 2px;
   --card-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -129,13 +129,13 @@
 }
 
 .card-title {
-  font-size: 1.125rem;          /* 18px */
-  font-weight: 700;
+  font-size: 1.25rem;           /* 20px - légèrement plus grand */
+  font-weight: 800;             /* plus gras pour hiérarchie */
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: #87ceeb;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .card-title-large {
@@ -219,8 +219,21 @@
 
 .card-grid {
   display: grid;
-  gap: var(--card-gap-small);
+  gap: var(--card-gap);          /* plus d'espace entre les éléments */
   margin-bottom: var(--card-gap);
+}
+
+/* Blocs de champ avec séparation visuelle */
+.card-field-block {
+  padding-bottom: var(--card-gap);
+  margin-bottom: var(--card-gap);
+  border-bottom: 1px solid rgba(61, 155, 255, 0.25);
+}
+
+.card-field-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .card-grid:last-child {
