@@ -543,11 +543,7 @@ export const EtudiantForm: React.FC<EtudiantFormProps> = ({
             <Button
               type="button"
               onClick={onCancel}
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderColor: 'rgba(255, 255, 255, 0.2)',
-                color: '#87ceeb',
-              }}
+              className={styles['card-button-secondary']}
             >
               Annuler
             </Button>

@@ -66,6 +66,9 @@ function Button({
   }, [neonPalette])
 
   const isNeon = (variant ?? "neon") === "neon"
+  const hasAddButtonClass = className?.includes("Add-button")
+  
+  // Pour les boutons Add-button, on applique les neonStyles aléatoires comme pour les autres boutons neon
   const neonStyles: React.CSSProperties | undefined = isNeon
     ? {
         background: "transparent",

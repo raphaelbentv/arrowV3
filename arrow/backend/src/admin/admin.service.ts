@@ -47,12 +47,16 @@ export class AdminService {
   }
 
   async update(id: string, updateData: Partial<Admin>): Promise<AdminDocument> {
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
-    }
+    // Ne pas mettre à jour le mot de passe ici (utiliser changePassword)
+    const { password, ...updateWithoutPassword } = updateData;
     
+    // Ajouter la date de dernière modification
     const updatedAdmin = await this.adminModel
-      .findByIdAndUpdate(id, updateData, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { ...updateWithoutPassword, derniereModificationProfil: new Date() },
+        { new: true }
+      )
       .exec();
       
     if (!updatedAdmin) {
@@ -68,5 +72,37 @@ export class AdminService {
       throw new NotFoundException(`Administrateur avec ID ${id} non trouvé`);
     }
     return deletedAdmin;
+  }
+
+  async changePassword(id: string, currentPassword: string, newPassword: string): Promise<AdminDocument> {
+    const admin = await this.findById(id);
+    
+    // Vérifier le mot de passe actuel
+    const isPasswordValid = await bcrypt.compare(currentPassword, admin.password);
+    if (!isPasswordValid) {
+      throw new NotFoundException('Mot de passe actuel incorrect');
+    }
+    
+    // Hacher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Mettre à jour le mot de passe
+    const updatedAdmin = await this.adminModel
+      .findByIdAndUpdate(id, { password: hashedPassword }, { new: true })
+      .exec();
+      
+    if (!updatedAdmin) {
+      throw new NotFoundException(`Administrateur avec ID ${id} non trouvé`);
+    }
+    
+    return updatedAdmin;
+  }
+
+  async updateLastLogin(id: string): Promise<void> {
+    await this.adminModel.findByIdAndUpdate(id, { derniereConnexion: new Date() }).exec();
+  }
+
+  async updateLastProfileModification(id: string): Promise<void> {
+    await this.adminModel.findByIdAndUpdate(id, { derniereModificationProfil: new Date() }).exec();
   }
 }

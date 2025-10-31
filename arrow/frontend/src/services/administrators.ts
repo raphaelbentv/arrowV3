@@ -7,7 +7,12 @@ export interface Administrator {
   email: string;
   nom: string;
   prenom: string;
+  photo?: string;
+  telephoneMobile?: string;
+  telephoneFixe?: string;
+  posteFonction?: string;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 class AdministratorsService {
@@ -67,6 +72,39 @@ class AdministratorsService {
     } catch (error: any) {
       console.error('❌ Erreur lors de la mise à jour de l\'administrateur:', error);
       throw new Error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+    }
+  }
+
+  async getById(id: string): Promise<Administrator> {
+    try {
+      const response = await axios.get(`${API_URL}/admin/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la récupération de l\'administrateur:', error);
+      throw new Error(error.response?.data?.message || 'Erreur lors de la récupération');
+    }
+  }
+
+  async updateProfile(id: string, profile: Partial<Administrator>): Promise<Administrator> {
+    try {
+      const response = await axios.patch(`${API_URL}/admin/${id}/profile`, profile);
+      return response.data;
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la mise à jour du profil:', error);
+      throw new Error(error.response?.data?.message || 'Erreur lors de la mise à jour du profil');
+    }
+  }
+
+  async changePassword(id: string, currentPassword: string, newPassword: string, confirmPassword: string): Promise<void> {
+    try {
+      await axios.patch(`${API_URL}/admin/${id}/password`, {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur lors du changement de mot de passe:', error);
+      throw error;
     }
   }
 

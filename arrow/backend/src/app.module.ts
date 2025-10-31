@@ -12,6 +12,7 @@ import { EtudiantsModule } from './etudiants/etudiants.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { ModulesModule } from './modules/modules.module';
+import { SchoolModule } from './school/school.module';
 // Importez vos autres modules ici
 
 @Module({
@@ -31,6 +32,7 @@ import { ModulesModule } from './modules/modules.module';
     DocumentsModule,
     AttendanceModule,
     ModulesModule,
+    SchoolModule,
   ],
   controllers: [AppController],
   providers: [AppService],

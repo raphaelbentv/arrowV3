@@ -1,19 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { EtudiantCard } from '../../components/etudiants/EtudiantCard';
 import { EtudiantForm } from '../../components/etudiants/EtudiantForm';
 import { Etudiant, CreateEtudiantDto, UpdateEtudiantDto, StatutInscription, EtudiantFilters } from '../../types/etudiant';
 import { etudiantsService } from '../../services/etudiants';
-import { cn } from '@/lib/utils';
-import styles from '@/components/admin/cards.module.css';
 import { cohortesService } from '../../services/cohortes';
 import { Cohorte } from '../../types/cohorte';
+import { SearchFiltersCard, FilterConfig } from '@/components/ui/SearchFiltersCard';
 
 export const EtudiantsPage: React.FC = () => {
   const [etudiants, setEtudiants] = useState<Etudiant[]>([]);
@@ -25,8 +21,6 @@ export const EtudiantsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filters, setFilters] = useState<EtudiantFilters>({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [openFilters, setOpenFilters] = useState({ statut: false, cohorte: false, financement: false });
-  const [showAdvancedMobile, setShowAdvancedMobile] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
@@ -149,6 +143,38 @@ export const EtudiantsPage: React.FC = () => {
     return true;
   });
 
+  // Configuration des filtres pour SearchFiltersCard (doit être au niveau du composant, pas dans le JSX)
+  const filterConfigs = useMemo<FilterConfig[]>(() => [
+    {
+      id: 'statut',
+      label: 'Statut',
+      placeholder: 'Tous les statuts',
+      value: filters.statutInscription,
+      options: [
+        StatutInscription.EN_ATTENTE,
+        StatutInscription.INSCRIT,
+        StatutInscription.ADMIS,
+        StatutInscription.NON_ADMIS,
+        StatutInscription.DIPLOME,
+        StatutInscription.ABANDON,
+        StatutInscription.EXCLUS,
+      ].map((statut) => ({ value: statut, label: statut })),
+      onValueChange: (v) =>
+        setFilters((prev) => ({ ...prev, statutInscription: v as StatutInscription | undefined })),
+    },
+    {
+      id: 'cohorte',
+      label: 'Cohorte',
+      placeholder: 'Toutes les cohortes',
+      value: filters.cohorte,
+      options: cohortes.map((cohorte) => ({
+        value: cohorte._id,
+        label: cohorte.nom,
+      })),
+      onValueChange: (v) => setFilters((prev) => ({ ...prev, cohorte: v })),
+    },
+  ], [filters, cohortes]);
+
   if (loading && etudiants.length === 0) {
     return (
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem 32px' }}>
@@ -195,139 +221,16 @@ export const EtudiantsPage: React.FC = () => {
         }}>{error}</div>
       )}
 
-      {/* Recherche et Filtres */}
-      <div
-        className={cn(styles['base-card'], styles['card-spacing-normal'])}
-        style={{ borderTop: '4px solid #3d9bff', boxShadow: 'none', marginBottom: '2rem' }}
-      >
-        <div className={styles['card-header']} style={{
-          background: 'rgba(61,155,255,0.06)',
-          padding: '0.75rem 1rem',
-          borderLeft: '4px solid #3d9bff',
-          borderRadius: '8px'
-        }}>
-          <h2 className={styles['card-title']} style={{ margin: 0, color: '#cbe7ff', textShadow: '0 0 10px rgba(61,155,255,0.4)' }}>
-            Recherche et filtres ({filteredEtudiants.length} étudiant{filteredEtudiants.length > 1 ? 's' : ''})
-          </h2>
-          {/* Badge filtres actifs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span aria-label="Nombre de filtres actifs"
-              style={{
-                background: 'rgba(61,155,255,0.18)',
-                border: '1px solid rgba(61,155,255,0.35)',
-                color: '#87ceeb',
-                padding: '0.25rem 0.5rem',
-                borderRadius: '9999px',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                letterSpacing: '0.06em',
-              }}
-            >
-              {['statutInscription','cohorte','typeFinancement'].filter(k => (filters as any)[k] !== undefined).length} filtre(s)
-            </span>
-            <button
-              className="md:hidden"
-              aria-label={showAdvancedMobile ? 'Masquer les filtres' : 'Afficher les filtres'}
-              onClick={() => setShowAdvancedMobile(v => !v)}
-              style={{
-                padding: '0.25rem 0.5rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(61,155,255,0.35)',
-                color: '#87ceeb',
-                background: 'rgba(61,155,255,0.08)'
-              }}
-            >
-              {showAdvancedMobile ? 'Masquer' : 'Afficher'}
-            </button>
-          </div>
-        </div>
-        <div className={styles['card-section']}>
-          {/* Recherche + Filtres (même grille, alignés à gauche) */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
-            {/* Recherche */}
-            <div className={cn("flex flex-col gap-3")}> 
-              <Label className="mb-1 block text-xs md:text-sm uppercase text-gray-300 font-semibold" htmlFor="search">Recherche</Label>
-              <Input
-                id="search"
-                aria-label="Rechercher étudiant"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Nom, email, n° étudiant"
-                className="tracking-[0.02em] w-full h-14"
-                style={{
-                  background: 'rgba(17,24,39,0.6)',
-                  border: '2px solid rgba(61,155,255,0.35)',
-                  color: '#cfeaff'
-                }}
-              />
-            </div>
-
-            {/* Statut */}
-            <div className={cn("flex flex-col gap-3", !showAdvancedMobile && 'hidden md:flex')} style={{ marginBottom: openFilters.statut ? 220 : 0 }}>
-              <Label className="mb-1 block text-xs md:text-sm uppercase text-gray-300 font-semibold" htmlFor="statut">Statut</Label>
-              <Select
-                open={openFilters.statut}
-                onOpenChange={(o) => setOpenFilters(s => ({ ...s, statut: o }))}
-                value={filters.statutInscription || 'all'}
-                onValueChange={(v) => setFilters(prev => ({ ...prev, statutInscription: v === 'all' ? undefined : v as StatutInscription }))}
-              >
-                <SelectTrigger id="statut" aria-label="Filtrer par statut" className="w-full h-14 hover:ring-2 hover:ring-sky-400 hover:border-sky-400"
-                  style={{
-                    background: 'rgba(17,24,39,0.6)',
-                    border: '2px solid rgba(61,155,255,0.35)',
-                    color: '#cfeaff'
-                  }}
-                >
-                  <SelectValue placeholder="Tous les statuts" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les statuts</SelectItem>
-                  {[
-                    StatutInscription.EN_ATTENTE,
-                    StatutInscription.INSCRIT,
-                    StatutInscription.ADMIS,
-                    StatutInscription.NON_ADMIS,
-                    StatutInscription.DIPLOME,
-                    StatutInscription.ABANDON,
-                    StatutInscription.EXCLUS,
-                  ].map((statut) => (
-                    <SelectItem key={statut} value={statut}>{statut}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Cohorte */}
-            <div className={cn("flex flex-col gap-3", !showAdvancedMobile && 'hidden md:flex')} style={{ marginBottom: openFilters.cohorte ? 220 : 0 }}>
-              <Label className="mb-1 block text-xs md:text-sm uppercase text-gray-300 font-semibold" htmlFor="cohorte">Cohorte</Label>
-              <Select
-                open={openFilters.cohorte}
-                onOpenChange={(o) => setOpenFilters(s => ({ ...s, cohorte: o }))}
-                value={filters.cohorte || 'all'}
-                onValueChange={(v) => setFilters(prev => ({ ...prev, cohorte: v === 'all' ? undefined : v }))}
-              >
-                <SelectTrigger id="cohorte" aria-label="Filtrer par cohorte" className="w-full h-14 hover:ring-2 hover:ring-sky-400 hover:border-sky-400"
-                  style={{
-                    background: 'rgba(17,24,39,0.6)',
-                    border: '2px solid rgba(61,155,255,0.35)',
-                    color: '#cfeaff'
-                  }}
-                >
-                  <SelectValue placeholder="Toutes les cohortes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toutes les cohortes</SelectItem>
-                  {cohortes.map((cohorte) => (
-                    <SelectItem key={cohorte._id} value={cohorte._id}>{cohorte.nom}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Total retiré: le nombre est inclus dans le titre de la carte */}
-          </div>
-        </div>
-      </div>
+      {/* Carte Recherche + Filtres */}
+      <SearchFiltersCard
+        title="Recherche et filtres"
+        searchValue={searchTerm}
+        searchPlaceholder="Nom, email, n° étudiant"
+        onSearchChange={setSearchTerm}
+        filters={filterConfigs}
+        resultCount={filteredEtudiants.length}
+        resultLabel="étudiant"
+      />
 
       {/* Formulaire création/édition */}
       {showForm && (

@@ -15,6 +15,8 @@ import { EtudiantsPage } from './pages/admin/EtudiantsPage';
 import { CallsPage } from './pages/admin/CallsPage';
 import ModulesPage from './pages/admin/ModulesPage';
 import AdminSettings from './pages/admin/AdminSettings';
+import SchoolPage from './pages/admin/SchoolPage';
+import PlanningPage from './pages/admin/PlanningPage';
 
 function App() {
   return (
@@ -37,7 +39,9 @@ function App() {
               <Route path="students" element={<EtudiantsPage />} />
               <Route path="students/:id" element={<EtudiantDetailPage />} />
               <Route path="modules" element={<ModulesPage />} />
+              <Route path="planning" element={<PlanningPage />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="settings/ecole" element={<SchoolPage />} />
               <Route path="calls" element={<CallsPage />} />
               <Route path="administrators" element={<AdministratorList />} />
               <Route index element={<Navigate to="dashboard" replace />} />

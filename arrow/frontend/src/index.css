@@ -440,30 +440,26 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.9rem 1.25rem; /* plus de padding */
-    font-weight: 800; /* plus gras */
-    font-size: 0.95rem; /* légèrement plus grand */
+    padding: 0.9rem 1.25rem;
+    font-weight: 800;
+    font-size: 0.95rem;
     border-radius: 0.75rem;
-    color: #0b1220;
-    background: linear-gradient(135deg, #a3ff12, #3b82f6);
-    border: 2px solid rgba(163, 255, 18, 0.5);
-    box-shadow: 0 10px 24px rgba(59, 130, 246, 0.35), 0 0 20px rgba(163, 255, 18, 0.35);
+    margin-bottom: 1.5rem;
+    background: transparent !important;
+    border: 2px solid !important;
     transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
     text-decoration: none;
     letter-spacing: 0.02em;
-    margin-bottom: 1.25rem; /* espace sous le bouton */
   }
 
   .Add-button:hover {
     transform: translateY(-1px) scale(1.02);
     filter: brightness(1.05);
-    box-shadow: 0 12px 28px rgba(59, 130, 246, 0.45), 0 0 26px rgba(163, 255, 18, 0.45);
   }
 
   .Add-button:active {
     transform: translateY(0);
     filter: brightness(0.98);
-    box-shadow: 0 8px 18px rgba(59, 130, 246, 0.3), 0 0 18px rgba(163, 255, 18, 0.3);
   }
 
   .Add-button--ghost {

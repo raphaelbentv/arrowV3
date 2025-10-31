@@ -769,7 +769,7 @@ export const CohorteForm: React.FC<CohorteFormProps> = ({
                 variant="ghost"
                 onClick={onCancel}
                 disabled={isLoading}
-                className={cn(styles['card-button'], styles['card-button-primary'])}
+                className={cn(styles['card-button-secondary'])}
               >
                 Annuler
               </Button>

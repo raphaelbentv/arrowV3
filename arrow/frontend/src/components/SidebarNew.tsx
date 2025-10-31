@@ -113,27 +113,27 @@ const SidebarNew: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="p-4 space-y-2">
+      <nav className="p-2 space-y-0.5">
         {filteredGroups.map((group) => {
           const expanded = expandedGroups[group.header] ?? true;
           return (
             <div key={group.header}>
               <button
                 onClick={() => toggleGroup(group.header)}
-                className="w-full flex items-center justify-between px-4 pt-5 pb-2 text-xs font-bold tracking-widest text-white/60 hover:text-white/90"
+                className="w-full flex items-center justify-between px-2 pt-2 pb-0.5 text-xs font-bold tracking-widest text-white/60 hover:text-white/90"
               >
                 <span>{group.header}</span>
                 <span className={`transition-transform ${expanded ? 'rotate-0' : '-rotate-90'}`}>❯</span>
               </button>
               {expanded && (
-                <div className="mt-1 space-y-1">
+                <div className="mt-0.5 space-y-0.5">
                   {group.items.map((item) => {
                     const isActive = item.path && location.pathname === item.path;
                     return (
                       <button
                         key={item.title}
                         onClick={() => item.path && navigate(item.path)}
-                        className={`w-full flex items-center gap-3 px-6 py-2.5 rounded-lg transition-all ${
+                        className={`w-full flex items-center gap-2 px-3 py-1 rounded-lg transition-all ${
                           isActive
                             ? 'bg-[rgba(61,155,255,0.2)] text-[#3d9bff] border border-[#3d9bff] shadow-[0_0_15px_rgba(61,155,255,0.3)]'
                             : item.path

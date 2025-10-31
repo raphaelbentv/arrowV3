@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit2, Trash2, Search, UserPlus, Loader2 } from 'lucide-react';
-import { Navbar } from '@/components/ui/Navbar';
 import { administratorsService, Administrator as AdminApi } from '../../services/administrators';
 
 type Admin = AdminApi;
@@ -141,19 +140,14 @@ const AdminPanel: React.FC = () => {
 
   if (loading) {
     return (
-      <>
-        <Navbar role="admin" activeLink="/admin/panel" />
-        <div className="min-h-screen relative overflow-hidden flex items-center justify-center" style={{ background: '#0a0a0a' }}>
-          <Loader2 className="w-12 h-12 animate-spin" style={{ color: '#3d9bff' }} />
-        </div>
-      </>
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center" style={{ background: '#0a0a0a' }}>
+        <Loader2 className="w-12 h-12 animate-spin" style={{ color: '#3d9bff' }} />
+      </div>
     );
   }
 
   return (
-    <>
-      <Navbar role="admin" activeLink="/admin/panel" />
-      <div className="min-h-screen relative overflow-hidden" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen relative overflow-hidden" style={{ background: '#0a0a0a' }}>
         <div 
           className="fixed inset-0 opacity-30 pointer-events-none"
           style={{
@@ -297,8 +291,7 @@ const AdminPanel: React.FC = () => {
             </table>
           </div>
         </div>
-      </div>
-
+      
       {deleteDialogOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.8)' }}>
           <div>
@@ -326,7 +319,7 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

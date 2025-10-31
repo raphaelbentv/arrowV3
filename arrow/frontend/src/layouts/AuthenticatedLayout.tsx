@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarNew from '../components/SidebarNew';
 import { Navbar } from '../components/ui/Navbar';
+import AdminNav from '../components/AdminNav';
 import CollapsibleBreadcrumb from '@/components/ui/CollapsibleBreadcrumb';
 
 interface AuthenticatedLayoutProps {
@@ -28,6 +29,29 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     console.log('Recherche globale:', query);
   };
 
+  // Si admin, utiliser le composant fusionné AdminNav (contient navbar + sidebar)
+  if (role === 'admin') {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a]">
+        {/* AdminNav : Navbar + Sidebar fusionnés pour les admins */}
+        <AdminNav 
+          showSearch={showSearch}
+          searchPlaceholder="Rechercher..."
+          onSearch={handleSearch}
+        />
+
+        {/* Breadcrumb rétractable */}
+        <CollapsibleBreadcrumb />
+
+        {/* Contenu: marge adaptée selon breakpoint */}
+        <main className="flex-1 ml-0 sm:ml-[280px] transition-all duration-300">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
+  // Pour les autres rôles, utiliser l'ancienne structure
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Navbar sans barre de recherche pour les admins */}
@@ -41,9 +65,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       />
 
       {/* Breadcrumb rétractable */}
-      <div className="px-4 sm:px-6">
-        <CollapsibleBreadcrumb />
-      </div>
+      <CollapsibleBreadcrumb />
 
       <div className="flex min-h-screen">
         {/* Sidebar masquée sur mobile */}

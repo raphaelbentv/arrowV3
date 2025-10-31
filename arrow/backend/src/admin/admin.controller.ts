@@ -1,7 +1,9 @@
-import { Controller, Post, Body, Delete, Get, HttpStatus, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, Delete, Get, HttpStatus, Param, Put, Patch } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -68,5 +70,26 @@ export class AdminController {
     console.log('🚀 Création d\'admin initial:', adminData);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.adminService.createAdmin(adminData);
+  }
+
+  // Route pour changer le mot de passe
+  @Patch(':id/password')
+  @ApiOperation({ summary: 'Changer le mot de passe d\'un administrateur' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Mot de passe changé avec succès' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Administrateur non trouvé ou mot de passe incorrect' })
+  async changePassword(@Param('id') id: string, @Body() changePasswordDto: ChangePasswordDto) {
+    if (changePasswordDto.newPassword !== changePasswordDto.confirmPassword) {
+      throw new Error('Les mots de passe ne correspondent pas');
+    }
+    return this.adminService.changePassword(id, changePasswordDto.currentPassword, changePasswordDto.newPassword);
+  }
+
+  // Route pour mettre à jour le profil (sans mot de passe)
+  @Patch(':id/profile')
+  @ApiOperation({ summary: 'Mettre à jour le profil d\'un administrateur' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Profil mis à jour avec succès' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Administrateur non trouvé' })
+  async updateProfile(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.adminService.update(id, updateProfileDto);
   }
 }
