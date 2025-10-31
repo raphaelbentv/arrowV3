@@ -14,34 +14,79 @@ import {
   Menu,
 } from 'lucide-react';
 
-interface MenuItem {
+interface MenuLeafItem {
   title: string;
-  icon: React.ReactElement;
+  icon?: React.ReactElement;
   path?: string;
   role?: string[];
 }
 
+interface MenuGroup {
+  header: string;
+  items: MenuLeafItem[];
+}
+
 const SidebarNew: React.FC = () => {
   const [open, setOpen] = useState(true);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
 
-  const menuItems: MenuItem[] = [
-    { title: 'Dashboard', icon: <LayoutDashboard />, path: '/admin/dashboard', role: ['admin'] },
-    { title: 'Cohortes', icon: <GraduationCap />, path: '/admin/cohortes', role: ['admin'] },
-    { title: 'Étudiants', icon: <Users />, path: '/admin/students', role: ['admin'] },
-    { title: 'Intervenants', icon: <Users />, path: '/admin/intervenant-list', role: ['admin'] },
-    { title: 'Planning', icon: <Calendar />, path: '/admin/planning', role: ['admin', 'intervenant'] },
-    { title: 'Présences', icon: <ClipboardCheck />, path: '/admin/presences', role: ['admin', 'intervenant'] },
-    { title: 'Évaluations', icon: <BarChart3 />, path: '/admin/evaluations', role: ['admin', 'intervenant'] },
-    { title: 'Paramètres', icon: <Settings />, path: '/admin/settings', role: ['admin', 'intervenant'] },
+  const groups: MenuGroup[] = [
+    {
+      header: 'Dashboard',
+      items: [
+        { title: 'Dashboard', icon: <LayoutDashboard />, path: '/admin/dashboard', role: ['admin'] },
+      ],
+    },
+    {
+      header: 'Users',
+      items: [
+        { title: 'Étudiants', icon: <Users />, path: '/admin/students', role: ['admin'] },
+        { title: 'Intervenants', icon: <Users />, path: '/admin/intervenant-list', role: ['admin'] },
+        { title: 'Administrateurs', icon: <Users />, path: '/admin/administrators', role: ['admin'] },
+      ],
+    },
+    {
+      header: 'Pédagogie',
+      items: [
+        { title: 'Cohortes', icon: <GraduationCap />, path: '/admin/cohortes', role: ['admin'] },
+        { title: 'Modules', icon: <GraduationCap />, path: '/admin/modules', role: ['admin'] },
+        { title: 'Évaluations', icon: <BarChart3 />, role: ['admin'] },
+        { title: 'Présences', icon: <ClipboardCheck />, role: ['admin'] },
+      ],
+    },
+    {
+      header: 'Planning',
+      items: [
+        { title: 'Calendrier', icon: <Calendar />, path: '/admin/planning', role: ['admin'] },
+      ],
+    },
+    {
+      header: 'Paramètres',
+      items: [
+        { title: 'Mon profil', icon: <Settings />, path: '/admin/settings', role: ['admin', 'intervenant'] },
+        { title: 'École', icon: <Settings />, path: '/admin/settings/ecole', role: ['admin'] },
+        { title: 'Système', icon: <Settings />, path: '/admin/settings/systeme', role: ['admin'] },
+        { title: 'Aide', icon: <Settings />, path: '/admin/settings/aide', role: ['admin'] },
+      ],
+    },
   ];
 
-  const filteredItems = menuItems.filter((item) => {
-    if (!item.role) return true;
-    return user && user.role && item.role.includes(user.role);
-  });
+  const isAdminPath = location.pathname.startsWith('/admin');
+  const filteredGroups = groups.map((group) => ({
+    header: group.header,
+    items: group.items.filter((item) => {
+      if (!item.role) return true;
+      if (isAdminPath && item.role.includes('admin')) return true;
+      return user && user.role && item.role.includes(user.role);
+    }),
+  }));
+
+  const toggleGroup = (header: string) => {
+    setExpandedGroups((prev) => ({ ...prev, [header]: !(prev[header] ?? true) }));
+  };
 
   const handleLogout = () => {
     logout();
@@ -69,21 +114,42 @@ const SidebarNew: React.FC = () => {
 
       {/* Navigation */}
       <nav className="p-4 space-y-2">
-        {filteredItems.map((item) => {
-          const isActive = location.pathname === item.path;
+        {filteredGroups.map((group) => {
+          const expanded = expandedGroups[group.header] ?? true;
           return (
-            <button
-              key={item.path}
-              onClick={() => item.path && navigate(item.path)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                isActive
-                  ? 'bg-[rgba(61,155,255,0.2)] text-[#3d9bff] border border-[#3d9bff] shadow-[0_0_15px_rgba(61,155,255,0.3)]'
-                  : 'text-white/70 hover:bg-[rgba(61,155,255,0.1)] hover:text-white'
-              }`}
-            >
-              <span className="flex-shrink-0">{item.icon}</span>
-              {open && <span className="font-medium">{item.title}</span>}
-            </button>
+            <div key={group.header}>
+              <button
+                onClick={() => toggleGroup(group.header)}
+                className="w-full flex items-center justify-between px-4 pt-5 pb-2 text-xs font-bold tracking-widest text-white/60 hover:text-white/90"
+              >
+                <span>{group.header}</span>
+                <span className={`transition-transform ${expanded ? 'rotate-0' : '-rotate-90'}`}>❯</span>
+              </button>
+              {expanded && (
+                <div className="mt-1 space-y-1">
+                  {group.items.map((item) => {
+                    const isActive = item.path && location.pathname === item.path;
+                    return (
+                      <button
+                        key={item.title}
+                        onClick={() => item.path && navigate(item.path)}
+                        className={`w-full flex items-center gap-3 px-6 py-2.5 rounded-lg transition-all ${
+                          isActive
+                            ? 'bg-[rgba(61,155,255,0.2)] text-[#3d9bff] border border-[#3d9bff] shadow-[0_0_15px_rgba(61,155,255,0.3)]'
+                            : item.path
+                              ? 'text-white/70 hover:bg-[rgba(61,155,255,0.1)] hover:text-white'
+                              : 'text-white/40 cursor-default'
+                        }`}
+                        disabled={!item.path}
+                      >
+                        {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
+                        {open && <span className="font-medium">{item.title}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>

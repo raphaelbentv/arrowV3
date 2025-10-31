@@ -13,6 +13,8 @@ import AdministratorList from './pages/admin/AdministratorList';
 import { EtudiantDetailPage } from './pages/admin/EtudiantDetailPage';
 import { EtudiantsPage } from './pages/admin/EtudiantsPage';
 import { CallsPage } from './pages/admin/CallsPage';
+import ModulesPage from './pages/admin/ModulesPage';
+import AdminSettings from './pages/admin/AdminSettings';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
               <Route path="cohortes/:id" element={<CohorteDetailPage />} />
               <Route path="students" element={<EtudiantsPage />} />
               <Route path="students/:id" element={<EtudiantDetailPage />} />
+              <Route path="modules" element={<ModulesPage />} />
+              <Route path="settings" element={<AdminSettings />} />
               <Route path="calls" element={<CallsPage />} />
               <Route path="administrators" element={<AdministratorList />} />
               <Route index element={<Navigate to="dashboard" replace />} />

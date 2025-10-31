@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Menu, X, Home, Users, GraduationCap, BookOpen, Calendar, FileText, Settings, BarChart3, Search, UserCog, Phone, ShieldPlus, ClipboardCheck, User as UserIcon } from 'lucide-react';
+import { Menu, X, Home, LayoutDashboard, Users, GraduationCap, BookOpen, Calendar, FileText, Settings, BarChart3, Search, UserCog, Phone, ShieldPlus, ClipboardCheck, User as UserIcon } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 import styles from './navbar.module.css';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/authContext';
 
+interface NavChild {
+  label: string;
+  href: string;
+}
+
 interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
+  children?: NavChild[];
 }
 
 interface NavbarProps {
@@ -23,15 +29,39 @@ interface NavbarProps {
 // Configuration de navigation par rôle
 const navConfigs: Record<string, NavItem[]> = {
   admin: [
-    // Bloc Opérationnel
-    { label: 'Présences', href: '/admin/calls', icon: ClipboardCheck },
-    { label: 'Étudiants', href: '/admin/students', icon: GraduationCap },
-    { label: 'Cohortes', href: '/admin/cohortes', icon: BookOpen },
-    // Bloc Pédagogique
-    { label: 'Cours', href: '/admin/courses', icon: BookOpen },
-    { label: 'Intervenants', href: '/admin/intervenant-list', icon: UserCog },
-    // Bloc Structurel
-    { label: 'Administrateurs', href: '/admin/administrators', icon: ShieldPlus },
+    { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    {
+      label: 'Users', href: '/admin/students', icon: Users,
+      children: [
+        { label: 'Étudiants', href: '/admin/students' },
+        { label: 'Intervenants', href: '/admin/intervenant-list' },
+        { label: 'Administrateurs', href: '/admin/administrators' },
+      ],
+    },
+    {
+      label: 'Pédagogie', href: '/admin/cohortes', icon: GraduationCap,
+      children: [
+        { label: 'Cohortes', href: '/admin/cohortes' },
+        { label: 'Modules', href: '/admin/modules' },
+        { label: 'Évaluations', href: '/admin/evaluations' },
+        { label: 'Présences', href: '/admin/calls' },
+      ],
+    },
+    {
+      label: 'Planning', href: '/admin/planning', icon: Calendar,
+      children: [
+        { label: 'Calendrier', href: '/admin/planning' },
+      ],
+    },
+    {
+      label: 'Paramètres', href: '/admin/settings', icon: Settings,
+      children: [
+        { label: 'Mon profil', href: '/admin/settings' },
+        { label: 'École', href: '/admin/settings/ecole' },
+        { label: 'Système', href: '/admin/settings/systeme' },
+        { label: 'Aide', href: '/admin/settings/aide' },
+      ],
+    },
   ],
   intervenant: [
     { label: 'Tableau de bord', href: '/intervenant/dashboard', icon: Home },
@@ -52,6 +82,7 @@ const navConfigs: Record<string, NavItem[]> = {
 export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = false, searchPlaceholder = 'Rechercher...', onSearch }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedMobile, setExpandedMobile] = useState<Record<string, boolean>>({});
   // Palette néon et couleur active stable par section
   const neonPalette = useMemo(() => ['#00FFD1', '#FF1CF7', '#3B82F6', '#A3FF12', '#C084FC'], []);
   const [neonColor, setNeonColor] = useState(neonPalette[0]);
@@ -114,96 +145,15 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
 
         {/* Desktop menu - Visible sur écrans desktop uniquement */}
         <div className={styles.desktopMenu}>
-          {role === 'admin' ? (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {/* Bloc Opérationnel: 0..2 */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {navItems.slice(0, 3).map((item) => {
-                  const IconComponent = item.icon;
-                  const isActive = activeLink === item.href;
-                  return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
-                      style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(229 231 235)' }}
-                    >
-                      <div className={styles.iconContainer}>
-                        <IconComponent className={styles.icon} />
-                        <div className={styles.iconGlow} />
-                      </div>
-                      <span className={styles.navLabel}>{item.label}</span>
-                      <span className={styles.underline} />
-                      <div className={styles.particle} />
-                    </a>
-                  );
-                })}
-              </div>
-
-              {/* Séparateur entre groupes */}
-              <div className="h-4 w-px bg-white/10 mx-6" />
-
-              {/* Bloc Pédagogique: 3..4 */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {navItems.slice(3, 5).map((item) => {
-                  const IconComponent = item.icon;
-                  const isActive = activeLink === item.href;
-                  return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
-                      style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(209 213 219)' }}
-                    >
-                      <div className={styles.iconContainer}>
-                        <IconComponent className={styles.icon} />
-                        <div className={styles.iconGlow} />
-                      </div>
-                      <span className={styles.navLabel}>{item.label}</span>
-                      <span className={styles.underline} />
-                      <div className={styles.particle} />
-                    </a>
-                  );
-                })}
-              </div>
-
-              {/* Séparateur entre groupes */}
-              <div className="h-4 w-px bg-white/10 mx-6" />
-
-              {/* Bloc Structurel: 5 */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {navItems.slice(5).map((item) => {
-                  const IconComponent = item.icon;
-                  const isActive = activeLink === item.href;
-                  return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
-                      style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(156 163 175)' }}
-                    >
-                      <div className={styles.iconContainer}>
-                        <IconComponent className={styles.icon} />
-                        <div className={styles.iconGlow} />
-                      </div>
-                      <span className={styles.navLabel}>{item.label}</span>
-                      <span className={styles.underline} />
-                      <div className={styles.particle} />
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          ) : (
-            // Rendu par défaut pour autres rôles
-            navItems.map((item) => {
-              const IconComponent = item.icon;
-              const isActive = activeLink === item.href;
-              return (
+          {navItems.map((item) => {
+            const IconComponent = item.icon;
+            const isActive = activeLink === item.href;
+            return (
+              <div key={item.href} className={styles.navItemWrapper}>
                 <a
-                  key={item.href}
                   href={item.href}
                   className={cn('group px-4 py-2 text-[15px] font-medium hover:text-gray-100', styles.navLink, isActive ? styles.navLinkActive : styles.navLinkInactive)}
+                  style={isActive ? { color: neonColor, textShadow: `0 0 8px ${neonColor}, 0 0 16px ${neonColor}` } : { color: 'rgb(229 231 235)' }}
                 >
                   <div className={styles.iconContainer}>
                     <IconComponent className={styles.icon} />
@@ -213,9 +163,18 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
                   <span className={styles.underline} />
                   <div className={styles.particle} />
                 </a>
-              );
-            })
-          )}
+                {item.children && item.children.length > 0 && (
+                  <div className={styles.dropdown}>
+                    {item.children.map((child) => (
+                      <a key={child.href} href={child.href} className={styles.dropdownItem}>
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Indicateur de connexion (desktop) */}
@@ -264,6 +223,28 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
               <div style={{ marginTop: '10px', fontSize: '12px', color: '#9ca3af' }}>
                 Statut: <span style={{ color: isAuthenticated ? '#22c55e' : '#ef4444' }}>{isAuthenticated ? 'Connecté' : 'Déconnecté'}</span>
               </div>
+              <a
+                href={role === 'admin' ? '/admin/settings' : `/${role}/profil`}
+                onClick={() => setShowProfile(false)}
+                style={{
+                  display: 'block',
+                  marginTop: '12px',
+                  width: '100%',
+                  padding: '8px 10px',
+                  borderRadius: '10px',
+                  border: '2px solid rgba(61,155,255,0.4)',
+                  background: 'rgba(61,155,255,0.08)',
+                  color: '#87ceeb',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  boxShadow: '0 0 12px rgba(61,155,255,0.35)',
+                  textAlign: 'center'
+                }}
+              >
+                Modifier mon profil
+              </a>
               <button
                 onClick={() => { logout(); setShowProfile(false); }}
                 style={{
@@ -333,6 +314,28 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
               <div style={{ marginTop: '10px', fontSize: '12px', color: '#9ca3af' }}>
                 Statut: <span style={{ color: isAuthenticated ? '#22c55e' : '#ef4444' }}>{isAuthenticated ? 'Connecté' : 'Déconnecté'}</span>
               </div>
+              <a
+                href={role === 'admin' ? '/admin/settings' : `/${role}/profil`}
+                onClick={() => setShowProfile(false)}
+                style={{
+                  display: 'block',
+                  marginTop: '12px',
+                  width: '100%',
+                  padding: '8px 10px',
+                  borderRadius: '10px',
+                  border: '2px solid rgba(61,155,255,0.4)',
+                  background: 'rgba(61,155,255,0.08)',
+                  color: '#87ceeb',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  boxShadow: '0 0 12px rgba(61,155,255,0.35)',
+                  textAlign: 'center'
+                }}
+              >
+                Modifier mon profil
+              </a>
               <button
                 onClick={() => { logout(); setShowProfile(false); }}
                 style={{
@@ -398,6 +401,40 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
         <div className={styles.mobileMenuList}>
           {navItems.map((item, index) => {
             const IconComponent = item.icon;
+            const hasChildren = !!item.children?.length;
+            const expanded = expandedMobile[item.label] ?? false;
+            if (hasChildren) {
+              return (
+                <div key={item.href} style={{ animationDelay: `${index * 50}ms` }}>
+                  <button
+                    className={cn('group', styles.mobileNavItem)}
+                    onClick={() => setExpandedMobile((prev) => ({ ...prev, [item.label]: !expanded }))}
+                  >
+                    <div className={styles.mobileNavItemBg} />
+                    <div className={styles.iconOctagon}>
+                      <IconComponent className={styles.mobileIcon} />
+                    </div>
+                    <span className={styles.mobileNavLabel}>{item.label}</span>
+                    <span className={styles.mobileArrow} style={{ transform: expanded ? 'rotate(90deg) translateX(8px)' : undefined }}>→</span>
+                    <div className={styles.mobileUnderline} />
+                  </button>
+                  {expanded && (
+                    <div className={styles.mobileSubmenu}>
+                      {item.children!.map((child) => (
+                        <a
+                          key={child.href}
+                          href={child.href}
+                          className={styles.mobileSubmenuItem}
+                          onClick={() => setOpen(false)}
+                        >
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
             return (
               <a
                 key={item.href}
@@ -406,25 +443,12 @@ export function Navbar({ role = 'admin', logoHref, activeLink, showSearch = fals
                 onClick={() => setOpen(false)}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                {/* Background glow on hover */}
                 <div className={styles.mobileNavItemBg} />
-
-                {/* Icon container with octagon shape */}
                 <div className={styles.iconOctagon}>
                   <IconComponent className={styles.mobileIcon} />
                 </div>
-
-                {/* Label with gradient on hover */}
-                <span className={styles.mobileNavLabel}>
-                  {item.label}
-                </span>
-                
-                {/* Arrow indicator with glow */}
-                <span className={styles.mobileArrow}>
-                  →
-                </span>
-
-                {/* Bottom border glow on hover */}
+                <span className={styles.mobileNavLabel}>{item.label}</span>
+                <span className={styles.mobileArrow}>→</span>
                 <div className={styles.mobileUnderline} />
               </a>
             );

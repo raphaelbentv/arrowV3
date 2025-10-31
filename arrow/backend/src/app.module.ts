@@ -11,6 +11,7 @@ import { IntervenantsModule } from './intervenants/intervenants.module';
 import { EtudiantsModule } from './etudiants/etudiants.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AttendanceModule } from './attendance/attendance.module';
+import { ModulesModule } from './modules/modules.module';
 // Importez vos autres modules ici
 
 @Module({
@@ -29,6 +30,7 @@ import { AttendanceModule } from './attendance/attendance.module';
     EtudiantsModule,
     DocumentsModule,
     AttendanceModule,
+    ModulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
