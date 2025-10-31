@@ -1,7 +1,7 @@
-import axios from 'axios';
+import api from './api';
 import { Intervenant } from '../types/intervenant';
 
-const API_URL = 'http://localhost:4000';
+const API_URL = (api.defaults.baseURL as string | undefined) || 'http://localhost:4000/api/v1';
 const USE_MOCK_DATA = false;
 
 // Définition de l'interface pour les méthodes du service
@@ -46,7 +46,7 @@ export const intervenantsService: IntervenantsService = {
       console.log(`   🎯 URL complète: ${API_URL}/intervenants`);
       console.log('   ⏳ Attente de la réponse...');
       
-      const response = await axios.get(`${API_URL}/intervenants`, { headers });
+      const response = await api.get(`/intervenants`, { headers });
       
       console.log('5️⃣ Réponse reçue');
       console.log(`   ✅ Statut: ${response.status} ${response.statusText}`);
@@ -94,7 +94,7 @@ export const intervenantsService: IntervenantsService = {
       const url = `${API_URL}/intervenants/${id}`;
       console.log(`   🎯 URL: ${url}`);
       
-      const response = await axios.get(url, {
+      const response = await api.get(`/intervenants/${id}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ export const intervenantsService: IntervenantsService = {
   create: async (intervenant: Omit<Intervenant, '_id'>): Promise<Intervenant> => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/intervenants`, intervenant, {
+      const response = await api.post(`/intervenants`, intervenant, {
         headers: {
           Authorization: token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'
@@ -132,7 +132,7 @@ export const intervenantsService: IntervenantsService = {
   update: async (id: string, intervenant: Partial<Intervenant>): Promise<Intervenant> => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`${API_URL}/intervenants/${id}`, intervenant, {
+      const response = await api.patch(`/intervenants/${id}`, intervenant, {
         headers: {
           Authorization: token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'
@@ -148,7 +148,7 @@ export const intervenantsService: IntervenantsService = {
   delete: async (id: string): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${API_URL}/intervenants/${id}`, {
+      await api.delete(`/intervenants/${id}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'

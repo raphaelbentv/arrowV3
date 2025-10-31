@@ -393,6 +393,227 @@ const etudiants = [
     createdAt: new Date(),
     updatedAt: new Date()
   }
+  ,
+  {
+    nom: 'Marchand',
+    prenom: 'Clara',
+    photo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Clara',
+    email: 'clara.marchand@example.com',
+    telephone: '0690010203',
+    adresse: '18 Rue de Metz, 31000 Toulouse',
+    dateNaissance: new Date('2003-07-09'),
+    lieuNaissance: 'Toulouse',
+    nationalite: 'Française',
+    genre: 'F',
+    numeroEtudiant: 'ETU2025010',
+    statutInscription: 'Inscrit',
+    dateInscription: new Date('2025-09-01'),
+    formationSuivie: 'Licence Informatique',
+    niveau: 'Bac+3',
+    typeFinancement: 'Bourse',
+    montantFinancement: 3200,
+    organismeFinanceur: 'CROUS',
+    dateDebutFinancement: new Date('2025-09-01'),
+    dateFinFinancement: new Date('2026-06-30'),
+    moyenneGenerale: 15.4,
+    tauxPresence: 92,
+    tauxProgression: 78,
+    notes: [
+      { module: 'Structures de données', note: 16, date: new Date('2025-11-14'), commentaire: 'Très bonnes bases algorithmiques' },
+      { module: 'Systèmes', note: 14.5, date: new Date('2025-11-30'), commentaire: 'Bonnes notions d’OS' }
+    ],
+    absences: ['2025-10-12'],
+    retards: ['2025-11-07'],
+    situationActuelle: 'Étudiante boursière, active au club IA.',
+    objectifs: 'Poursuivre en Master IA',
+    difficultesRencontrees: 'Prise de parole en public',
+    commentaires: 'Profil sérieux et régulier.',
+    tags: ['IA', 'Algo', 'Motivée'],
+    cv: 'https://example.com/cv/marchand-clara.pdf',
+    lettreMotivation: 'https://example.com/documents/marchand-lm.pdf',
+    diplomes: 'Baccalauréat Général (spé Maths/NSI)',
+    piecesIdentite: 'https://example.com/documents/marchand-identite.pdf',
+    justificatifsFinancement: 'https://example.com/documents/marchand-bourse.pdf',
+    documents: [],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    nom: 'Gonzalez',
+    prenom: 'Enzo',
+    photo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Enzo',
+    email: 'enzo.gonzalez@example.com',
+    telephone: '0688899977',
+    adresse: '4 Place des Terreaux, 69001 Lyon',
+    dateNaissance: new Date('2004-02-21'),
+    lieuNaissance: 'Lyon',
+    nationalite: 'Franco-espagnole',
+    genre: 'M',
+    numeroEtudiant: 'ETU2025011',
+    statutInscription: 'En attente',
+    dateInscription: new Date('2025-09-15'),
+    formationSuivie: 'Bachelor Marketing Digital',
+    niveau: 'Bac+3',
+    typeFinancement: 'Alternance',
+    montantFinancement: 900,
+    organismeFinanceur: 'MarketCorp SAS',
+    dateDebutFinancement: new Date('2025-10-01'),
+    dateFinFinancement: new Date('2026-09-30'),
+    moyenneGenerale: 13.2,
+    tauxPresence: 88,
+    tauxProgression: 65,
+    notes: [
+      { module: 'SEO/SEA', note: 14, date: new Date('2025-11-10'), commentaire: 'Bon sens analytique' },
+      { module: 'Content Strategy', note: 13, date: new Date('2025-12-01'), commentaire: 'Créatif' }
+    ],
+    absences: [],
+    retards: ['2025-11-03'],
+    situationActuelle: 'Alternant en agence digitale',
+    objectifs: 'Devenir traffic manager',
+    difficultesRencontrees: 'Gestion du temps',
+    commentaires: 'Proactif, bons retours des tuteurs.',
+    tags: ['SEO', 'Alternance'],
+    cv: 'https://example.com/cv/gonzalez-enzo.pdf',
+    lettreMotivation: 'https://example.com/documents/gonzalez-lm.pdf',
+    diplomes: 'Bac STMG mention bien',
+    piecesIdentite: 'https://example.com/documents/gonzalez-identite.pdf',
+    justificatifsFinancement: 'https://example.com/documents/gonzalez-alternance.pdf',
+    documents: [],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    nom: 'Diallo',
+    prenom: 'Aminata',
+    photo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aminata',
+    email: 'aminata.diallo@example.com',
+    telephone: '0677001122',
+    adresse: '22 Rue Nationale, 59000 Lille',
+    dateNaissance: new Date('2002-11-05'),
+    lieuNaissance: 'Lille',
+    nationalite: 'Française',
+    genre: 'F',
+    numeroEtudiant: 'ETU2025012',
+    statutInscription: 'Inscrit',
+    dateInscription: new Date('2025-09-01'),
+    formationSuivie: 'M1 Gestion de Projet',
+    niveau: 'Bac+4',
+    typeFinancement: 'Entreprise',
+    montantFinancement: 5200,
+    organismeFinanceur: 'InnovPME',
+    dateDebutFinancement: new Date('2025-09-01'),
+    dateFinFinancement: new Date('2026-08-31'),
+    moyenneGenerale: 14.8,
+    tauxPresence: 95,
+    tauxProgression: 80,
+    notes: [
+      { module: 'Méthodes agiles', note: 16, date: new Date('2025-11-06'), commentaire: 'Très bonne maîtrise Scrum' },
+      { module: 'Pilotage projet', note: 15, date: new Date('2025-12-02'), commentaire: 'Bon leadership' }
+    ],
+    absences: [],
+    retards: [],
+    situationActuelle: 'Chef de projet junior en alternance',
+    objectifs: 'Certif PMP',
+    difficultesRencontrees: 'Néant',
+    commentaires: 'Très bon potentiel managérial',
+    tags: ['Agile', 'PMO', 'PMP'],
+    cv: 'https://example.com/cv/diallo-aminata.pdf',
+    lettreMotivation: 'https://example.com/documents/diallo-lm.pdf',
+    diplomes: 'Licence Management',
+    piecesIdentite: 'https://example.com/documents/diallo-identite.pdf',
+    justificatifsFinancement: 'https://example.com/documents/diallo-entreprise.pdf',
+    documents: [],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    nom: 'Nguyen',
+    prenom: 'Minh',
+    photo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Minh',
+    email: 'minh.nguyen@example.com',
+    telephone: '0655123344',
+    adresse: '5 Rue Sainte-Catherine, 33000 Bordeaux',
+    dateNaissance: new Date('2001-03-19'),
+    lieuNaissance: 'Bordeaux',
+    nationalite: 'Française',
+    genre: 'M',
+    numeroEtudiant: 'ETU2025013',
+    statutInscription: 'Inscrit',
+    dateInscription: new Date('2025-09-01'),
+    formationSuivie: 'BTS SIO',
+    niveau: 'Bac+2',
+    typeFinancement: 'CPF',
+    montantFinancement: 2500,
+    organismeFinanceur: 'Compte Personnel Formation',
+    dateDebutFinancement: new Date('2025-09-01'),
+    dateFinFinancement: new Date('2026-06-30'),
+    moyenneGenerale: 13.9,
+    tauxPresence: 89,
+    tauxProgression: 74,
+    notes: [
+      { module: 'Réseaux', note: 14, date: new Date('2025-11-21'), commentaire: 'Bases solides' },
+      { module: 'Dev Web', note: 13.5, date: new Date('2025-12-12'), commentaire: 'Bon niveau JavaScript' }
+    ],
+    absences: ['2025-10-03'],
+    retards: ['2025-10-17'],
+    situationActuelle: 'Projet de stage en cours',
+    objectifs: 'Monter en DevOps',
+    difficultesRencontrees: 'Docker/K8s à approfondir',
+    commentaires: 'Curieux et appliqué',
+    tags: ['Réseaux', 'DevWeb', 'CPF'],
+    cv: 'https://example.com/cv/nguyen-minh.pdf',
+    lettreMotivation: 'https://example.com/documents/nguyen-lm.pdf',
+    diplomes: 'Bac S',
+    piecesIdentite: 'https://example.com/documents/nguyen-identite.pdf',
+    justificatifsFinancement: 'https://example.com/documents/nguyen-cpf.pdf',
+    documents: [],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    nom: 'Ben Ahmed',
+    prenom: 'Yasmine',
+    photo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Yasmine',
+    email: 'yasmine.benahmed@example.com',
+    telephone: '0644332211',
+    adresse: '11 Rue Paradis, 13001 Marseille',
+    dateNaissance: new Date('2000-09-28'),
+    lieuNaissance: 'Marseille',
+    nationalite: 'Française',
+    genre: 'F',
+    numeroEtudiant: 'ETU2025014',
+    statutInscription: 'Inscrit',
+    dateInscription: new Date('2025-09-01'),
+    formationSuivie: 'MBA Management',
+    niveau: 'Bac+5',
+    typeFinancement: 'Autofinancé',
+    montantFinancement: 0,
+    organismeFinanceur: '',
+    dateDebutFinancement: null,
+    dateFinFinancement: null,
+    moyenneGenerale: 16.1,
+    tauxPresence: 96,
+    tauxProgression: 85,
+    notes: [
+      { module: 'Stratégie', note: 16.5, date: new Date('2025-12-01'), commentaire: 'Vision globale' },
+      { module: 'Finance', note: 15.8, date: new Date('2025-12-15'), commentaire: 'Très bonne analyse' }
+    ],
+    absences: [],
+    retards: [],
+    situationActuelle: 'Stage fin d’études recherché',
+    objectifs: 'Consulting stratégique',
+    difficultesRencontrees: 'R.A.S',
+    commentaires: 'Excellent profil',
+    tags: ['MBA', 'Stratégie', 'Management'],
+    cv: 'https://example.com/cv/benahmed-yasmine.pdf',
+    lettreMotivation: 'https://example.com/documents/benahmed-lm.pdf',
+    diplomes: 'Master Management',
+    piecesIdentite: 'https://example.com/documents/benahmed-identite.pdf',
+    justificatifsFinancement: '',
+    documents: [],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
 ];
 
 const dbNameFromUri = (() => {
@@ -466,6 +687,7 @@ async function seedEtudiants() {
     );
 
     const Etudiant = mongoose.model('Etudiant', EtudiantSchema, 'apprenants');
+    const Cohorte = mongoose.models.Cohorte || mongoose.model('Cohorte', new mongoose.Schema({ nom: String }, { collection: 'cohortes' }), 'cohortes');
 
     // Vérifier si des étudiants existent déjà
     const existingCount = await Etudiant.countDocuments();
@@ -483,8 +705,55 @@ async function seedEtudiants() {
       }
     }
 
-    // Insérer les étudiants
-    const result = await Etudiant.insertMany(etudiants, { ordered: false });
+    // Lier les 5 derniers étudiants à une cohorte existante si trouvée
+    try {
+      const cohorte = await Cohorte.findOne().select('_id nom').lean();
+      if (cohorte) {
+        console.log(`🔗 Liaison des 5 nouveaux étudiants à la cohorte: ${cohorte.nom} (${cohorte._id})`);
+        const start = Math.max(etudiants.length - 5, 0);
+        for (let i = start; i < etudiants.length; i++) {
+          etudiants[i].cohorteActuelle = cohorte._id;
+          etudiants[i].cohortesHistorique = [cohorte._id];
+        }
+      } else {
+        console.log('⚠️  Aucune cohorte trouvée, insertion sans liaison.');
+      }
+    } catch (e) {
+      console.log('⚠️  Erreur lors de la récupération d\'une cohorte existante:', e?.message || e);
+    }
+
+    // Filtrer les étudiants déjà existants par email pour éviter les doublons
+    const existingByEmail = await Etudiant.find({
+      email: { $in: etudiants.map(e => e.email) }
+    }).select('email').lean();
+    const existingSet = new Set(existingByEmail.map(e => e.email));
+    let toInsert = etudiants.filter(e => !existingSet.has(e.email));
+
+    if (toInsert.length === 0) {
+      console.log('ℹ️  Aucun nouvel étudiant à insérer (tous les emails existent déjà).');
+      console.log('\n🎉 Seed terminé (aucune insertion nécessaire).');
+      return;
+    }
+
+    // Lier tous les nouveaux étudiants à une cohorte existante si disponible
+    try {
+      const cohorte = await Cohorte.findOne().select('_id nom').lean();
+      if (cohorte) {
+        console.log(`🔗 Liaison des nouveaux étudiants à la cohorte: ${cohorte.nom} (${cohorte._id})`);
+        toInsert = toInsert.map(e => ({
+          ...e,
+          cohorteActuelle: cohorte._id,
+          cohortesHistorique: [cohorte._id],
+        }));
+      } else {
+        console.log('⚠️  Aucune cohorte trouvée, insertion sans liaison.');
+      }
+    } catch (e) {
+      console.log('⚠️  Erreur lors de la récupération d\'une cohorte existante:', e?.message || e);
+    }
+
+    // Insérer uniquement les nouveaux étudiants
+    const result = await Etudiant.insertMany(toInsert, { ordered: false });
     console.log(`✅ ${result.length} étudiant(s) créé(s) avec succès`);
 
     // Afficher les IDs créés

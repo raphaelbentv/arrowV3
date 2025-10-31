@@ -6,6 +6,7 @@ import IntervenantPanel from './pages/intervenant/IntervenantPanel';
 import AdminLogin from './pages/admin/AdminLogin';
 import HomePage from './pages/public/HomePage';
 import IntervenantList from './pages/admin/intervenantList';
+import IntervenantDetailPage from './pages/admin/IntervenantDetailPage';
 import { CohortesPage } from './pages/cohortes/CohortesPage';
 import { CohorteDetailPage } from './pages/cohortes/CohorteDetailPage';
 import AdministratorList from './pages/admin/AdministratorList';
@@ -28,6 +29,7 @@ function App() {
             <Routes>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="intervenant-list" element={<IntervenantList />} />
+              <Route path="intervenants/:id" element={<IntervenantDetailPage />} />
               <Route path="cohortes" element={<CohortesPage />} />
               <Route path="cohortes/:id" element={<CohorteDetailPage />} />
               <Route path="students" element={<EtudiantsPage />} />

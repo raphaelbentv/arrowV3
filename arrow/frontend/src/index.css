@@ -511,6 +511,65 @@
     animation: glow-pulse 8s ease-in-out infinite;
   }
 
+  /* Edge mobile: container flush (≤600px) */
+  @media (max-width: 600px) {
+    .edge-mobile-container {
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }
+
+  /* Toggle néon press */
+  .neon-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+  }
+  .neon-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .neon-toggle .switch {
+    position: relative;
+    width: 56px;
+    height: 30px;
+    background: rgba(61,155,255,0.15);
+    border: 2px solid rgba(61,155,255,0.35);
+    border-radius: 9999px;
+    box-shadow: 0 0 18px rgba(61,155,255,0.25) inset, 0 0 10px rgba(61,155,255,0.15);
+    transition: all 0.2s ease;
+  }
+  .neon-toggle .knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #0b1220, #15263f);
+    border: 2px solid rgba(61,155,255,0.55);
+    box-shadow: 0 0 10px rgba(61,155,255,0.45);
+    transition: all 0.2s ease;
+  }
+  .neon-toggle:active .knob {
+    transform: scale(0.95);
+  }
+  .neon-toggle input:checked + .switch {
+    background: linear-gradient(135deg, #3d9bff, #87ceeb);
+    border-color: #3d9bff;
+    box-shadow: 0 0 18px rgba(61,155,255,0.5), 0 0 28px rgba(135,206,235,0.35);
+  }
+  .neon-toggle input:checked + .switch .knob {
+    transform: translateX(26px);
+    border-color: #a3ff12;
+    box-shadow: 0 0 14px rgba(163,255,18,0.55), 0 0 24px rgba(61,155,255,0.45);
+  }
+
   /* Classes utilitaires d'espacement vertical */
   .space-y-xs > * + * {
     margin-top: var(--spacing-xs);
