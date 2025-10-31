@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarNew from '../components/SidebarNew';
 import { Navbar } from '../components/ui/Navbar';
+import CollapsibleBreadcrumb from '@/components/ui/CollapsibleBreadcrumb';
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
@@ -38,6 +39,11 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         searchPlaceholder="Rechercher..."
         onSearch={handleSearch}
       />
+
+      {/* Breadcrumb rétractable */}
+      <div className="px-4 sm:px-6">
+        <CollapsibleBreadcrumb />
+      </div>
 
       <div className="flex min-h-screen">
         {/* Sidebar masquée sur mobile */}
