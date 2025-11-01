@@ -16,3 +16,4 @@ import { School, SchoolSchema } from './school.schema';
 })
 export class SchoolModule {}
 
+

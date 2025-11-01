@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Search, X, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Search, X, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { CourseBlock } from './planning/CourseBlock';
@@ -19,6 +19,8 @@ export const PlanningPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showWeekends, setShowWeekends] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isSearchCardOpen, setIsSearchCardOpen] = useState(false);
+  const [isNavigationCardOpen, setIsNavigationCardOpen] = useState(false);
 
   const [courses, setCourses] = useState<CourseData[]>(coursesData);
 
@@ -200,15 +202,15 @@ export const PlanningPage: React.FC = () => {
 
     return (
       <div className="calendar-view week" style={{ display: 'grid', gridTemplateColumns: `60px repeat(${days.length}, 1fr)`, gap: '12px' }}>
-        <div />
+        <div className="week-time-header" />
         {days.map((day) => (
-          <h3 key={day} style={{ margin: 0, textAlign: 'center', padding: '12px' }}>
+          <h3 key={day} className="week-day-header" style={{ margin: 0, textAlign: 'center', padding: '12px' }}>
             {day}
           </h3>
         ))}
         {timeSlots.map((hour) => (
           <React.Fragment key={hour}>
-            <div style={{ padding: '8px', fontSize: '0.75rem', color: 'rgba(135,206,235,0.7)', borderRight: '1px solid rgba(61,155,255,0.2)', borderBottom: '1px solid rgba(61,155,255,0.1)' }}>
+            <div className="week-time-cell" style={{ padding: '8px', fontSize: '0.75rem', color: 'rgba(135,206,235,0.7)', borderRight: '1px solid rgba(61,155,255,0.2)', borderBottom: '1px solid rgba(61,155,255,0.1)' }}>
               {hour}h
             </div>
             {days.map((_, dayIndex) => {
@@ -219,6 +221,7 @@ export const PlanningPage: React.FC = () => {
               return (
                 <div
                   key={`${hour}-${dayIndex}`}
+                  className="week-day-cell"
                   style={{ minHeight: '60px', position: 'relative', borderLeft: '1px solid rgba(61,155,255,0.1)', borderBottom: '1px solid rgba(61,155,255,0.1)' }}
                 >
                   {hourCourses.map((course) => (
@@ -244,7 +247,7 @@ export const PlanningPage: React.FC = () => {
     const colsCount = showWeekends ? 7 : 5;
 
     return (
-      <div className="calendar-view month" style={{ display: 'grid', gridTemplateColumns: `repeat(${colsCount}, 1fr)`, gap: '2px' }}>
+      <div className="calendar-view month" style={{ display: 'grid', gridTemplateColumns: `repeat(${colsCount}, 1fr)`, gap: '7px' }}>
         {weekDays.map((day) => (
           <h3 key={day} style={{ margin: 0, textAlign: 'center', padding: '8px' }}>
             {day}
@@ -262,28 +265,28 @@ export const PlanningPage: React.FC = () => {
               className="card month-day-card"
               style={{
                 minHeight: '100px',
-                padding: '1px',
-                margin: '0px',
+                padding: '2px',
+                margin: '1px',
                 opacity: !isCurrentMonth ? 0.4 : 1,
                 backgroundColor: isToday ? 'rgba(61,155,255,0.05)' : 'transparent',
               }}
             >
-              <div style={{ fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0px', marginTop: '0px', padding: '0px', color: isToday ? '#3d9bff' : 'rgba(135,206,235,0.7)' }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '1px', marginTop: '1px', marginLeft: '5px', marginRight: '5px', padding: '0px', color: isToday ? '#3d9bff' : 'rgba(135,206,235,0.7)' }}>
                 {date.getDate()}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', marginTop: '0px', padding: '0px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginTop: '0px', padding: '0px' }}>
                 {dayCourses.slice(0, 3).map((course) => (
                   <div
                     key={course.id}
                     onClick={() => setSelectedCourse(course)}
                     className="badge badge-blue month-day-badge"
-                    style={{ cursor: 'pointer', fontSize: '10px', padding: '1px 2px', margin: '0px', lineHeight: '1.2' }}
+                    style={{ cursor: 'pointer', fontSize: '10px', padding: '1px 2px', margin: '1px 5px', lineHeight: '1.2' }}
                   >
                     {course.startTime} - {course.title}
                   </div>
                 ))}
                 {dayCourses.length > 3 && (
-                  <div style={{ fontSize: '0.75rem', color: 'rgba(135,206,235,0.6)', marginTop: '1px', padding: '0px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'rgba(135,206,235,0.6)', marginTop: '1px', marginLeft: '5px', marginRight: '5px', marginBottom: '1px', padding: '0px' }}>
                     +{dayCourses.length - 3} autres
                   </div>
                 )}
@@ -373,11 +376,16 @@ export const PlanningPage: React.FC = () => {
           backdrop-filter: blur(12px);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+        
+        #planning-page .search-filters-card,
+        #planning-page .navigation-filters-card {
+          padding: 0 !important;
+        }
 
         #planning-page .month-day-card,
         #planning-page #p-cal-month .card {
-          padding: 1px !important;
-          margin: 0 !important;
+          padding: 2px !important;
+          margin: 1px !important;
         }
 
         #planning-page .month-day-card > div:first-of-type,
@@ -390,18 +398,22 @@ export const PlanningPage: React.FC = () => {
         #planning-page .month-day-card > div:last-of-type,
         #planning-page #p-cal-month .card > div:last-of-type {
           margin-top: 0 !important;
-          gap: 1px !important;
+          gap: 7px !important;
           padding: 0 !important;
         }
 
         #planning-page .month-day-badge,
         #planning-page #p-cal-month .badge {
           padding: 1px 2px !important;
-          margin: 0 !important;
+          margin: 1px 5px !important;
+        }
+
+        #planning-page #p-cal-month {
+          padding: 0 7px;
         }
 
         #planning-page #p-cal-month .calendar-view.month {
-          gap: 2px !important;
+          gap: 7px !important;
         }
 
         #planning-page .card:hover {
@@ -477,7 +489,18 @@ export const PlanningPage: React.FC = () => {
         }
 
         #planning-page .calendar-view.week {
-          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          grid-template-columns: 50px repeat(7, 1fr);
+          gap: 8px;
+        }
+        
+        #planning-page #p-cal-week {
+          overflow-x: auto;
+          overflow-y: visible;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        #planning-page .calendar-view.month {
+          gap: 7px !important;
         }
 
 
@@ -511,12 +534,307 @@ export const PlanningPage: React.FC = () => {
           #planning-page {
             font-size: clamp(0.9rem, 2vw, 1rem);
           }
-          #planning-page .calendar-view.week,
+          
+          /* Header responsive */
+          #planning-page header {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+          }
+          
+          #planning-page header > div:last-child {
+            width: 100%;
+            flex-direction: column;
+            gap: 12px;
+          }
+          
+          #planning-page .calendar-toggle {
+            width: 100%;
+            justify-content: center;
+          }
+          
+          #planning-page #p-weekend-toggle {
+            padding: 4px 8px !important;
+            border: none !important;
+            font-size: 0.75rem !important;
+          }
+          
+          /* Search card responsive */
+          #planning-page .search-filters-card,
+          #planning-page .navigation-filters-card {
+            padding: 0 !important;
+          }
+          
+          #planning-page .search-input-container {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            flex: 1 1 100% !important;
+          }
+          
+          #planning-page .search-input {
+            width: 60% !important;
+            max-width: 400px !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+            gap: 0 !important;
+            font-size: 16px !important;
+            padding-left: 36px !important;
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            min-height: 44px !important;
+            border-radius: 10px !important;
+          }
+          
+          #planning-page .search-input::placeholder {
+            font-size: 16px !important;
+          }
+          
+          #planning-page .search-icon {
+            left: 10px !important;
+            width: 16px !important;
+            height: 16px !important;
+          }
+          
+          #planning-page .search-clear-btn {
+            right: 6px !important;
+            width: 32px !important;
+            height: 32px !important;
+          }
+          
+          #planning-page .search-filters-card button#p-new-btn {
+            width: 100%;
+            margin-top: 12px;
+            flex: 1 1 100%;
+          }
+          
+          #planning-page .search-filters-card .search-separator {
+            display: none;
+          }
+          
+          /* Navigation card responsive */
+          #planning-page .navigation-filters-card {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          #planning-page .navigation-filters-card > div:first-child {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 12px;
+          }
+          
+          #planning-page .navigation-filters-card .select-trigger,
+          #planning-page .navigation-filters-card #p-filter-cohorte-select,
+          #planning-page .navigation-filters-card #p-filter-intervenant-select,
+          #planning-page .navigation-filters-card #p-filter-salle-select {
+            width: 100% !important;
+            min-width: 100%;
+          }
+          
+          #planning-page #p-date-display {
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+          }
+          
+          /* Calendar views responsive */
+          #planning-page #p-cal-week {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          
+          #planning-page .calendar-view.week {
+            grid-template-columns: 40px repeat(7, minmax(120px, 1fr)) !important;
+            gap: 6px !important;
+            min-width: 100%;
+            width: max-content;
+          }
+          
+          #planning-page .calendar-view.week .week-time-header,
+          #planning-page .calendar-view.week .week-time-cell {
+            position: sticky;
+            left: 0;
+            background: rgba(10,26,47,0.95);
+            z-index: 2;
+            border-right: 2px solid rgba(61,155,255,0.3);
+          }
+          
+          #planning-page .calendar-view.week .week-day-header {
+            font-size: clamp(0.7rem, 2vw, 0.875rem) !important;
+            padding: 8px 4px !important;
+            white-space: nowrap;
+          }
+          
+          #planning-page .calendar-view.week .week-time-cell {
+            padding: 6px 4px !important;
+            font-size: 0.7rem !important;
+            white-space: nowrap;
+          }
+          
+          #planning-page .calendar-view.week .week-day-cell {
+            min-height: 50px !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block {
+            padding: 4px !important;
+            font-size: 0.65rem !important;
+            border-left-width: 2px !important;
+            margin: 1px !important;
+            left: 1px !important;
+            right: 1px !important;
+            width: calc(100% - 2px) !important;
+            max-width: calc(100% - 2px) !important;
+            box-sizing: border-box !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .p-2 {
+            padding: 0.25rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .text-xs {
+            font-size: 0.6rem !important;
+            line-height: 1.2 !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .text-\\[10px\\] {
+            font-size: 0.5rem !important;
+            line-height: 1.1 !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .mb-1 {
+            margin-bottom: 0.125rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .space-y-0\\.5 > * + * {
+            margin-top: 0.0625rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .truncate {
+            max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block span,
+          #planning-page .calendar-view.week .course-block div {
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+          }
+          
           #planning-page .calendar-view.month {
             grid-template-columns: repeat(2, 1fr);
           }
+          
+          #planning-page .calendar-view.month {
+            gap: 4px !important;
+          }
+          
+          #planning-page #p-cal-month {
+            padding: 0 4px;
+          }
+          
+          #planning-page .month-day-card {
+            min-height: 80px;
+            padding: 4px !important;
+          }
+          
           #planning-page .container {
             padding: 0;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          #planning-page #p-cal-week {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          
+          #planning-page .calendar-view.week {
+            grid-template-columns: 35px repeat(7, minmax(100px, 1fr)) !important;
+            gap: 4px !important;
+          }
+          
+          #planning-page .calendar-view.week .week-time-header,
+          #planning-page .calendar-view.week .week-time-cell {
+            padding: 4px 2px !important;
+            font-size: 0.65rem !important;
+          }
+          
+          #planning-page .calendar-view.week .week-day-header {
+            font-size: 0.65rem !important;
+            padding: 6px 2px !important;
+          }
+          
+          #planning-page .calendar-view.week .week-day-cell {
+            min-height: 45px !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block {
+            padding: 3px !important;
+            font-size: 0.6rem !important;
+            border-left-width: 2px !important;
+            margin: 0.5px !important;
+            left: 0.5px !important;
+            right: 0.5px !important;
+            width: calc(100% - 1px) !important;
+            max-width: calc(100% - 1px) !important;
+            box-sizing: border-box !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .p-2 {
+            padding: 0.2rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .text-xs {
+            font-size: 0.55rem !important;
+            line-height: 1.1 !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .text-\\[10px\\] {
+            font-size: 0.45rem !important;
+            line-height: 1 !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .mb-1 {
+            margin-bottom: 0.1rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .space-y-0\\.5 > * + * {
+            margin-top: 0.05rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .h-3 {
+            height: 0.5rem !important;
+            width: 0.5rem !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block .truncate {
+            max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+          }
+          
+          #planning-page .calendar-view.week .course-block span,
+          #planning-page .calendar-view.week .course-block div {
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+          }
+          
+          #planning-page .calendar-view.month {
+            grid-template-columns: 1fr;
+          }
+          
+          #planning-page .calendar-toggle {
+            flex-direction: column;
+          }
+          
+          #planning-page .calendar-toggle .btn {
+            width: 100%;
+          }
+          
+          #planning-page .month-day-card {
+            min-height: 70px;
           }
         }
       `}</style>
@@ -534,112 +852,167 @@ export const PlanningPage: React.FC = () => {
               </h1>
             </div>
 
-            {/* View Toggle */}
-            <div id="p-views" className="calendar-toggle" role="tablist" aria-label="Changer de vue">
-              {[
-                { key: 'widgets' as ViewType, label: 'Agenda' },
-                { key: 'week' as ViewType, label: 'Semaine' },
-                { key: 'month' as ViewType, label: 'Mois' },
-              ].map((opt) => (
-                <button
-                  key={opt.key}
-                  id={`p-view-${opt.key}`}
-                  role="tab"
-                  aria-selected={view === opt.key}
-                  onClick={() => setView(opt.key)}
-                  className="btn focus-visible"
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {/* View Toggle */}
+              <div id="p-views" className="calendar-toggle" role="tablist" aria-label="Changer de vue">
+                {[
+                  { key: 'widgets' as ViewType, label: 'Agenda' },
+                  { key: 'week' as ViewType, label: 'Semaine' },
+                  { key: 'month' as ViewType, label: 'Mois' },
+                ].map((opt) => (
+                  <button
+                    key={opt.key}
+                    id={`p-view-${opt.key}`}
+                    role="tab"
+                    aria-selected={view === opt.key}
+                    onClick={() => setView(opt.key)}
+                    className="btn focus-visible"
+                    style={{
+                      background: view === opt.key
+                        ? 'transparent'
+                        : 'transparent',
+                      color: view === opt.key ? '#3d9bff' : 'var(--color-secondary)',
+                      border: view === opt.key ? '2px solid #3d9bff' : '2px solid rgba(61,155,255,0.3)',
+                      boxShadow: view === opt.key ? '0 0 12px rgba(61, 155, 255, 0.4), 0 0 24px rgba(61, 155, 255, 0.2)' : 'none',
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Weekend Toggle */}
+              <label
+                id="p-weekend-toggle"
+                className="neon-toggle"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  padding: '4px 8px',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  border: 'none',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <input
+                  id="p-weekend-toggle-input"
+                  type="checkbox"
+                  checked={showWeekends}
+                  onChange={(e) => setShowWeekends(e.target.checked)}
+                  aria-label={showWeekends ? 'Masquer les weekends' : 'Afficher les weekends'}
+                />
+                <span className="switch">
+                  <span className="knob" />
+                </span>
+                <span
                   style={{
-                    background: view === opt.key
-                      ? 'transparent'
-                      : 'transparent',
-                    color: view === opt.key ? '#3d9bff' : 'var(--color-secondary)',
-                    border: view === opt.key ? '2px solid #3d9bff' : '2px solid rgba(61,155,255,0.3)',
-                    boxShadow: view === opt.key ? '0 0 12px rgba(61, 155, 255, 0.4), 0 0 24px rgba(61, 155, 255, 0.2)' : 'none',
+                    fontFamily: 'var(--font-main)',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    color: showWeekends ? '#87ceeb' : 'rgba(135,206,235,0.6)',
+                    textShadow: showWeekends ? '0 0 8px rgba(61,155,255,0.5)' : 'none',
+                    transition: 'all 0.3s ease',
                   }}
                 >
-                  {opt.label}
-                </button>
-              ))}
+                  Weekends
+                </span>
+              </label>
             </div>
           </header>
 
           {/* Enhanced Search Input + New Course Button */}
-          <div className="card" style={{ marginTop: '16px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div
+          <div className="card search-filters-card" style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <button
+              onClick={() => setIsSearchCardOpen(!isSearchCardOpen)}
               style={{
-                flex: 1,
-                minWidth: '200px',
-                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
-                marginTop: '8px',
-                marginBottom: '8px',
+                justifyContent: 'space-between',
+                width: '100%',
+                padding: '12px',
+                background: 'transparent',
+                border: 'none',
+                color: '#87ceeb',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-main)',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#3d9bff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#87ceeb';
               }}
             >
-              <Search
-                className="icon-glow"
-                style={{
-                  position: 'absolute',
-                  left: '20px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '20px',
-                  height: '20px',
-                  color: '#3d9bff',
-                  pointerEvents: 'none',
-                  zIndex: 2,
-                  filter: 'drop-shadow(0 0 8px rgba(61,155,255,0.8))',
-                  transition: 'all 0.3s ease',
-                }}
-              />
+              <span>Recherche</span>
+              {isSearchCardOpen ? (
+                <ChevronUp style={{ width: '18px', height: '18px' }} />
+              ) : (
+                <ChevronDown style={{ width: '18px', height: '18px' }} />
+              )}
+            </button>
+            <div 
+              style={{ 
+                display: isSearchCardOpen ? 'flex' : 'none',
+                alignItems: 'center',
+                gap: '16px',
+                flexWrap: 'wrap',
+                paddingTop: '0',
+              }}
+            >
+            <div className="search-input-container" style={{ flex: 1, minWidth: '200px', position: 'relative', width: '100%', margin: '0', padding: '0' }}>
+              <Search className="icon-glow search-icon" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px', color: '#3d9bff', pointerEvents: 'none', zIndex: 2 }} />
               <input
                 id="p-search-input"
                 type="text"
-                placeholder="Rechercher un cours, cohorte, intervenant, salle..."
+                placeholder="Rechercher..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="focus-visible"
+                className="focus-visible search-input"
                 style={{
-                  width: '100%',
-                  padding: '16px 20px 16px 52px',
-                  borderRadius: '16px',
+                  width: '60%',
+                  maxWidth: '400px',
+                  margin: '0',
+                  gap: '0',
+                  paddingLeft: '38px',
+                  paddingRight: searchTerm ? '40px' : '12px',
+                  paddingTop: '10px',
+                  paddingBottom: '10px',
+                  borderRadius: '10px',
                   background: 'rgba(10,26,47,0.6)',
                   border: '2px solid rgba(61,155,255,0.5)',
                   color: '#87ceeb',
                   fontFamily: 'var(--font-main)',
                   fontSize: '1rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.08em',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 0 20px rgba(61,155,255,0.25) inset, 0 0 15px rgba(61,155,255,0.15), 0 4px 12px rgba(0,0,0,0.3)',
-                  textShadow: '0 0 6px rgba(135,206,235,0.4)',
-                  height: '52px',
+                  fontWeight: 500,
+                  letterSpacing: '0.05em',
                   boxSizing: 'border-box',
-                  backdropFilter: 'blur(10px)',
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#3d9bff';
-                  e.currentTarget.style.boxShadow = '0 0 30px rgba(61,155,255,0.5) inset, 0 0 25px rgba(61,155,255,0.4), 0 6px 20px rgba(61,155,255,0.3)';
-                  e.currentTarget.style.background = 'rgba(10,26,47,0.8)';
-                  e.currentTarget.style.textShadow = '0 0 10px rgba(135,206,235,0.6)';
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(61,155,255,0.5)';
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(61,155,255,0.25) inset, 0 0 15px rgba(61,155,255,0.15), 0 4px 12px rgba(0,0,0,0.3)';
-                  e.currentTarget.style.background = 'rgba(10,26,47,0.6)';
-                  e.currentTarget.style.textShadow = '0 0 6px rgba(135,206,235,0.4)';
+                  outline: 'none',
+                  WebkitAppearance: 'none',
+                  appearance: 'none',
+                  minHeight: '44px',
                 }}
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
+                  className="search-clear-btn"
                   style={{
                     position: 'absolute',
-                    right: '16px',
+                    right: '6px',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    width: '28px',
-                    height: '28px',
+                    width: '32px',
+                    height: '32px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -648,43 +1021,33 @@ export const PlanningPage: React.FC = () => {
                     borderRadius: '50%',
                     color: '#87ceeb',
                     cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    zIndex: 2,
-                    boxShadow: '0 0 10px rgba(61,155,255,0.3)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(61,155,255,0.4)';
-                    e.currentTarget.style.borderColor = '#3d9bff';
-                    e.currentTarget.style.boxShadow = '0 0 15px rgba(61,155,255,0.6), 0 0 25px rgba(61,155,255,0.4)';
-                    e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(61,155,255,0.25)';
-                    e.currentTarget.style.borderColor = 'rgba(61,155,255,0.6)';
-                    e.currentTarget.style.boxShadow = '0 0 10px rgba(61,155,255,0.3)';
-                    e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                    zIndex: 3,
+                    padding: 0,
+                    outline: 'none',
                   }}
                 >
-                  <X className="icon-glow" style={{ width: '16px', height: '16px', filter: 'drop-shadow(0 0 6px rgba(61,155,255,0.8))' }} />
+                  <X style={{ width: '16px', height: '16px' }} />
                 </button>
               )}
             </div>
             
-            {/* Neon Separator */}
-            <div
-              style={{
-                width: '2px',
-                height: '32px',
-                background: 'linear-gradient(180deg, transparent, rgba(61,155,255,0.6), transparent)',
-                boxShadow: '0 0 8px rgba(61,155,255,0.4)',
-              }}
-            />
-            
-            {/* New Course Button */}
-            <button
-              id="p-new-btn"
-              className="btn"
-              onClick={() => setShowCreateModal(true)}
+              {/* Neon Separator */}
+              <div
+                className="search-separator"
+                style={{
+                  width: '2px',
+                  height: '32px',
+                  background: 'linear-gradient(180deg, transparent, rgba(61,155,255,0.6), transparent)',
+                  boxShadow: '0 0 8px rgba(61,155,255,0.4)',
+                  flexShrink: 0,
+                }}
+              />
+              
+              {/* New Course Button */}
+              <button
+                id="p-new-btn"
+                className="btn"
+                onClick={() => setShowCreateModal(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -717,13 +1080,56 @@ export const PlanningPage: React.FC = () => {
                 e.currentTarget.style.textShadow = '0 0 4px rgba(236,72,153,0.3)';
               }}
             >
-              <Plus className="icon-glow" style={{ width: '18px', height: '18px' }} />
-              Nouveau cours
-            </button>
+                <Plus className="icon-glow" style={{ width: '18px', height: '18px' }} />
+                Nouveau cours
+              </button>
+            </div>
           </div>
 
           {/* Navigation */}
-          <div className="card" style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px' }}>
+          <div className="card navigation-filters-card" style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <button
+              onClick={() => setIsNavigationCardOpen(!isNavigationCardOpen)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+                padding: '12px',
+                background: 'transparent',
+                border: 'none',
+                color: '#87ceeb',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-main)',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#3d9bff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#87ceeb';
+              }}
+            >
+              <span>Filtres</span>
+              {isNavigationCardOpen ? (
+                <ChevronUp style={{ width: '18px', height: '18px' }} />
+              ) : (
+                <ChevronDown style={{ width: '18px', height: '18px' }} />
+              )}
+            </button>
+            <div 
+              style={{ 
+                display: isNavigationCardOpen ? 'flex' : 'none',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: '16px',
+                paddingTop: '0',
+              }}
+            >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button
                 id="p-date-prev"
@@ -810,55 +1216,7 @@ export const PlanningPage: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            {/* Enhanced Weekend Toggle */}
-            <label
-              id="p-weekend-toggle"
-              className="neon-toggle"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                cursor: 'pointer',
-                padding: '8px 16px',
-                borderRadius: '12px',
-                background: 'rgba(10,26,47,0.4)',
-                border: '2px solid rgba(61,155,255,0.3)',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(61,155,255,0.5)';
-                e.currentTarget.style.boxShadow = '0 0 12px rgba(61,155,255,0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(61,155,255,0.3)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <input
-                id="p-weekend-toggle-input"
-                type="checkbox"
-                checked={showWeekends}
-                onChange={(e) => setShowWeekends(e.target.checked)}
-                aria-label={showWeekends ? 'Masquer les weekends' : 'Afficher les weekends'}
-              />
-              <span className="switch">
-                <span className="knob" />
-              </span>
-              <span
-                style={{
-                  fontFamily: 'var(--font-main)',
-                  fontSize: '0.875rem',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.12em',
-                  color: showWeekends ? '#87ceeb' : 'rgba(135,206,235,0.6)',
-                  textShadow: showWeekends ? '0 0 8px rgba(61,155,255,0.5)' : 'none',
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                Weekends
-              </span>
-            </label>
+            </div>
           </div>
 
           {/* Calendar Grid */}

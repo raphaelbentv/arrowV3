@@ -58,3 +58,4 @@ export class CreateSchoolDto {
   couleurPrincipale?: string;
 }
 
+
