@@ -24,6 +24,9 @@ export interface SearchFiltersCardProps {
   filters: FilterConfig[];
   resultCount?: number;
   resultLabel?: string;
+  headerContent?: React.ReactNode;
+  footerContent?: React.ReactNode;
+  accordionContent?: React.ReactNode;
 }
 
 export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
@@ -34,6 +37,9 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
   filters,
   resultCount,
   resultLabel,
+  headerContent,
+  footerContent,
+  accordionContent,
 }) => {
   const [openFilters, setOpenFilters] = useState<Record<string, boolean>>({});
   const [filtersAccordionOpen, setFiltersAccordionOpen] = useState(false);
@@ -77,6 +83,7 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
         }
       `}</style>
       <div
+        id={title === 'Recherche et filtres' ? 'p-filters-card' : undefined}
         className={cn(styles['base-card'], styles['card-spacing-normal'], 'search-filters-card')}
         style={{ 
           borderTop: 'none',
@@ -101,6 +108,11 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
             borderTopRightRadius: '12px',
           }}
         />
+      {headerContent && (
+        <div style={{ padding: '1.5rem 1.5rem 0.75rem 1.5rem', position: 'relative', zIndex: 1 }}>
+          {headerContent}
+        </div>
+      )}
       <div 
         className={styles['card-header']} 
         style={{ 
@@ -110,6 +122,7 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
           alignItems: 'flex-start',
           gap: '1rem',
           flexWrap: 'wrap',
+          paddingTop: headerContent ? '0' : undefined,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 auto', minWidth: '200px' }}>
@@ -138,6 +151,7 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
         </div>
         {/* Toggle pour afficher/masquer les options de recherche - Positionné en haut à droite, peut passer à la ligne sur mobile */}
         <label 
+          id="p-accordion-toggle"
           className="neon-toggle" 
           style={{ 
             fontFamily: "'League Spartan', sans-serif",
@@ -152,6 +166,7 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
           }}
         >
           <input
+            id="p-accordion-toggle-input"
             type="checkbox"
             checked={filtersAccordionOpen}
             onChange={(e) => setFiltersAccordionOpen(e.target.checked)}
@@ -176,8 +191,9 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
         {/* Champ de recherche séparé */}
         <div className="flex flex-col gap-2 mb-4" style={{ width: '100%' }}>
           <Label
+            id="p-search-label"
             className="block text-sm md:text-base uppercase font-bold"
-            htmlFor="search"
+            htmlFor="p-search-input"
             style={{
               fontFamily: "'League Spartan', sans-serif",
               color: '#87ceeb',
@@ -188,7 +204,7 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
             Recherche
           </Label>
           <Input
-            id="search"
+            id="p-search-input"
             aria-label="Rechercher"
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -253,7 +269,8 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
                         }}
                       >
                         <Label
-                          htmlFor={filter.id}
+                          id={`p-filter-${filter.id}-label`}
+                          htmlFor={`p-filter-${filter.id}-select`}
                           style={{
                             fontFamily: "'League Spartan', sans-serif",
                             fontSize: '0.875rem',
@@ -281,7 +298,7 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
                           }
                         >
                           <SelectTrigger
-                            id={filter.id}
+                            id={`p-filter-${filter.id}-select`}
                             aria-label={`Filtrer par ${filter.label}`}
                             className="w-full hover:ring-2 hover:ring-sky-400 hover:border-sky-400 transition-all"
                             style={{
@@ -358,10 +375,21 @@ export const SearchFiltersCard: React.FC<SearchFiltersCardProps> = ({
                 );
               })}
               </div>
+              {/* Contenu additionnel dans l'accordéon */}
+              {accordionContent && (
+                <div style={{ width: '100%', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(61,155,255,0.2)' }}>
+                  {accordionContent}
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
+      {footerContent && (
+        <div style={{ padding: '0 1.5rem 1.5rem 1.5rem', position: 'relative', zIndex: 1 }}>
+          {footerContent}
+        </div>
+      )}
     </div>
     </>
   );

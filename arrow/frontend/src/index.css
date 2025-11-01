@@ -181,6 +181,16 @@
     box-sizing: border-box;
   }
 
+  /* Exception pour la page Planning : pas de padding ni marges */
+  main:has(#planning-page),
+  main.planning-page-main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
   /* Espacement pour les titres */
   h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
@@ -682,5 +692,38 @@
     animation-name: fade-in;
     animation-duration: 500ms;
     animation-fill-mode: both;
+  }
+
+  /* Retro grid effect */
+  .retro-grid {
+    background-image: 
+      linear-gradient(rgba(61,155,255,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61,155,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Scanlines effect */
+  .scanlines {
+    background: linear-gradient(
+      transparent 50%,
+      rgba(0, 0, 0, 0.5) 50%
+    );
+    background-size: 100% 2px;
+  }
+
+  /* Slide in animation */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out forwards;
   }
 }

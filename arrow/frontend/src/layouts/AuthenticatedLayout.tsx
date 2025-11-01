@@ -29,6 +29,9 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     console.log('Recherche globale:', query);
   };
 
+  // Vérifier si c'est la page Planning (exceptionnelle : pas de marges)
+  const isPlanningPage = location.pathname === '/admin/planning';
+
   // Si admin, utiliser le composant fusionné AdminNav (contient navbar + sidebar)
   if (role === 'admin') {
     return (
@@ -43,8 +46,17 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         {/* Breadcrumb rétractable */}
         <CollapsibleBreadcrumb />
 
-        {/* Contenu: marge adaptée selon breakpoint */}
-        <main className="flex-1 ml-0 sm:ml-[280px] transition-all duration-300">
+        {/* Contenu: marge adaptée selon breakpoint, pas de marges ni padding pour Planning */}
+        <main 
+          className={`flex-1 transition-all duration-300 ${isPlanningPage ? 'ml-0 planning-page-main' : 'ml-0 sm:ml-[280px]'}`}
+          style={isPlanningPage ? { 
+            margin: 0, 
+            padding: 0, 
+            maxWidth: '100%', 
+            width: '100%',
+            boxSizing: 'border-box'
+          } : {}}
+        >
           {children}
         </main>
       </div>
