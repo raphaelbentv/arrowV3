@@ -244,7 +244,7 @@ export const PlanningPage: React.FC = () => {
     const colsCount = showWeekends ? 7 : 5;
 
     return (
-      <div className="calendar-view month" style={{ display: 'grid', gridTemplateColumns: `repeat(${colsCount}, 1fr)`, gap: '6px' }}>
+      <div className="calendar-view month" style={{ display: 'grid', gridTemplateColumns: `repeat(${colsCount}, 1fr)`, gap: '2px' }}>
         {weekDays.map((day) => (
           <h3 key={day} style={{ margin: 0, textAlign: 'center', padding: '8px' }}>
             {day}
@@ -259,30 +259,31 @@ export const PlanningPage: React.FC = () => {
           return (
             <div
               key={index}
-              className="card"
+              className="card month-day-card"
               style={{
                 minHeight: '100px',
-                padding: '6px',
+                padding: '1px',
+                margin: '0px',
                 opacity: !isCurrentMonth ? 0.4 : 1,
                 backgroundColor: isToday ? 'rgba(61,155,255,0.05)' : 'transparent',
               }}
             >
-              <div style={{ fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '3px', color: isToday ? '#3d9bff' : 'rgba(135,206,235,0.7)' }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0px', marginTop: '0px', padding: '0px', color: isToday ? '#3d9bff' : 'rgba(135,206,235,0.7)' }}>
                 {date.getDate()}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', marginTop: '0px', padding: '0px' }}>
                 {dayCourses.slice(0, 3).map((course) => (
                   <div
                     key={course.id}
                     onClick={() => setSelectedCourse(course)}
-                    className="badge badge-blue"
-                    style={{ cursor: 'pointer', fontSize: '10px', padding: '2px 4px' }}
+                    className="badge badge-blue month-day-badge"
+                    style={{ cursor: 'pointer', fontSize: '10px', padding: '1px 2px', margin: '0px', lineHeight: '1.2' }}
                   >
                     {course.startTime} - {course.title}
                   </div>
                 ))}
                 {dayCourses.length > 3 && (
-                  <div style={{ fontSize: '0.75rem', color: 'rgba(135,206,235,0.6)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'rgba(135,206,235,0.6)', marginTop: '1px', padding: '0px' }}>
                     +{dayCourses.length - 3} autres
                   </div>
                 )}
@@ -373,6 +374,36 @@ export const PlanningPage: React.FC = () => {
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
+        #planning-page .month-day-card,
+        #planning-page #p-cal-month .card {
+          padding: 1px !important;
+          margin: 0 !important;
+        }
+
+        #planning-page .month-day-card > div:first-of-type,
+        #planning-page #p-cal-month .card > div:first-of-type {
+          margin-bottom: 0 !important;
+          margin-top: 0 !important;
+          padding: 0 !important;
+        }
+
+        #planning-page .month-day-card > div:last-of-type,
+        #planning-page #p-cal-month .card > div:last-of-type {
+          margin-top: 0 !important;
+          gap: 1px !important;
+          padding: 0 !important;
+        }
+
+        #planning-page .month-day-badge,
+        #planning-page #p-cal-month .badge {
+          padding: 1px 2px !important;
+          margin: 0 !important;
+        }
+
+        #planning-page #p-cal-month .calendar-view.month {
+          gap: 2px !important;
+        }
+
         #planning-page .card:hover {
           transform: translateY(-4px);
           box-shadow: 0 0 20px rgba(61,155,255,0.5);
@@ -449,9 +480,6 @@ export const PlanningPage: React.FC = () => {
           grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         }
 
-        #planning-page .calendar-view.month {
-          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        }
 
         @keyframes glow-pulse {
           0%, 100% { opacity: 1; }
